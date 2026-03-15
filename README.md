@@ -38,21 +38,18 @@ The course covers Linux installation, file and directory management, Vi/Vim edit
 
 | Course&nbsp;Code| Course            | Type          | Instructor      | Department                              |
 |:----------:|:------------------|:-------------:|:---------------:|:----------------------------------------|
-|`DCCS209-00`|LINUX PRACTICE|Major Elective|Prof. Myungseop&nbsp;Kim|Department of Computer Convergence Software|
+|`DCCS209-00`|LINUX PRACTICE|Major Elective|Prof. Myungsup&nbsp;Kim|Department of Computer Convergence Software|
 
 - **📖 References**
 
 | Type | Contents |
 |:----:|:---------|
-|Textbook|Linux system administration textbook provided by instructor|
-|Lecture Notes|Slides and video demonstrations provided by instructor|
+|Lecture Notes|Slides and online video demonstrations provided by instructor|
 
 <br><a name="prerequisites"></a>
 ## ✅ Prerequisites
 
-- Basic understanding of operating system concepts
-- Familiarity with command-line interfaces
-- A Linux environment (VM, WSL, or native installation)
+- C/C++ programming skills
 
 - **💻 Development Environment**
 
@@ -60,7 +57,8 @@ The course covers Linux installation, file and directory management, Vi/Vim edit
 |:-----|:-------:|:----:|:------|
 |Terminal|Apple Inc.|macOS|    |
 |Vi/Vim|Open Source|Linux|    |
-|VirtualBox|Oracle|macOS|Linux VM|
+|UTM|Open Source|macOS|Linux VM|
+|VMware Fusion|Broadcom|macOS|Linux VM|
 
 <br><a name="repository-structure"></a>
 ## 🗂 Repository Structure

@@ -44,15 +44,12 @@
 
 | 유형 | 내용 |
 |:----:|:---------|
-|교재|교수자 제공 Linux 시스템 관리 교재|
-|강의자료|교수자 제공 슬라이드 및 영상 자료|
+|강의자료|교수자 제공 슬라이드 및 온라인 영상|
 
 <br><a name="prerequisites"></a>
 ## ✅ 사전 요구사항
 
-- 운영체제 개념에 대한 기본 이해
-- 명령줄 인터페이스에 대한 숙련
-- Linux 환경 (VM, WSL, 또는 네이티브 설치)
+- C/C++ 프로그래밍 능력
 
 - **💻 개발 환경**
 
@@ -60,7 +57,8 @@
 |:-----|:-------:|:----:|:------|
 |Terminal|Apple Inc.|macOS|    |
 |Vi/Vim|Open Source|Linux|    |
-|VirtualBox|Oracle|macOS|Linux VM|
+|UTM|Open Source|macOS|Linux VM|
+|VMware Fusion|Broadcom|macOS|Linux VM|
 
 <br><a name="repository-structure"></a>
 ## 🗂 레포지토리 구조
