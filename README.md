@@ -24,9 +24,11 @@ This repository organizes and stores Linux commands and shell scripts written fo
 
 This repository contains code examples and scripts developed for a university-level Linux Practice course, including:
 
-- Lecture demonstration codes and shell scripts
-- Assignment solutions (Vi editor practice, shell scripting, etc.)
-- Additional practice exercises
+- **Concepts.md** files for each week with comprehensive explanations of Linux administration and shell usage
+- **Quiz.md** files for selected weeks with review questions and solutions
+- Improved shell scripts with **Doxygen-style headers** documenting purpose, usage, and structure
+- Lecture demonstration codes and assignment solutions
+- Two **term projects** (System Monitoring Dashboard and Custom Shell) designed with references to CS curricula at top universities
 
 The course covers Linux installation, file and directory management, Vi/Vim editing, shell commands, file permissions, process management, disk and file systems, user administration, and Bash shell programming.
 
