@@ -1,4 +1,4 @@
-# W15 — Quiz
+# Week 15 — Quiz
 
 > **Last Updated:** 2026-03-21
 

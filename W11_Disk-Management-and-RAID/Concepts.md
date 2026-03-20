@@ -1,4 +1,4 @@
-# W11 -- Disk Management and RAID
+# Week 11 — Disk Management and RAID
 
 > **Last Updated:** 2026-03-21
 
@@ -288,7 +288,7 @@ quota -u user1
 ## 7. Best Practices
 
 - Use RAID 1 for boot/OS drives and RAID 5/6 for data storage
-- RAID is NOT a backup -- always maintain separate backups
+- RAID is NOT a backup — always maintain separate backups
 - Use LVM on top of RAID for flexible volume management
 - Monitor RAID health regularly with `mdadm --detail`
 - Keep hot spare disks for automatic rebuilds
