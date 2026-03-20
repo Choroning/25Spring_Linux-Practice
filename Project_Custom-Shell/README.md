@@ -1,4 +1,6 @@
 # Project: Custom Shell (minishell)
+> **Author:** Cheolwon Park  
+> **Date:** 2025-06-06
 
 A minimal shell implementation written entirely in Bash. Demonstrates core shell concepts including command parsing, built-in commands, pipes, redirections, and quoting.
 
