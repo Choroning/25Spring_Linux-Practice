@@ -1,4 +1,6 @@
 # Project: System Monitoring Dashboard
+> **Author:** Cheolwon Park  
+> **Date:** 2025-06-06
 
 A terminal-based (TUI) system monitoring dashboard built entirely in Bash. Displays real-time CPU, memory, disk, and network statistics with color-coded output and automatic alerting.
 
