@@ -1,6 +1,6 @@
 #!/bin/bash
 # @file    for_loop_range.sh
-# @brief   Demonstrate for loop reading items from a file
+# @brief   Demonstrate for loop with file reading and brace expansion range
 # @author  Cheolwon Park
 # @date    2025-05-20
 

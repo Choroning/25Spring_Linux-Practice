@@ -65,11 +65,91 @@
 
 ```plaintext
 25Spring_Linux-Practice
+├── Project_Custom-Shell
+│   ├── builtins.sh
+│   ├── minishell.sh
+│   ├── parser.sh
+│   └── README.md
+├── Project_System-Monitoring-Dashboard
+│   ├── cpu_monitor.sh
+│   ├── disk_monitor.sh
+│   ├── install.sh
+│   ├── log_analyzer.sh
+│   ├── mem_monitor.sh
+│   ├── monitor.sh
+│   ├── network_monitor.sh
+│   └── README.md
+├── W01_Course-Introduction
+│   └── Concepts.md
+├── W02_Linux-Installation
+│   └── Concepts.md
+├── W03_Directory-and-File-Management-I
+│   └── Concepts.md
+├── W04_Directory-and-File-Management-II
+│   └── Concepts.md
+├── W05_Vi-Editor
+│   └── Concepts.md
+├── W06_Shell-Usage
+│   └── Concepts.md
+├── W07_File-Access-Permissions
+│   └── Concepts.md
+├── W09_Process-Management
+│   ├── Concepts.md
+│   └── Quiz.md
+├── W10_File-Systems
+│   ├── Concepts.md
+│   └── Quiz.md
+├── W11_Disk-Management-and-RAID
+│   └── Concepts.md
+├── W12_User-Management
+│   ├── Concepts.md
+│   └── Quiz.md
+├── W13_Bash-Shell-Programming
+│   ├── arithmetic.sh
+│   ├── basic_script.sh
+│   ├── case_statement.sh
+│   ├── comments_advanced.sh
+│   ├── comments.sh
+│   ├── Concepts.md
+│   ├── continue_test.sh
+│   ├── elif_test.sh
+│   ├── exit_test.sh
+│   ├── file_operations.sh
+│   ├── for_loop_files.sh
+│   ├── for_loop_range.sh
+│   ├── for_loop.sh
+│   ├── here_document.sh
+│   ├── if_test.sh
+│   ├── positional_params.sh
+│   ├── Quiz.md
+│   ├── read_input.sh
+│   ├── select_menu.sh
+│   ├── signal_trap.sh
+│   ├── string_operations.sh
+│   ├── until_loop.sh
+│   ├── while_loop_menu.sh
+│   └── while_loop.sh
+├── W14_Boot-and-Shutdown
+│   ├── Concepts.md
+│   └── Quiz.md
+├── W15_Linux-Utilities
+│   ├── Concepts.md
+│   ├── cut_example.sh
+│   ├── dd_example.sh
+│   ├── passwd
+│   ├── paste_example.sh
+│   ├── Quiz.md
+│   ├── s.dat
+│   ├── sort_example.sh
+│   ├── split_example.sh
+│   ├── u.dat
+│   ├── uniq_example.sh
+│   └── wc_example.sh
 ├── LICENSE
 ├── README.ko.md
 └── README.md
 
-0개의 디렉토리, 3개의 파일
+17개의 디렉토리, 62개의 파일
 ```
 
 <br><a name="license"></a>

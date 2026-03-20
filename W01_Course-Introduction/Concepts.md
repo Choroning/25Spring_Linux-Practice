@@ -196,7 +196,7 @@ Linux Kernel (1991)
 
 ### 7.1 Course Information
 
-- **Course Code:** CSIE209 Linux Practice
+- **Course Code:** DCCS209 Linux Practice
 - **Textbook:** Lee Jong-won, "IT CookBook: Ubuntu Linux" (3rd ed.), Hanbit Academy, 2022
 - **Reference:** Woo Jae-nam, "IT CookBook: Linux Practice for Beginner," Hanbit Academy, 2022
 - **Lab Environment:** Ubuntu Linux on VMware Workstation

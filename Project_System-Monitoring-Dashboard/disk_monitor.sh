@@ -51,14 +51,13 @@ get_inode_info() {
 # Check for disk usage warnings
 check_disk_warnings() {
     local warnings=0
-    df -h 2>/dev/null | awk 'NR>1 && $1 !~ /^(tmpfs|devtmpfs|none|udev)/' | \
     while read -r fs size used avail pct mount; do
         local pct_num="${pct%\%}"
         if [[ "$pct_num" =~ ^[0-9]+$ ]] && (( pct_num >= DISK_WARN_THRESHOLD )); then
             echo "  WARNING: $mount is at ${pct} capacity ($fs)"
             warnings=1
         fi
-    done
+    done < <(df -h 2>/dev/null | awk 'NR>1 && $1 !~ /^(tmpfs|devtmpfs|none|udev)/')
     if (( warnings == 0 )); then
         echo "  All filesystems within normal usage."
     fi
