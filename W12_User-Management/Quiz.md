@@ -1,4 +1,4 @@
-# W12 — Quiz
+# Week 12 — Quiz
 
 > **Last Updated:** 2026-03-21
 

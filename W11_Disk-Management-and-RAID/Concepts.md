@@ -1,4 +1,4 @@
-# W11 -- Disk Management and RAID
+# Week 11 -- Disk Management and RAID
 
 > **Last Updated:** 2026-03-21
 

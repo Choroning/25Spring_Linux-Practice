@@ -1,4 +1,4 @@
-# W13 -- Bash Shell Programming
+# Week 13 -- Bash Shell Programming
 
 > **Last Updated:** 2026-03-21
 

@@ -1,4 +1,4 @@
-# W12 -- User Management
+# Week 12 -- User Management
 
 > **Last Updated:** 2026-03-21
 

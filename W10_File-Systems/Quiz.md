@@ -1,4 +1,4 @@
-# W10 — Quiz
+# Week 10 — Quiz
 
 > **Last Updated:** 2026-03-21
 

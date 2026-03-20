@@ -1,4 +1,4 @@
-# W09 — Quiz
+# Week 9 — Quiz
 
 > **Last Updated:** 2026-03-21
 

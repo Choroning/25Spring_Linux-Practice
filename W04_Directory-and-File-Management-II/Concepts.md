@@ -1,4 +1,4 @@
-# W04 -- Directory and File Management II
+# Week 4 -- Directory and File Management II
 
 > **Last Updated:** 2026-03-21
 
