@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    until_loop.sh
+# @file    Lab_until_loop.sh
 # @brief   Demonstrate until loop - wait for a specific user to log in
 # @author  Cheolwon Park
 # @date    2025-05-20

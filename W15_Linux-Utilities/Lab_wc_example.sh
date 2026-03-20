@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    wc_example.sh
+# @file    Lab_wc_example.sh
 # @brief   Demonstrate the wc (word count) command
 # @author  Cheolwon Park
 # @date    2025-06-05

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    for_loop.sh
+# @file    Lab_for_loop.sh
 # @brief   Demonstrate basic for loop with a word list
 # @author  Cheolwon Park
 # @date    2025-05-20

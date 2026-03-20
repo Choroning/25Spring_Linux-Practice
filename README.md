@@ -114,46 +114,46 @@ The course covers Linux installation, file and directory management, Vi/Vim edit
 │   ├── Concepts.md
 │   └── Quiz.md
 ├── W13_Bash-Shell-Programming
-│   ├── arithmetic.sh
-│   ├── basic_script.sh
-│   ├── case_statement.sh
-│   ├── comments_advanced.sh
-│   ├── comments.sh
 │   ├── Concepts.md
-│   ├── continue_test.sh
-│   ├── elif_test.sh
-│   ├── exit_test.sh
-│   ├── file_operations.sh
-│   ├── for_loop_files.sh
-│   ├── for_loop_range.sh
-│   ├── for_loop.sh
-│   ├── here_document.sh
-│   ├── if_test.sh
-│   ├── positional_params.sh
-│   ├── Quiz.md
-│   ├── read_input.sh
-│   ├── select_menu.sh
-│   ├── signal_trap.sh
-│   ├── string_operations.sh
-│   ├── until_loop.sh
-│   ├── while_loop_menu.sh
-│   └── while_loop.sh
+│   ├── Lab_arithmetic.sh
+│   ├── Lab_basic_script.sh
+│   ├── Lab_case_statement.sh
+│   ├── Lab_comments_advanced.sh
+│   ├── Lab_comments.sh
+│   ├── Lab_continue_test.sh
+│   ├── Lab_elif_test.sh
+│   ├── Lab_exit_test.sh
+│   ├── Lab_file_operations.sh
+│   ├── Lab_for_loop_files.sh
+│   ├── Lab_for_loop_range.sh
+│   ├── Lab_for_loop.sh
+│   ├── Lab_here_document.sh
+│   ├── Lab_if_test.sh
+│   ├── Lab_positional_params.sh
+│   ├── Lab_read_input.sh
+│   ├── Lab_select_menu.sh
+│   ├── Lab_signal_trap.sh
+│   ├── Lab_string_operations.sh
+│   ├── Lab_until_loop.sh
+│   ├── Lab_while_loop_menu.sh
+│   ├── Lab_while_loop.sh
+│   └── Quiz.md
 ├── W14_Boot-and-Shutdown
 │   ├── Concepts.md
 │   └── Quiz.md
 ├── W15_Linux-Utilities
 │   ├── Concepts.md
-│   ├── cut_example.sh
-│   ├── dd_example.sh
+│   ├── Lab_cut_example.sh
+│   ├── Lab_dd_example.sh
+│   ├── Lab_paste_example.sh
+│   ├── Lab_sort_example.sh
+│   ├── Lab_split_example.sh
+│   ├── Lab_uniq_example.sh
+│   ├── Lab_wc_example.sh
 │   ├── passwd
-│   ├── paste_example.sh
 │   ├── Quiz.md
 │   ├── s.dat
-│   ├── sort_example.sh
-│   ├── split_example.sh
-│   ├── u.dat
-│   ├── uniq_example.sh
-│   └── wc_example.sh
+│   └── u.dat
 ├── LICENSE
 ├── README.ko.md
 └── README.md

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    here_document.sh
+# @file    Lab_here_document.sh
 # @brief   Demonstrate here documents (heredoc) for multi-line input
 # @author  Cheolwon Park
 # @date    2025-05-20

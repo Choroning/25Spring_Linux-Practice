@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    for_loop_files.sh
+# @file    Lab_for_loop_files.sh
 # @brief   Demonstrate for loop iterating over command-line arguments ($*)
 # @author  Cheolwon Park
 # @date    2025-05-20

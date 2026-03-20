@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    select_menu.sh
+# @file    Lab_select_menu.sh
 # @brief   Demonstrate the select construct for interactive menus
 # @author  Cheolwon Park
 # @date    2025-05-20

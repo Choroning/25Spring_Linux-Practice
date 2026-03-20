@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    positional_params.sh
+# @file    Lab_positional_params.sh
 # @brief   Demonstrate positional parameters and special variables
 # @author  Cheolwon Park
 # @date    2025-05-20

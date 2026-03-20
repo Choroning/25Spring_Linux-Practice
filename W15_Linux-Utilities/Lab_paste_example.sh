@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    paste_example.sh
+# @file    Lab_paste_example.sh
 # @brief   Demonstrate the paste command for merging files
 # @author  Cheolwon Park
 # @date    2025-06-05

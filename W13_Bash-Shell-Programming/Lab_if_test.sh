@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    if_test.sh
+# @file    Lab_if_test.sh
 # @brief   Demonstrate basic if-else conditional branching
 # @author  Cheolwon Park
 # @date    2025-05-20

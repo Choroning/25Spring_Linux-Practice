@@ -1,5 +1,5 @@
 #!/bin/more
-# @file    comments.sh
+# @file    Lab_comments.sh
 # @brief   A self-displaying script using #!/bin/more as the interpreter
 # @author  Cheolwon Park
 # @date    2025-05-20

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    basic_script.sh
+# @file    Lab_basic_script.sh
 # @brief   A basic first shell script demonstrating simple commands
 # @author  Cheolwon Park
 # @date    2025-05-20
