@@ -134,7 +134,7 @@ Write request --> Journal (log) --> Main filesystem --> Journal cleared
 
 ## 4. Creating and Managing File Systems
 
-### 4.1 mkfs -- Create File System
+### 4.1 mkfs — Create File System
 
 ```bash
 # Create ext4 filesystem
@@ -169,7 +169,7 @@ sudo tune2fs -l /dev/sdb1
 
 ## 5. Mounting and Unmounting
 
-### 5.1 mount -- Attach File System
+### 5.1 mount — Attach File System
 
 ```bash
 # Manual mounting
@@ -189,7 +189,7 @@ df -h
 findmnt
 ```
 
-### 5.2 umount -- Detach File System
+### 5.2 umount — Detach File System
 
 ```bash
 sudo umount /mnt/data              # Unmount by mount point
@@ -197,7 +197,7 @@ sudo umount /dev/sdb1              # Unmount by device
 sudo umount -l /mnt/data           # Lazy unmount (if busy)
 ```
 
-### 5.3 /etc/fstab -- Persistent Mounts
+### 5.3 /etc/fstab — Persistent Mounts
 
 ```bash
 # /etc/fstab format:
@@ -229,7 +229,7 @@ sudo mount -a
 
 ## 6. Disk Usage Monitoring
 
-### 6.1 df -- Disk Free Space
+### 6.1 df — Disk Free Space
 
 ```bash
 df                      # Show all mounted filesystems
@@ -239,7 +239,7 @@ df -i                   # Show inode usage
 df /home                # Show specific mount point
 ```
 
-### 6.2 du -- Disk Usage
+### 6.2 du — Disk Usage
 
 ```bash
 du -sh /home/user1                # Summary of directory size

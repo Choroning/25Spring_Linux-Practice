@@ -20,7 +20,7 @@
 
 ## 1. File Copy, Move, and Delete
 
-### 1.1 cp -- Copy Files and Directories
+### 1.1 cp — Copy Files and Directories
 
 ```bash
 cp source destination            # Copy file
@@ -33,7 +33,7 @@ cp -a dir1/ dir2/                # Archive mode (preserve everything)
 cp file1 file2 file3 destdir/    # Copy multiple files to directory
 ```
 
-### 1.2 mv -- Move or Rename Files
+### 1.2 mv — Move or Rename Files
 
 ```bash
 mv oldname.txt newname.txt       # Rename file
@@ -43,9 +43,9 @@ mv -i file.txt /tmp/             # Interactive (prompt before overwrite)
 mv file1 file2 destdir/          # Move multiple files
 ```
 
-> **Key Point:** `mv` serves dual purpose -- it both moves AND renames files.
+> **Key Point:** `mv` serves dual purpose — it both moves AND renames files.
 
-### 1.3 rm -- Remove Files and Directories
+### 1.3 rm — Remove Files and Directories
 
 ```bash
 rm file.txt                      # Remove file
@@ -134,7 +134,7 @@ lrwxrwxrwx 1 user1 user1 21 Mar 21 10:00 symlink.txt -> /path/to/original.txt
 
 ## 3. Empty File Creation
 
-### 3.1 touch -- Create or Update Timestamps
+### 3.1 touch — Create or Update Timestamps
 
 ```bash
 touch newfile.txt                # Create empty file (or update timestamp)
@@ -147,7 +147,7 @@ touch file1 file2 file3          # Create multiple files
 
 ## 4. File Content Searching
 
-### 4.1 grep -- Search File Contents
+### 4.1 grep — Search File Contents
 
 ```bash
 grep "pattern" file.txt                  # Search for pattern in file
@@ -185,7 +185,7 @@ grep -E "[0-9]{3}" file.txt       # Three consecutive digits
 
 ## 5. File Location Searching
 
-### 5.1 find -- Search for Files
+### 5.1 find — Search for Files
 
 ```bash
 find /path -name "filename"              # Find by exact name
@@ -203,21 +203,21 @@ find . -name "*.tmp" -exec rm {} \;      # Delete all .tmp files
 find . -name "*.sh" -exec chmod +x {} \; # Make all .sh files executable
 ```
 
-### 5.2 whereis -- Locate Binary, Source, and Manual
+### 5.2 whereis — Locate Binary, Source, and Manual
 
 ```bash
 whereis ls
 # ls: /usr/bin/ls /usr/share/man/man1/ls.1.gz
 ```
 
-### 5.3 which -- Locate Command Binary
+### 5.3 which — Locate Command Binary
 
 ```bash
 which python3
 # /usr/bin/python3
 ```
 
-### 5.4 locate -- Fast File Search (Database-based)
+### 5.4 locate — Fast File Search (Database-based)
 
 ```bash
 sudo apt install mlocate           # Install if not present
@@ -290,7 +290,7 @@ ps aux | grep nginx               # Find nginx processes
 history | tail -20                # Show last 20 commands
 ```
 
-### 7.5 tee -- Write to File and Screen
+### 7.5 tee — Write to File and Screen
 
 ```bash
 command | tee file.txt            # Write to both file and screen

@@ -163,14 +163,14 @@ Documents/report.txt        # Same as /home/user1/Documents/report.txt
 
 ## 5. Directory Commands
 
-### 5.1 pwd -- Print Working Directory
+### 5.1 pwd — Print Working Directory
 
 ```bash
 $ pwd
 /home/user1
 ```
 
-### 5.2 cd -- Change Directory
+### 5.2 cd — Change Directory
 
 ```bash
 cd /tmp                 # Absolute path
@@ -181,7 +181,7 @@ cd -                    # Previous directory
 cd ..                   # Parent directory
 ```
 
-### 5.3 ls -- List Directory Contents
+### 5.3 ls — List Directory Contents
 
 ```bash
 ls                      # List current directory
@@ -214,7 +214,7 @@ drwxr-xr-x  2  user1  user1  4096  Mar 21 12:05  Documents
 └── file type (d=directory, -=file, l=link)
 ```
 
-### 5.4 mkdir -- Create Directories
+### 5.4 mkdir — Create Directories
 
 ```bash
 mkdir mydir                     # Create single directory
@@ -222,7 +222,7 @@ mkdir -p parent/child/grandchild  # Create nested directories
 mkdir dir1 dir2 dir3            # Create multiple directories
 ```
 
-### 5.5 rmdir -- Remove Empty Directories
+### 5.5 rmdir — Remove Empty Directories
 
 ```bash
 rmdir mydir                     # Remove empty directory only
@@ -240,7 +240,7 @@ vdir                # Similar to ls -l
 
 ## 6. File Content Commands
 
-### 6.1 cat -- Concatenate and Display
+### 6.1 cat — Concatenate and Display
 
 ```bash
 cat file.txt                    # Display entire file
@@ -250,7 +250,7 @@ cat > newfile.txt               # Create file from stdin (Ctrl+D to end)
 cat >> existingfile.txt         # Append to file from stdin
 ```
 
-### 6.2 more and less -- Page Through Files
+### 6.2 more and less — Page Through Files
 
 ```bash
 more file.txt                   # Page forward only
@@ -270,7 +270,7 @@ less file.txt                   # Page forward and backward (recommended)
 | `n` | Next search result |
 | `q` | Quit |
 
-### 6.3 head and tail -- View File Portions
+### 6.3 head and tail — View File Portions
 
 ```bash
 head file.txt                   # First 10 lines (default)
@@ -302,7 +302,7 @@ tail -f /var/log/syslog         # Follow log in real-time
 | Using spaces in filenames | Use underscores or hyphens |
 | Forgetting case sensitivity | Linux is case-sensitive |
 | Confusing `/root` with `/` | `/root` is root's home; `/` is filesystem root |
-| Using `rm -rf /` | Never run this -- it deletes everything |
+| Using `rm -rf /` | Never run this — it deletes everything |
 
 ---
 

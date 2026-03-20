@@ -53,7 +53,7 @@ A **process** is a running instance of a program. Each process has:
 
 ## 2. Viewing Processes
 
-### 2.1 ps -- Process Status
+### 2.1 ps — Process Status
 
 ```bash
 ps                      # Current user's processes in current terminal
@@ -73,7 +73,7 @@ USER  PID  %CPU  %MEM  VSZ    RSS   TTY  STAT  START  TIME  COMMAND
 root    1   0.0   0.3  168K  12K    ?    Ss    10:00  0:01  /sbin/init
 ```
 
-### 2.2 top -- Real-time Process Monitor
+### 2.2 top — Real-time Process Monitor
 
 ```bash
 top                     # Interactive process monitor
@@ -91,7 +91,7 @@ top                     # Interactive process monitor
 | `1` | Show individual CPU cores |
 | `h` | Help |
 
-### 2.3 pstree -- Process Tree
+### 2.3 pstree — Process Tree
 
 ```bash
 pstree                  # Display process tree
@@ -126,7 +126,7 @@ Ctrl+Z                           # Suspend foreground job
 Ctrl+C                           # Terminate foreground job
 ```
 
-### 3.3 nohup -- No Hangup
+### 3.3 nohup — No Hangup
 
 ```bash
 nohup long_running_script.sh &
@@ -152,7 +152,7 @@ nohup command > output.log 2>&1 &
 | SIGUSR1 | 10 | User-defined | Terminate | Custom signal |
 | SIGUSR2 | 12 | User-defined | Terminate | Custom signal |
 
-### 4.2 kill -- Send Signals
+### 4.2 kill — Send Signals
 
 ```bash
 kill PID                         # Send SIGTERM (15) - graceful
@@ -207,7 +207,7 @@ cat /proc/uptime                 # System uptime
 
 ## 6. Scheduled Tasks (cron and at)
 
-### 6.1 crontab -- Recurring Tasks
+### 6.1 crontab — Recurring Tasks
 
 ```bash
 crontab -e                       # Edit current user's crontab
@@ -250,7 +250,7 @@ sudo crontab -u user1 -e         # Edit another user's crontab
 0 9 * * 1-5 /path/to/work.sh
 ```
 
-### 6.2 at -- One-time Tasks
+### 6.2 at — One-time Tasks
 
 ```bash
 at 10:00                         # Schedule for 10:00 AM today

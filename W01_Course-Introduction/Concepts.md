@@ -37,7 +37,7 @@ Linux is a **free and open-source operating system** based on the Unix operating
 - Most of the world's top 25 websites run on Linux
 - Critical for 5G infrastructure, IoT devices, drones, and autonomous vehicles
 
-> **Key Point:** Linux is not just a server OS -- it is the foundation of modern computing infrastructure.
+> **Key Point:** Linux is not just a server OS — it is the foundation of modern computing infrastructure.
 
 ---
 
@@ -86,7 +86,7 @@ and professional like gnu) for 386(486) AT clones."
 
 ### 3.1 What is the GNU Project?
 
-GNU stands for **"GNU's Not Unix"** -- a recursive acronym. It is a project to develop free software compatible with Unix.
+GNU stands for **"GNU's Not Unix"** — a recursive acronym. It is a project to develop free software compatible with Unix.
 
 ### 3.2 The Four Freedoms of Free Software
 

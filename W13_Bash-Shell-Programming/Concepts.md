@@ -107,7 +107,7 @@ echo "scale=2; 10 / 3" | bc  # Output: 3.33
 
 ## 3. Input and Output
 
-### 3.1 read -- User Input
+### 3.1 read — User Input
 
 ```bash
 read name                    # Read into variable
@@ -462,7 +462,7 @@ a here-string.
 
 | Concept | Key Point |
 |---------|-----------|
-| Shebang | `#!/bin/bash` -- specify interpreter |
+| Shebang | `#!/bin/bash` — specify interpreter |
 | Variables | `name="value"`, `$name`, `${name}` |
 | Positional Params | `$1`-`$9`, `$#`, `$*`, `$@`, `$?` |
 | read | User input (`read -p "prompt" var`) |

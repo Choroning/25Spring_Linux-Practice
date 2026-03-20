@@ -73,7 +73,7 @@ developers:x:1002:user1,user2,user3
 
 ## 3. Managing Users
 
-### 3.1 useradd -- Create Users
+### 3.1 useradd — Create Users
 
 ```bash
 sudo useradd username                        # Create user (minimal)
@@ -83,13 +83,13 @@ sudo useradd -m -G sudo,developers username  # Add to groups
 sudo useradd -m -c "John Doe" -s /bin/bash -G sudo john
 ```
 
-### 3.2 adduser -- Interactive User Creation (Debian/Ubuntu)
+### 3.2 adduser — Interactive User Creation (Debian/Ubuntu)
 
 ```bash
 sudo adduser username    # Interactive: prompts for password, name, etc.
 ```
 
-### 3.3 usermod -- Modify Users
+### 3.3 usermod — Modify Users
 
 ```bash
 sudo usermod -aG sudo username            # Add to supplementary group
@@ -101,7 +101,7 @@ sudo usermod -U username                   # Unlock account
 sudo usermod -e 2025-12-31 username        # Set expiry date
 ```
 
-### 3.4 userdel -- Delete Users
+### 3.4 userdel — Delete Users
 
 ```bash
 sudo userdel username                      # Delete user (keep home)

@@ -127,7 +127,7 @@ At boot, press `Shift` (BIOS) or `Esc` (UEFI) to access GRUB menu:
 - Snapshot and restore of system state
 - Log management via `journald`
 
-### 4.2 systemctl -- Service Management
+### 4.2 systemctl — Service Management
 
 ```bash
 # Service control
@@ -155,7 +155,7 @@ systemctl list-units --type=service --all         # All services
 systemctl list-unit-files --type=service          # All unit files
 ```
 
-### 4.4 journalctl -- System Logs
+### 4.4 journalctl — System Logs
 
 ```bash
 journalctl                           # All logs

@@ -51,7 +51,7 @@
 
 **Answer:** D. `mke2fs.ext3 /dev/sdb1`
 
-**Explanation:** Options A, B, and C are all valid ways to create an ext3 file system. `mkfs -t ext3` specifies the type with the `-t` flag, `mke2fs -t ext3` uses the ext2/3/4 specific tool, and `mkfs.ext3` is a shorthand command. However, `mke2fs.ext3` does not exist as a valid command -- there is no such binary in the system.
+**Explanation:** Options A, B, and C are all valid ways to create an ext3 file system. `mkfs -t ext3` specifies the type with the `-t` flag, `mke2fs -t ext3` uses the ext2/3/4 specific tool, and `mkfs.ext3` is a shorthand command. However, `mke2fs.ext3` does not exist as a valid command — there is no such binary in the system.
 
 ---
 

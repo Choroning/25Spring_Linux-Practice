@@ -68,7 +68,7 @@
 
 **Answer:** D. A process has a UID number.
 
-**Explanation:** While processes are associated with a UID (User ID) that identifies which user owns the process, the UID is not an inherent property of the process itself -- it belongs to the user. A process has its own PID (Process ID) and inherits a PPID (Parent PID) from its parent. Processes do not "have" a UID in the same way they have a PID; rather, the UID is an attribute of the user who launched the process.
+**Explanation:** While processes are associated with a UID (User ID) that identifies which user owns the process, the UID is not an inherent property of the process itself — it belongs to the user. A process has its own PID (Process ID) and inherits a PPID (Parent PID) from its parent. Processes do not "have" a UID in the same way they have a PID; rather, the UID is an attribute of the user who launched the process.
 
 ---
 

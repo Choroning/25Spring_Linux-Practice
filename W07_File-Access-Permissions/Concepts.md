@@ -117,7 +117,7 @@ chmod -R 755 /var/www/html/   # Recursive
 
 ## 4. Changing Ownership
 
-### 4.1 chown -- Change Owner
+### 4.1 chown — Change Owner
 
 ```bash
 sudo chown newuser file.txt               # Change owner
@@ -126,7 +126,7 @@ sudo chown :newgroup file.txt             # Change group only
 sudo chown -R newuser:newgroup directory/ # Recursive
 ```
 
-### 4.2 chgrp -- Change Group
+### 4.2 chgrp — Change Group
 
 ```bash
 sudo chgrp newgroup file.txt              # Change group

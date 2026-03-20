@@ -7,13 +7,13 @@
 ## Table of Contents
 
 1. [Text Processing Utilities](#1-text-processing-utilities)
-2. [cut -- Extract Columns](#2-cut----extract-columns)
-3. [paste -- Merge Files](#3-paste----merge-files)
-4. [sort -- Sort Lines](#4-sort----sort-lines)
-5. [uniq -- Remove Duplicates](#5-uniq----remove-duplicates)
-6. [wc -- Word Count](#6-wc----word-count)
-7. [split -- Split Files](#7-split----split-files)
-8. [dd -- Data Duplicator](#8-dd----data-duplicator)
+2. [cut — Extract Columns](#2-cut----extract-columns)
+3. [paste — Merge Files](#3-paste----merge-files)
+4. [sort — Sort Lines](#4-sort----sort-lines)
+5. [uniq — Remove Duplicates](#5-uniq----remove-duplicates)
+6. [wc — Word Count](#6-wc----word-count)
+7. [split — Split Files](#7-split----split-files)
+8. [dd — Data Duplicator](#8-dd----data-duplicator)
 9. [Other Useful Utilities](#9-other-useful-utilities)
 10. [Best Practices](#10-best-practices)
 11. [Summary](#summary)
@@ -31,7 +31,7 @@ du -ah /var/log 2>/dev/null | sort -rh | head -10
 
 ---
 
-## 2. cut -- Extract Columns
+## 2. cut — Extract Columns
 
 ### 2.1 Usage
 
@@ -61,7 +61,7 @@ cut -c1-5,10-15 filename
 
 ---
 
-## 3. paste -- Merge Files
+## 3. paste — Merge Files
 
 ### 3.1 Usage
 
@@ -94,7 +94,7 @@ paste -d',' file1 file2
 
 ---
 
-## 4. sort -- Sort Lines
+## 4. sort — Sort Lines
 
 ### 4.1 Usage
 
@@ -135,7 +135,7 @@ LC_ALL=C sort file.txt    # Use C locale for consistent results
 
 ---
 
-## 5. uniq -- Remove Duplicates
+## 5. uniq — Remove Duplicates
 
 ### 5.1 Usage
 
@@ -172,7 +172,7 @@ sort data.txt | uniq -u
 
 ---
 
-## 6. wc -- Word Count
+## 6. wc — Word Count
 
 ### 6.1 Usage
 
@@ -206,7 +206,7 @@ sort data.txt | uniq | wc -l
 
 ---
 
-## 7. split -- Split Files
+## 7. split — Split Files
 
 ### 7.1 Usage
 
@@ -233,7 +233,7 @@ cat chunk_* > reassembled.tar.gz
 
 ---
 
-## 8. dd -- Data Duplicator
+## 8. dd — Data Duplicator
 
 ### 8.1 Usage
 
@@ -266,7 +266,7 @@ dd if=input.txt of=output.txt conv=ucase
 
 ## 9. Other Useful Utilities
 
-### 9.1 tr -- Translate Characters
+### 9.1 tr — Translate Characters
 
 ```bash
 echo "hello" | tr 'a-z' 'A-Z'         # HELLO
@@ -274,7 +274,7 @@ echo "hello  world" | tr -s ' '       # Remove duplicate spaces
 echo "hello123" | tr -d '0-9'         # Remove digits: hello
 ```
 
-### 9.2 sed -- Stream Editor
+### 9.2 sed — Stream Editor
 
 ```bash
 sed 's/old/new/' file                  # Replace first on each line
@@ -284,7 +284,7 @@ sed '3d' file                          # Delete line 3
 sed -i 's/old/new/g' file             # In-place edit
 ```
 
-### 9.3 awk -- Pattern Processing
+### 9.3 awk — Pattern Processing
 
 ```bash
 awk '{print $1, $3}' file             # Print fields 1 and 3
@@ -293,7 +293,7 @@ awk 'NR>=5 && NR<=10' file            # Print lines 5-10
 awk '{sum += $1} END {print sum}' file # Sum first column
 ```
 
-### 9.4 xargs -- Build Commands from Input
+### 9.4 xargs — Build Commands from Input
 
 ```bash
 find . -name "*.tmp" | xargs rm       # Delete found files
