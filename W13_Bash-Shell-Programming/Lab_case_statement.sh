@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    case_statement.sh
+# @file    Lab_case_statement.sh
 # @brief   Demonstrate case statement with pattern matching
 # @author  Cheolwon Park
 # @date    2025-05-20

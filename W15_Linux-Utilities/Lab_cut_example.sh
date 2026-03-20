@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    cut_example.sh
+# @file    Lab_cut_example.sh
 # @brief   Demonstrate the cut command for extracting fields and columns
 # @author  Cheolwon Park
 # @date    2025-06-05

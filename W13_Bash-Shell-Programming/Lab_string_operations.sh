@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    string_operations.sh
+# @file    Lab_string_operations.sh
 # @brief   Demonstrate string comparison and pattern matching
 # @author  Cheolwon Park
 # @date    2025-05-20

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    file_operations.sh
+# @file    Lab_file_operations.sh
 # @brief   Demonstrate file test operators (-e, -f, -d, -r, -w, -x)
 # @author  Cheolwon Park
 # @date    2025-05-20

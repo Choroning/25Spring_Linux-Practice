@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    comments_advanced.sh
+# @file    Lab_comments_advanced.sh
 # @brief   Demonstrate the concept of a self-deleting script (#!/bin/rm)
 # @author  Cheolwon Park
 # @date    2025-05-20

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    exit_test.sh
+# @file    Lab_exit_test.sh
 # @brief   Demonstrate the exit command and $? (exit status)
 # @author  Cheolwon Park
 # @date    2025-05-20

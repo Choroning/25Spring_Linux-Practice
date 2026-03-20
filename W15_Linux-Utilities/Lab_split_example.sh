@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    split_example.sh
+# @file    Lab_split_example.sh
 # @brief   Demonstrate the split command for dividing files into smaller parts
 # @author  Cheolwon Park
 # @date    2025-06-05

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    elif_test.sh
+# @file    Lab_elif_test.sh
 # @brief   Demonstrate elif (else-if) branching with score grading
 # @author  Cheolwon Park
 # @date    2025-05-20

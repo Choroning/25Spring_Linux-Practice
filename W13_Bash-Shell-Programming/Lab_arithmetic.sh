@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    arithmetic.sh
+# @file    Lab_arithmetic.sh
 # @brief   Demonstrate functions and arithmetic operations
 # @author  Cheolwon Park
 # @date    2025-05-20

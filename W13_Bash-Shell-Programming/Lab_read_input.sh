@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    read_input.sh
+# @file    Lab_read_input.sh
 # @brief   Demonstrate the read builtin for user input
 # @author  Cheolwon Park
 # @date    2025-05-20

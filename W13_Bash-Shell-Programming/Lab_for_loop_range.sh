@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    for_loop_range.sh
+# @file    Lab_for_loop_range.sh
 # @brief   Demonstrate for loop with file reading and brace expansion range
 # @author  Cheolwon Park
 # @date    2025-05-20

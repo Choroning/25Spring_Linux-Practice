@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    sort_example.sh
+# @file    Lab_sort_example.sh
 # @brief   Demonstrate the sort command with various options
 # @author  Cheolwon Park
 # @date    2025-06-05

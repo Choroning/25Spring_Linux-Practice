@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    signal_trap.sh
+# @file    Lab_signal_trap.sh
 # @brief   Demonstrate the trap command for signal handling and debugging
 # @author  Cheolwon Park
 # @date    2025-05-20

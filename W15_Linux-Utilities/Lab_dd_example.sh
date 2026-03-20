@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    dd_example.sh
+# @file    Lab_dd_example.sh
 # @brief   Demonstrate the dd command for block-level data copying
 # @author  Cheolwon Park
 # @date    2025-06-05

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    while_loop.sh
+# @file    Lab_while_loop.sh
 # @brief   Demonstrate while loop with arithmetic summation (1 to 10)
 # @author  Cheolwon Park
 # @date    2025-05-20

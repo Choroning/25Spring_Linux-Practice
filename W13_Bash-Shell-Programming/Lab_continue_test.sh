@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    continue_test.sh
+# @file    Lab_continue_test.sh
 # @brief   Demonstrate the continue statement to skip loop iterations
 # @author  Cheolwon Park
 # @date    2025-05-20

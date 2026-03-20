@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    while_loop_menu.sh
+# @file    Lab_while_loop_menu.sh
 # @brief   Demonstrate while loop with an interactive command menu
 # @author  Cheolwon Park
 # @date    2025-05-20

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @file    uniq_example.sh
+# @file    Lab_uniq_example.sh
 # @brief   Demonstrate the uniq command for filtering duplicate lines
 # @author  Cheolwon Park
 # @date    2025-06-05
