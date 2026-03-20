@@ -84,17 +84,23 @@
 ├── W01_Course-Introduction
 │   └── Concepts.md
 ├── W02_Linux-Installation
-│   └── Concepts.md
+│   ├── Concepts.md
+│   └── Quiz.md
 ├── W03_Directory-and-File-Management-I
-│   └── Concepts.md
+│   ├── Concepts.md
+│   └── Quiz.md
 ├── W04_Directory-and-File-Management-II
-│   └── Concepts.md
+│   ├── Concepts.md
+│   └── Quiz.md
 ├── W05_Vi-Editor
-│   └── Concepts.md
+│   ├── Concepts.md
+│   └── Quiz.md
 ├── W06_Shell-Usage
-│   └── Concepts.md
+│   ├── Concepts.md
+│   └── Quiz.md
 ├── W07_File-Access-Permissions
-│   └── Concepts.md
+│   ├── Concepts.md
+│   └── Quiz.md
 ├── W09_Process-Management
 │   ├── Concepts.md
 │   └── Quiz.md
@@ -102,7 +108,8 @@
 │   ├── Concepts.md
 │   └── Quiz.md
 ├── W11_Disk-Management-and-RAID
-│   └── Concepts.md
+│   ├── Concepts.md
+│   └── Quiz.md
 ├── W12_User-Management
 │   ├── Concepts.md
 │   └── Quiz.md
@@ -151,7 +158,7 @@
 ├── README.ko.md
 └── README.md
 
-17개의 디렉토리, 62개의 파일
+17개의 디렉토리, 74개의 파일
 ```
 
 <br><a name="license"></a>
