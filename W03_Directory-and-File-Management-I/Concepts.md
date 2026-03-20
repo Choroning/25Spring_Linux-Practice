@@ -1,4 +1,4 @@
-# Week 3 -- Directory and File Management I
+# Week 3 — Directory and File Management I
 
 > **Last Updated:** 2026-03-21
 

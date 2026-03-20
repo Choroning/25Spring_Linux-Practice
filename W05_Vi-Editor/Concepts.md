@@ -1,4 +1,4 @@
-# Week 5 -- Vi Editor
+# Week 5 — Vi Editor
 
 > **Last Updated:** 2026-03-21
 

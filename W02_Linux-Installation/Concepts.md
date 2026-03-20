@@ -1,4 +1,4 @@
-# Week 2 -- Linux Installation and Basic Usage
+# Week 2 — Linux Installation and Basic Usage
 
 > **Last Updated:** 2026-03-21
 

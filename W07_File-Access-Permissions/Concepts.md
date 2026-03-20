@@ -1,4 +1,4 @@
-# Week 7 -- File Access Permissions
+# Week 7 — File Access Permissions
 
 > **Last Updated:** 2026-03-21
 

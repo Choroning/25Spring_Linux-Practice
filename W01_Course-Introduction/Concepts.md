@@ -1,4 +1,4 @@
-# Week 1 -- Course Introduction
+# Week 1 — Course Introduction
 
 > **Last Updated:** 2026-03-21
 

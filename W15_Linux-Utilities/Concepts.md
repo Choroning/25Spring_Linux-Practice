@@ -1,4 +1,4 @@
-# Week 15 -- Linux Utilities
+# Week 15 — Linux Utilities
 
 > **Last Updated:** 2026-03-21
 

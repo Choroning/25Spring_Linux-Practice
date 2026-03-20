@@ -1,4 +1,4 @@
-# Week 6 -- Shell Usage
+# Week 6 — Shell Usage
 
 > **Last Updated:** 2026-03-21
 
