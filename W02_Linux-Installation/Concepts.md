@@ -1,6 +1,13 @@
 # Week 2 — Linux Installation and Basic Usage
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Course introduction (Week 1).
+>
+> **Learning Objectives**:
+> 1. Install Linux using virtual machines or dual boot
+> 2. Configure basic system settings during installation
+> 3. Navigate the Linux desktop environment
 
 ---
 
@@ -16,6 +23,8 @@
 8. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Linux Basics
 
@@ -53,6 +62,8 @@ The Linux system consists of two major components:
 
 ---
 
+<br>
+
 ## 2. Setting Up the Lab Environment
 
 ### 2.1 Virtual Machine Installation
@@ -84,6 +95,8 @@ Ctrl + Alt + Enter  # Toggle full-screen mode
 - **Snapshot:** Create restore points for safe experimentation
 
 ---
+
+<br>
 
 ## 3. Installing Ubuntu Linux
 
@@ -124,6 +137,8 @@ uname -r
 
 ---
 
+<br>
+
 ## 4. Linux Desktop Environment
 
 ### 4.1 GNOME Desktop
@@ -150,6 +165,8 @@ root@hostname:~#        # Root user
 > **Key Point:** The `$` prompt indicates a regular user; `#` indicates the root (superuser).
 
 ---
+
+<br>
 
 ## 5. Basic Linux Commands
 
@@ -241,6 +258,8 @@ sudo shutdown -c
 
 ---
 
+<br>
+
 ## 6. Remote Access Setup
 
 ### 6.1 SSH (Secure Shell)
@@ -273,6 +292,8 @@ ifconfig            # May need: sudo apt install net-tools
 
 ---
 
+<br>
+
 ## 7. Best Practices
 
 ### 7.1 Security
@@ -292,6 +313,8 @@ ifconfig            # May need: sudo apt install net-tools
 | Ignoring backups | Data loss | Use snapshots and regular backups |
 
 ---
+
+<br>
 
 ## Summary
 

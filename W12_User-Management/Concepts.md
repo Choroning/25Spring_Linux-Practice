@@ -1,6 +1,13 @@
 # Week 12 — User Management
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: File permissions and system basics (Week 7-11).
+>
+> **Learning Objectives**:
+> 1. Create and manage user accounts and groups
+> 2. Configure password policies and account expiration
+> 3. Apply sudo and privilege escalation securely
 
 ---
 
@@ -16,6 +23,8 @@
 8. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. User and Group Concepts
 
@@ -34,6 +43,8 @@
 - Groups control shared file access
 
 ---
+
+<br>
 
 ## 2. User Account Files
 
@@ -70,6 +81,8 @@ developers:x:1002:user1,user2,user3
 ```
 
 ---
+
+<br>
 
 ## 3. Managing Users
 
@@ -110,6 +123,8 @@ sudo userdel -r username                   # Delete user and home directory
 
 ---
 
+<br>
+
 ## 4. Managing Groups
 
 ```bash
@@ -139,6 +154,8 @@ getent group groupname
 
 ---
 
+<br>
+
 ## 5. Password Management
 
 ### 5.1 Setting Passwords
@@ -164,6 +181,8 @@ sudo chage -E 2025-12-31 username  # Account expiration date
 
 ---
 
+<br>
+
 ## 6. sudo Configuration
 
 ### 6.1 /etc/sudoers
@@ -184,6 +203,8 @@ username ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/systemctl
 
 ---
 
+<br>
+
 ## 7. Best Practices
 
 - Follow principle of least privilege
@@ -194,6 +215,8 @@ username ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/systemctl
 - Use `nologin` shell for service accounts
 
 ---
+
+<br>
 
 ## Summary
 

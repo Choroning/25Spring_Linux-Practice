@@ -1,6 +1,13 @@
 # Week 5 — Vi Editor
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: File management commands (Week 3-4).
+>
+> **Learning Objectives**:
+> 1. Navigate and edit files using vi/vim editor
+> 2. Apply vi command mode, insert mode, and ex mode
+> 3. Configure vi with .vimrc settings
 
 ---
 
@@ -18,6 +25,8 @@
 10. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Linux Text Editors
 
@@ -42,6 +51,8 @@
 > **Key Point:** `vim` is an upgraded version of `vi` ("Vi IMproved"). They share the same core usage.
 
 ---
+
+<br>
 
 ## 2. Vi Operating Modes
 
@@ -74,6 +85,8 @@
 
 ---
 
+<br>
+
 ## 3. Starting and Exiting Vi
 
 ### 3.1 Starting Vi
@@ -100,6 +113,8 @@ vim filename             # Use vim (enhanced vi)
 | Command | `ZZ` | Save and quit (Shift+z, Shift+z) |
 
 ---
+
+<br>
 
 ## 4. Cursor Movement
 
@@ -159,6 +174,8 @@ vim filename             # Use vim (enhanced vi)
 
 ---
 
+<br>
+
 ## 5. Editing Commands
 
 ### 5.1 Entering Insert Mode
@@ -209,6 +226,8 @@ vim filename             # Use vim (enhanced vi)
 
 ---
 
+<br>
+
 ## 6. Copy, Cut, and Paste
 
 ### 6.1 Yank (Copy) and Put (Paste)
@@ -231,6 +250,8 @@ vim filename             # Use vim (enhanced vi)
 ```
 
 ---
+
+<br>
 
 ## 7. Search and Replace
 
@@ -257,6 +278,8 @@ vim filename             # Use vim (enhanced vi)
 ```
 
 ---
+
+<br>
 
 ## 8. Vi Environment Settings
 
@@ -307,6 +330,8 @@ Ctrl+w w                 # Switch between split windows
 
 ---
 
+<br>
+
 ## 9. Best Practices
 
 ### 9.1 Productivity Tips
@@ -334,6 +359,8 @@ The lecture includes a vi practice exercise:
 - Practice using `gcc` to compile C code and `python3` to run Python code
 
 ---
+
+<br>
 
 ## Summary
 

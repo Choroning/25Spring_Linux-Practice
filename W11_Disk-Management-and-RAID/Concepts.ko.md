@@ -1,6 +1,13 @@
-# 11주차 - 디스크 관리와 RAID
+# 11주차 — 디스크 관리와 RAID
 
-> **최종 수정일:** 2026-03-21
+> **최종 수정일:** 2026-04-01
+
+> **선수 지식**: 파일시스템 (10주차). [운영체제] 저장장치 개념.
+>
+> **학습 목표**:
+> 1. fdisk와 parted로 디스크를 파티셔닝할 수 있다
+> 2. RAID 레벨(0, 1, 5, 6, 10)을 구성할 수 있다
+> 3. 논리 볼륨 관리자(LVM)를 관리할 수 있다
 
 ---
 
@@ -16,6 +23,8 @@
 8. [요약](#요약)
 
 ---
+
+<br>
 
 ## 1. 고급 디스크 관리
 
@@ -62,6 +71,8 @@ sudo umount /media/usb
 ```
 
 ---
+
+<br>
 
 ## 2. LVM (Logical Volume Manager)
 
@@ -126,6 +137,8 @@ sudo resize2fs /dev/vg_data/lv_home          # 파일 시스템 크기 조정
 
 ---
 
+<br>
+
 ## 3. RAID 개요
 
 ### 3.1 RAID란?
@@ -146,6 +159,8 @@ sudo resize2fs /dev/vg_data/lv_home          # 파일 시스템 크기 조정
 | 도구 | 컨트롤러 BIOS | Linux의 `mdadm` |
 
 ---
+
+<br>
 
 ## 4. RAID 레벨
 
@@ -213,6 +228,8 @@ sudo resize2fs /dev/vg_data/lv_home          # 파일 시스템 크기 조정
 
 ---
 
+<br>
+
 ## 5. mdadm을 이용한 소프트웨어 RAID
 
 ### 5.1 RAID 배열 생성
@@ -255,6 +272,8 @@ sudo mdadm --detail --scan >> /etc/mdadm/mdadm.conf
 
 ---
 
+<br>
+
 ## 6. 디스크 쿼터
 
 ### 6.1 쿼터 설정
@@ -285,6 +304,8 @@ quota -u user1
 
 ---
 
+<br>
+
 ## 7. 모범 사례
 
 - 부팅/OS 드라이브에는 RAID 1, 데이터 저장소에는 RAID 5/6 사용
@@ -295,6 +316,8 @@ quota -u user1
 - 실제 필요하기 전에 디스크 복구 절차를 테스트
 
 ---
+
+<br>
 
 ## 요약
 

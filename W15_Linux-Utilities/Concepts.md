@@ -1,6 +1,13 @@
 # Week 15 — Linux Utilities
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Comprehensive Linux knowledge (Week 1-14).
+>
+> **Learning Objectives**:
+> 1. Apply networking utilities (ifconfig, ping, netstat, ss)
+> 2. Schedule tasks with cron and at
+> 3. Use package managers (apt, yum/dnf) for software management
 
 ---
 
@@ -20,6 +27,8 @@
 
 ---
 
+<br>
+
 ## 1. Text Processing Utilities
 
 Linux provides a rich set of command-line utilities for processing text data. These tools follow the Unix philosophy of doing one thing well and can be combined with pipes for powerful data processing pipelines.
@@ -30,6 +39,8 @@ du -ah /var/log 2>/dev/null | sort -rh | head -10
 ```
 
 ---
+
+<br>
 
 ## 2. cut — Extract Columns
 
@@ -60,6 +71,8 @@ cut -c1-5,10-15 filename
 ```
 
 ---
+
+<br>
 
 ## 3. paste — Merge Files
 
@@ -93,6 +106,8 @@ paste -d',' file1 file2
 ```
 
 ---
+
+<br>
 
 ## 4. sort — Sort Lines
 
@@ -135,6 +150,8 @@ LC_ALL=C sort file.txt    # Use C locale for consistent results
 
 ---
 
+<br>
+
 ## 5. uniq — Remove Duplicates
 
 ### 5.1 Usage
@@ -172,6 +189,8 @@ sort data.txt | uniq -u
 
 ---
 
+<br>
+
 ## 6. wc — Word Count
 
 ### 6.1 Usage
@@ -206,6 +225,8 @@ sort data.txt | uniq | wc -l
 
 ---
 
+<br>
+
 ## 7. split — Split Files
 
 ### 7.1 Usage
@@ -232,6 +253,8 @@ cat chunk_* > reassembled.tar.gz
 ```
 
 ---
+
+<br>
 
 ## 8. dd — Data Duplicator
 
@@ -263,6 +286,8 @@ dd if=input.txt of=output.txt conv=ucase
 > **Key Point:** `dd` operates at the raw device level. A wrong `of=` parameter can destroy data. Always double-check device names!
 
 ---
+
+<br>
 
 ## 9. Other Useful Utilities
 
@@ -302,6 +327,8 @@ echo "a b c" | xargs -n1 echo         # One arg per command
 
 ---
 
+<br>
+
 ## 10. Best Practices
 
 - Chain utilities with pipes for complex text processing
@@ -312,6 +339,8 @@ echo "a b c" | xargs -n1 echo         # One arg per command
 - Always verify `dd` device names before executing
 
 ---
+
+<br>
 
 ## Summary
 

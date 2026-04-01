@@ -1,6 +1,13 @@
 # Week 3 — Directory and File Management I
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Linux installation and basic navigation (Week 1-2).
+>
+> **Learning Objectives**:
+> 1. Navigate the Linux filesystem hierarchy
+> 2. Use essential commands (ls, cd, pwd, mkdir, cp, mv, rm)
+> 3. Understand absolute and relative path notation
 
 ---
 
@@ -16,6 +23,8 @@
 8. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Linux Files and Directories
 
@@ -50,6 +59,8 @@ $ file /home
 ```
 
 ---
+
+<br>
 
 ## 2. Directory Hierarchy Structure
 
@@ -99,6 +110,8 @@ $ file /home
 
 ---
 
+<br>
+
 ## 3. Absolute and Relative Paths
 
 ### 3.1 Absolute Path
@@ -138,6 +151,8 @@ Documents/report.txt        # Same as /home/user1/Documents/report.txt
 
 ---
 
+<br>
+
 ## 4. File and Directory Naming Rules
 
 ### 4.1 Rules
@@ -160,6 +175,8 @@ Documents/report.txt        # Same as /home/user1/Documents/report.txt
 | `sample11` | `game\` | |
 
 ---
+
+<br>
 
 ## 5. Directory Commands
 
@@ -238,6 +255,8 @@ vdir                # Similar to ls -l
 
 ---
 
+<br>
+
 ## 6. File Content Commands
 
 ### 6.1 cat — Concatenate and Display
@@ -286,6 +305,8 @@ tail -f /var/log/syslog         # Follow log in real-time
 
 ---
 
+<br>
+
 ## 7. Best Practices
 
 ### 7.1 Navigation Tips
@@ -305,6 +326,8 @@ tail -f /var/log/syslog         # Follow log in real-time
 | Using `rm -rf /` | Never run this — it deletes everything |
 
 ---
+
+<br>
 
 ## Summary
 

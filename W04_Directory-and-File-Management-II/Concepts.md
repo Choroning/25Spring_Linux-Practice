@@ -1,6 +1,13 @@
 # Week 4 — Directory and File Management II
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Basic file management (Week 3).
+>
+> **Learning Objectives**:
+> 1. Use file search commands (find, locate, which)
+> 2. Apply text processing commands (cat, head, tail, grep, sort)
+> 3. Manage file compression and archiving (tar, gzip)
 
 ---
 
@@ -17,6 +24,8 @@
 9. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. File Copy, Move, and Delete
 
@@ -63,6 +72,8 @@ alias rm='rm -i'                 # Add to ~/.bashrc
 ```
 
 ---
+
+<br>
 
 ## 2. Hard Links and Symbolic Links
 
@@ -132,6 +143,8 @@ lrwxrwxrwx 1 user1 user1 21 Mar 21 10:00 symlink.txt -> /path/to/original.txt
 
 ---
 
+<br>
+
 ## 3. Empty File Creation
 
 ### 3.1 touch — Create or Update Timestamps
@@ -144,6 +157,8 @@ touch file1 file2 file3          # Create multiple files
 ```
 
 ---
+
+<br>
 
 ## 4. File Content Searching
 
@@ -182,6 +197,8 @@ grep -E "[0-9]{3}" file.txt       # Three consecutive digits
 ```
 
 ---
+
+<br>
 
 ## 5. File Location Searching
 
@@ -230,6 +247,8 @@ locate -i filename                 # Case-insensitive
 
 ---
 
+<br>
+
 ## 6. Wildcards and Globbing
 
 ### 6.1 Shell Wildcards
@@ -251,6 +270,8 @@ rm test_?.log                     # Remove test_1.log, test_A.log, etc.
 ```
 
 ---
+
+<br>
 
 ## 7. I/O Redirection and Pipes
 
@@ -299,6 +320,8 @@ command | tee -a file.txt         # Append to file and show on screen
 
 ---
 
+<br>
+
 ## 8. Best Practices
 
 ### 8.1 Efficient File Management
@@ -321,6 +344,8 @@ trash-put file.txt               # Move to trash instead of delete
 ```
 
 ---
+
+<br>
 
 ## Summary
 
