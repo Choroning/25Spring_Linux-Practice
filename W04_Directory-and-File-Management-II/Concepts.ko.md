@@ -94,7 +94,7 @@ stat file.txt                    # 상세 inode 정보 표시
 
 ### 2.2 하드 링크
 
-하드 링크는 **동일한 inode**를 가리키는 추가 디렉터리 항목을 생성한다.
+하드 링크는 **동일한 inode** 를 가리키는 추가 디렉터리 항목을 생성한다.
 
 ```bash
 ln original.txt hardlink.txt
@@ -114,7 +114,7 @@ $ ls -li
 
 ### 2.3 심볼릭 링크 (소프트 링크)
 
-심볼릭 링크는 원본 파일의 경로를 포함하는 **새 파일**을 생성한다.
+심볼릭 링크는 원본 파일의 경로를 포함하는 **새 파일** 을 생성한다.
 
 ```bash
 ln -s /path/to/original.txt symlink.txt

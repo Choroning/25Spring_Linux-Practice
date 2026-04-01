@@ -38,8 +38,8 @@
 
 ### 1.2 그룹
 
-- 모든 사용자는 최소 하나의 **주 그룹(primary group)**에 소속
-- 사용자는 **보조 그룹(supplementary group)**에도 소속 가능
+- 모든 사용자는 최소 하나의 **주 그룹(primary group)** 에 소속
+- 사용자는 **보조 그룹(supplementary group)** 에도 소속 가능
 - 그룹은 공유 파일 접근을 제어
 
 ---
