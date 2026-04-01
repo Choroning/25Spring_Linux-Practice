@@ -1,6 +1,13 @@
 # Week 11 — Disk Management and RAID
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: File systems (Week 10). [Operating Systems] Storage concepts.
+>
+> **Learning Objectives**:
+> 1. Partition disks using fdisk and parted
+> 2. Configure RAID levels (0, 1, 5, 6, 10)
+> 3. Manage Logical Volume Manager (LVM)
 
 ---
 
@@ -16,6 +23,8 @@
 8. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Advanced Disk Management
 
@@ -62,6 +71,8 @@ sudo umount /media/usb
 ```
 
 ---
+
+<br>
 
 ## 2. LVM (Logical Volume Manager)
 
@@ -126,6 +137,8 @@ sudo resize2fs /dev/vg_data/lv_home          # Resize filesystem
 
 ---
 
+<br>
+
 ## 3. RAID Overview
 
 ### 3.1 What is RAID?
@@ -146,6 +159,8 @@ sudo resize2fs /dev/vg_data/lv_home          # Resize filesystem
 | Tool | Controller BIOS | `mdadm` on Linux |
 
 ---
+
+<br>
 
 ## 4. RAID Levels
 
@@ -213,6 +228,8 @@ sudo resize2fs /dev/vg_data/lv_home          # Resize filesystem
 
 ---
 
+<br>
+
 ## 5. Software RAID with mdadm
 
 ### 5.1 Creating RAID Arrays
@@ -255,6 +272,8 @@ sudo mdadm --detail --scan >> /etc/mdadm/mdadm.conf
 
 ---
 
+<br>
+
 ## 6. Disk Quotas
 
 ### 6.1 Setting Up Quotas
@@ -285,6 +304,8 @@ quota -u user1
 
 ---
 
+<br>
+
 ## 7. Best Practices
 
 - Use RAID 1 for boot/OS drives and RAID 5/6 for data storage
@@ -295,6 +316,8 @@ quota -u user1
 - Test disk recovery procedures before they are needed
 
 ---
+
+<br>
 
 ## Summary
 

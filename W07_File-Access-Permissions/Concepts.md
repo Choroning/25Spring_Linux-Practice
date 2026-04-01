@@ -1,6 +1,13 @@
 # Week 7 — File Access Permissions
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Shell usage and file management (Week 1-6).
+>
+> **Learning Objectives**:
+> 1. Interpret file permission notation (rwx, octal)
+> 2. Apply chmod, chown, and chgrp commands
+> 3. Configure default permissions with umask
 
 ---
 
@@ -16,6 +23,8 @@
 8. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Understanding File Permissions
 
@@ -44,6 +53,8 @@ $ ls -l myfile.txt
 ```
 
 ---
+
+<br>
 
 ## 2. Permission Representation
 
@@ -84,6 +95,8 @@ $ ls -l myfile.txt
 
 ---
 
+<br>
+
 ## 3. Changing Permissions with chmod
 
 ### 3.1 Symbolic Mode
@@ -114,6 +127,8 @@ chmod -R 755 /var/www/html/   # Recursive
 ```
 
 ---
+
+<br>
 
 ## 4. Changing Ownership
 
@@ -147,6 +162,8 @@ id
 ```
 
 ---
+
+<br>
 
 ## 5. Default Permissions and umask
 
@@ -184,6 +201,8 @@ echo "umask 022" >> ~/.bashrc
 ```
 
 ---
+
+<br>
 
 ## 6. Special Permissions
 
@@ -240,6 +259,8 @@ drwxrwxrwt 15 root root 4096 Mar 21 10:00 /tmp
 
 ---
 
+<br>
+
 ## 7. Best Practices
 
 ### 7.1 Security Guidelines
@@ -267,6 +288,8 @@ find / -nouser 2>/dev/null
 ```
 
 ---
+
+<br>
 
 ## Summary
 

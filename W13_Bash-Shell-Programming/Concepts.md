@@ -1,6 +1,13 @@
 # Week 13 — Bash Shell Programming
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Shell usage (Week 6). [Programming Language] Basic programming logic.
+>
+> **Learning Objectives**:
+> 1. Write bash scripts with variables, conditionals, and loops
+> 2. Process command-line arguments in scripts
+> 3. Apply text processing with awk and sed
 
 ---
 
@@ -18,6 +25,8 @@
 10. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Shell Script Basics
 
@@ -51,6 +60,8 @@ source script.sh             # Run in current shell (affects environment)
 ```
 
 ---
+
+<br>
 
 ## 2. Variables and Data Types
 
@@ -104,6 +115,8 @@ echo "scale=2; 10 / 3" | bc  # Output: 3.33
 ```
 
 ---
+
+<br>
 
 ## 3. Input and Output
 
@@ -159,6 +172,8 @@ END
 ```
 
 ---
+
+<br>
 
 ## 4. Conditional Statements
 
@@ -245,6 +260,8 @@ esac
 
 ---
 
+<br>
+
 ## 5. Loops
 
 ### 5.1 for Loop
@@ -328,6 +345,8 @@ done
 
 ---
 
+<br>
+
 ## 6. Functions
 
 ### 6.1 Defining Functions
@@ -367,6 +386,8 @@ fi
 
 ---
 
+<br>
+
 ## 7. String and File Operations
 
 ### 7.1 String Operations
@@ -398,6 +419,8 @@ fi
 ```
 
 ---
+
+<br>
 
 ## 8. Advanced Features
 
@@ -445,6 +468,8 @@ a here-string.
 
 ---
 
+<br>
+
 ## 9. Best Practices
 
 - Always use `#!/bin/bash` or `#!/usr/bin/env bash` as the shebang
@@ -457,6 +482,8 @@ a here-string.
 - Use `shellcheck` to lint your scripts
 
 ---
+
+<br>
 
 ## Summary
 

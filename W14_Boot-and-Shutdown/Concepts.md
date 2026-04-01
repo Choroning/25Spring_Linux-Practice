@@ -1,6 +1,13 @@
 # Week 14 — Boot and Shutdown
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: System administration basics (Week 9-12). [Operating Systems] Boot process concepts.
+>
+> **Learning Objectives**:
+> 1. Describe the Linux boot process (BIOS/UEFI, GRUB, init/systemd)
+> 2. Configure GRUB bootloader settings
+> 3. Manage system services with systemctl
 
 ---
 
@@ -17,6 +24,8 @@
 9. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Linux Boot Process
 
@@ -48,6 +57,8 @@ device                                            login, etc.)
 
 ---
 
+<br>
+
 ## 2. BIOS/UEFI and Bootloader
 
 ### 2.1 BIOS vs. UEFI
@@ -74,6 +85,8 @@ device                                            login, etc.)
 ```
 
 ---
+
+<br>
 
 ## 3. GRUB Bootloader
 
@@ -115,6 +128,8 @@ At boot, press `Shift` (BIOS) or `Esc` (UEFI) to access GRUB menu:
 - Edit boot parameters temporarily with `e`
 
 ---
+
+<br>
 
 ## 4. systemd and Init System
 
@@ -168,6 +183,8 @@ journalctl -p err                    # Only error-level logs
 
 ---
 
+<br>
+
 ## 5. Runlevels and Targets
 
 ### 5.1 SysV Runlevels vs. systemd Targets
@@ -199,6 +216,8 @@ sudo systemctl isolate graphical.target        # Switch to GUI now
 
 ---
 
+<br>
+
 ## 6. System Shutdown and Reboot
 
 ### 6.1 Shutdown Commands
@@ -218,6 +237,8 @@ sudo init 6                          # Reboot (SysV)
 
 ---
 
+<br>
+
 ## 7. Root Password Recovery
 
 ### 7.1 Recovery Steps (Ubuntu/GRUB2)
@@ -232,6 +253,8 @@ sudo init 6                          # Reboot (SysV)
 
 ---
 
+<br>
+
 ## 8. Best Practices
 
 - Keep GRUB timeout reasonable (3-5 seconds)
@@ -242,6 +265,8 @@ sudo init 6                          # Reboot (SysV)
 - Document any custom boot parameters
 
 ---
+
+<br>
 
 ## Summary
 

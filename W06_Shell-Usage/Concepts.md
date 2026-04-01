@@ -1,6 +1,13 @@
 # Week 6 — Shell Usage
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Vi editor and command line basics (Week 1-5).
+>
+> **Learning Objectives**:
+> 1. Customize the shell environment with variables and aliases
+> 2. Apply I/O redirection and piping
+> 3. Use command history and tab completion effectively
 
 ---
 
@@ -19,6 +26,8 @@
 11. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. What is a Shell?
 
@@ -39,6 +48,8 @@ User Input --> Shell (interprets) --> Kernel (executes) --> Hardware
 - Provide scripting capabilities
 
 ---
+
+<br>
 
 ## 2. Types of Shells
 
@@ -73,6 +84,8 @@ exit            # Return to previous shell
 ```
 
 ---
+
+<br>
 
 ## 3. Shell Environment Variables
 
@@ -143,6 +156,8 @@ export PS1="[\t] \u:\W\$ "      # [14:30:00] user:dir$
 
 ---
 
+<br>
+
 ## 4. Shell Initialization Files
 
 ### 4.1 Bash Startup Files
@@ -173,6 +188,8 @@ source ~/.bashrc
 ```
 
 ---
+
+<br>
 
 ## 5. Aliases
 
@@ -211,6 +228,8 @@ alias update='sudo apt update && sudo apt upgrade -y'
 
 ---
 
+<br>
+
 ## 6. Command History
 
 ### 6.1 History Commands
@@ -240,6 +259,8 @@ export HISTTIMEFORMAT="%F %T "  # Add timestamps
 ```
 
 ---
+
+<br>
 
 ## 7. Shell Metacharacters
 
@@ -281,6 +302,8 @@ command1 || command2             # Run command2 only if command1 fails
 
 ---
 
+<br>
+
 ## 8. Quoting Rules
 
 ### 8.1 Types of Quoting
@@ -302,6 +325,8 @@ echo "Files: $(ls)"     # Output: Files: file1 file2 ...
 ```
 
 ---
+
+<br>
 
 ## 9. Job Control
 
@@ -336,6 +361,8 @@ renice -n 5 -p PID              # Change priority of running process
 
 ---
 
+<br>
+
 ## 10. Best Practices
 
 ### 10.1 Shell Efficiency
@@ -354,6 +381,8 @@ renice -n 5 -p PID              # Change priority of running process
 - Review shell history for sensitive information
 
 ---
+
+<br>
 
 ## Summary
 

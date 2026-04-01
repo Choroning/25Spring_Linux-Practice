@@ -1,6 +1,13 @@
 # Week 1 — Course Introduction
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: No prior Linux knowledge required.
+>
+> **Learning Objectives**:
+> 1. Explain the history and philosophy of Linux/UNIX
+> 2. Identify major Linux distributions and their use cases
+> 3. Set up a Linux development environment
 
 ---
 
@@ -16,6 +23,8 @@
 8. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. What is Linux?
 
@@ -40,6 +49,8 @@ Linux is a **free and open-source operating system** based on the Unix operating
 > **Key Point:** Linux is not just a server OS — it is the foundation of modern computing infrastructure.
 
 ---
+
+<br>
 
 ## 2. History of Linux
 
@@ -82,6 +93,8 @@ and professional like gnu) for 386(486) AT clones."
 
 ---
 
+<br>
+
 ## 3. GNU Project and Free Software
 
 ### 3.1 What is the GNU Project?
@@ -106,6 +119,8 @@ GNU stands for **"GNU's Not Unix"** — a recursive acronym. It is a project to 
 > **Key Point:** "Free software" refers to freedom, not price. Think "free speech," not "free beer."
 
 ---
+
+<br>
 
 ## 4. Linux Distributions
 
@@ -141,6 +156,8 @@ Linux Kernel (1991)
 
 ---
 
+<br>
+
 ## 5. Linux Architecture
 
 ### 5.1 System Structure
@@ -170,6 +187,8 @@ Linux Kernel (1991)
 
 ---
 
+<br>
+
 ## 6. Linux Usage in the Real World
 
 ### 6.1 Linux in Industry
@@ -191,6 +210,8 @@ Linux Kernel (1991)
   - Covers system administration, networking, security
 
 ---
+
+<br>
 
 ## 7. Course Overview
 
@@ -226,6 +247,8 @@ A **Virtual Machine (VM)** creates a virtual system on a host OS, allowing you t
 | Final Exam | 30% |
 
 ---
+
+<br>
 
 ## Summary
 

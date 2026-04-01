@@ -1,6 +1,13 @@
 # Week 10 — File Systems
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Process management (Week 9). [Operating Systems] Basic OS concepts.
+>
+> **Learning Objectives**:
+> 1. Describe Linux filesystem types (ext4, xfs, btrfs)
+> 2. Mount and unmount filesystems
+> 3. Monitor disk usage with df and du commands
 
 ---
 
@@ -17,6 +24,8 @@
 9. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Linux File Systems Overview
 
@@ -59,6 +68,8 @@ A file system is a method of organizing and storing files on a storage device. I
 
 ---
 
+<br>
+
 ## 2. Disk Partitioning
 
 ### 2.1 Partition Types
@@ -98,6 +109,8 @@ lsblk
 
 ---
 
+<br>
+
 ## 3. File System Types
 
 ### 3.1 Linux File Systems
@@ -131,6 +144,8 @@ Write request --> Journal (log) --> Main filesystem --> Journal cleared
 ```
 
 ---
+
+<br>
 
 ## 4. Creating and Managing File Systems
 
@@ -166,6 +181,8 @@ sudo tune2fs -l /dev/sdb1
 ```
 
 ---
+
+<br>
 
 ## 5. Mounting and Unmounting
 
@@ -227,6 +244,8 @@ sudo mount -a
 
 ---
 
+<br>
+
 ## 6. Disk Usage Monitoring
 
 ### 6.1 df — Disk Free Space
@@ -249,6 +268,8 @@ du -ah /var/log | sort -rh | head -10   # Top 10 largest files
 ```
 
 ---
+
+<br>
 
 ## 7. Swap Space
 
@@ -278,6 +299,8 @@ sudo swapoff /swapfile
 
 ---
 
+<br>
+
 ## 8. Best Practices
 
 - Separate `/home`, `/var`, `/tmp` on different partitions for security and management
@@ -287,6 +310,8 @@ sudo swapoff /swapfile
 - Use UUIDs in `/etc/fstab` instead of device names for reliability
 
 ---
+
+<br>
 
 ## Summary
 

@@ -1,6 +1,13 @@
 # Week 9 — Process Management
 
-> **Last Updated:** 2026-03-21
+> **Last Updated:** 2026-04-01
+
+> **Prerequisites**: Shell and file system basics (Week 1-7).
+>
+> **Learning Objectives**:
+> 1. Monitor and manage processes using ps, top, and kill
+> 2. Distinguish foreground and background process execution
+> 3. Apply job control (bg, fg, jobs, nohup)
 
 ---
 
@@ -17,6 +24,8 @@
 9. [Summary](#summary)
 
 ---
+
+<br>
 
 ## 1. Understanding Processes
 
@@ -50,6 +59,8 @@ A **process** is a running instance of a program. Each process has:
 | Zombie | `Z` | Terminated but parent has not collected exit status |
 
 ---
+
+<br>
 
 ## 2. Viewing Processes
 
@@ -102,6 +113,8 @@ pstree user1            # Show processes for specific user
 
 ---
 
+<br>
+
 ## 3. Foreground and Background Processes
 
 ### 3.1 Running Processes
@@ -135,6 +148,8 @@ nohup command > output.log 2>&1 &
 ```
 
 ---
+
+<br>
 
 ## 4. Signals and Process Control
 
@@ -181,6 +196,8 @@ sudo renice -5 -p PID            # Set higher priority
 
 ---
 
+<br>
+
 ## 5. Process Scheduling
 
 ### 5.1 Process Lifecycle
@@ -204,6 +221,8 @@ cat /proc/uptime                 # System uptime
 ```
 
 ---
+
+<br>
 
 ## 6. Scheduled Tasks (cron and at)
 
@@ -268,6 +287,8 @@ at>                             # Press Ctrl+D to finish
 
 ---
 
+<br>
+
 ## 7. System Monitoring
 
 ### 7.1 Resource Monitoring Commands
@@ -306,6 +327,8 @@ Load average: number of processes in the run queue. On a single-core system, 1.0
 
 ---
 
+<br>
+
 ## 8. Best Practices
 
 ### 8.1 Process Management Tips
@@ -326,6 +349,8 @@ Load average: number of processes in the run queue. On a single-core system, 1.0
 | Forgetting `nohup` for SSH tasks | Use `nohup command &` or `screen`/`tmux` |
 
 ---
+
+<br>
 
 ## Summary
 
