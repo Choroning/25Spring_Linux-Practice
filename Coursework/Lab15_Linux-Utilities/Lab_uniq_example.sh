@@ -5,7 +5,7 @@
 # @date    2025-06-05
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DATA_FILE="$SCRIPT_DIR/u.dat"
+DATA_FILE="$SCRIPT_DIR/data/u.dat"
 
 echo "=== uniq Command Examples ==="
 echo ""

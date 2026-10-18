@@ -5,8 +5,8 @@
 # @date    2025-06-05
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DATA_FILE="$SCRIPT_DIR/s.dat"
-PASSWD_FILE="$SCRIPT_DIR/passwd"
+DATA_FILE="$SCRIPT_DIR/data/s.dat"
+PASSWD_FILE="$SCRIPT_DIR/data/passwd"
 
 echo "=== sort Command Examples ==="
 echo ""

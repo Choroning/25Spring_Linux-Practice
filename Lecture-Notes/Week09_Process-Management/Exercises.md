@@ -1,159 +1,155 @@
-# Week 9 — Quiz
+# Week 9 Exercises — Process Management
 
-> **Last Updated:** 2026-03-21
+[Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
----
-
-## Q1. Checking PPID of a Process
-
-**Question:** Which command is correct for checking the PPID of a process?
-
-| Option | Command |
-|--------|---------|
-| A | `ps` |
-| B | `ps -e` |
-| C | `ps a` |
-| D | `ps -f` |
-
-**Answer:** D. `ps -f`
-
-**Explanation:** The `ps -f` command displays processes in full format, which includes the PPID (Parent Process ID) column along with UID, PID, C, STIME, TTY, TIME, and CMD. The basic `ps` command only shows PID, TTY, TIME, and CMD without PPID information.
+> **Last Updated:** 2026-10-19
+>
+> 우분투 리눅스, 이종원, Ch 6
 
 ---
 
-## Q2. Viewing Processes of a Specific User
+<br>
 
-**Question:** Which command is **incorrect** for checking process information related to user `han1`?
+## Exercise 1: Checking PPID of a Process
 
-| Option | Command |
-|--------|---------|
-| A | `ps -u han1` |
-| B | `ps -fu han1` |
-| C | `ps -p $(pgrep -u han1)` |
-| D | `ps -pu han1` |
+**Problem:** Which command is correct for checking the PPID of a process?
 
-**Answer:** D. `ps -pu han1`
+- A. `ps`
+- B. `ps -e`
+- C. `ps a`
+- D. `ps -f`
 
-**Explanation:** Options A, B, and C are all valid ways to list processes owned by `han1`. The `-u` option filters by user, `-fu` combines full format with user filter, and `-p` with `pgrep` selects processes by PID. However, `ps -pu han1` is invalid because `-p` expects a PID list, not a username.
+**[Solution](Solutions.md#exercise-1-checking-ppid-of-a-process)**
 
 ---
 
-## Q3. Crontab Scheduling
+<br>
 
-**Question:** To schedule saving the file list of `/tmp` directory to `tmp.out` at 14:30 on December 30th, which crontab entry is correct?
+## Exercise 2: Viewing Processes of a Specific User
 
-| Option | Crontab Entry |
-|--------|---------------|
-| A | `12 30 14 30 * /usr/bin/ls -l /tmp > ~user1/tmp.out` |
-| B | `30 14 30 12 * /usr/bin/ls -l /tmp > ~user1/tmp.out` |
-| C | `14 30 12 30 * /usr/bin/ls -l /tmp > ~user1/tmp.out` |
-| D | `14 30 30 12 * /usr/bin/ls -l /tmp > ~user1/tmp.out` |
+**Problem:** Which command is **incorrect** for checking process information related to user `han1`?
 
-**Answer:** B. `30 14 30 12 * /usr/bin/ls -l /tmp > ~user1/tmp.out`
+- A. `ps -u han1`
+- B. `ps -fu han1`
+- C. `ps -p $(pgrep -u han1)`
+- D. `ps -pu han1`
 
-**Explanation:** The crontab format is `minute hour day month weekday command`. For 14:30 on December 30th: minute=30, hour=14, day=30, month=12, weekday=* (any). Thus the correct entry is `30 14 30 12 *`.
+**[Solution](Solutions.md#exercise-2-viewing-processes-of-a-specific-user)**
 
 ---
 
-## Q4. Process Description
+<br>
 
-**Question:** Which of the following descriptions about processes is **incorrect**?
+## Exercise 3: Crontab Scheduling
 
-| Option | Description |
-|--------|-------------|
-| A | A process is a currently running program. |
-| B | Processes have parent-child relationships. |
-| C | A process has a PID number. |
-| D | A process has a UID number. |
+**Problem:** To schedule saving the file list of `/tmp` directory to `tmp.out` at 14:30 on December 30th, which crontab entry is correct?
 
-**Answer:** D. A process has a UID number.
+- A. `12 30 14 30 * /usr/bin/ls -l /tmp > ~user1/tmp.out`
+- B. `30 14 30 12 * /usr/bin/ls -l /tmp > ~user1/tmp.out`
+- C. `14 30 12 30 * /usr/bin/ls -l /tmp > ~user1/tmp.out`
+- D. `14 30 30 12 * /usr/bin/ls -l /tmp > ~user1/tmp.out`
 
-**Explanation:** While processes are associated with a UID (User ID) that identifies which user owns the process, the UID is not an inherent property of the process itself — it belongs to the user. A process has its own PID (Process ID) and inherits a PPID (Parent PID) from its parent. Processes do not "have" a UID in the same way they have a PID; rather, the UID is an attribute of the user who launched the process.
+**[Solution](Solutions.md#exercise-3-crontab-scheduling)**
 
 ---
 
-## Q5. Conditions for Using the `at` Command
+<br>
 
-**Question:** Which is **NOT** a valid condition for a user account to use the `at` command?
+## Exercise 4: Process Description
 
-| Option | Condition |
-|--------|-----------|
-| A | `/etc/at.allow` exists and the user account is listed in it. |
-| B | Only `/etc/at.deny` exists and the user account is NOT listed in it. |
-| C | Both `/etc/at.allow` and `/etc/at.deny` exist and the user account is listed in both. |
-| D | Neither `/etc/cron.allow` nor `/etc/cron.deny` exists. |
+**Problem:** Which of the following descriptions about processes is **incorrect**?
 
-**Answer:** D. Neither `/etc/cron.allow` nor `/etc/cron.deny` exists.
+- A. A process is a currently running program.
+- B. Processes have parent-child relationships.
+- C. A process has a PID number.
+- D. A child process is always removed from the process table as soon as it finishes running.
 
-**Explanation:** The `at` command access control uses `/etc/at.allow` and `/etc/at.deny`, not the `cron` files. If `/etc/at.allow` exists, only users listed in it can use `at`. If only `/etc/at.deny` exists, users NOT in it can use `at`. If both exist, `/etc/at.allow` takes precedence. The `cron.allow` and `cron.deny` files are irrelevant to `at` command access.
+**[Solution](Solutions.md#exercise-4-process-description)**
 
 ---
 
-## Q6. Finding Processes by Username
+<br>
 
-**Question:** What command can be used to find all processes executed by a user named `guest`?
+## Exercise 5: Conditions for Using the `at` Command
 
-**Answer:** `ps -u guest`
+**Problem:** Which is **not** a valid condition for a user account to use the `at` command?
 
-**Explanation:** The `ps -u` option filters processes by the effective user ID or name. Running `ps -u guest` displays all processes currently running under the `guest` user account.
+- A. `/etc/at.allow` exists and the user account is listed in it.
+- B. Only `/etc/at.deny` exists and the user account is not listed in it.
+- C. Both `/etc/at.allow` and `/etc/at.deny` exist and the user account is listed in both.
+- D. Neither `/etc/cron.allow` nor `/etc/cron.deny` exists.
 
----
-
-## Q7. Force Killing a Process
-
-**Question:** The process with PID 5000 cannot be terminated with `kill 5000`. How should you forcefully terminate this process?
-
-**Answer:** `kill -9 5000`
-
-**Explanation:** The default `kill` command sends SIGTERM (signal 15), which allows the process to perform cleanup before exiting. If a process ignores SIGTERM, you can use `kill -9` (SIGKILL) to forcefully terminate it. SIGKILL cannot be caught or ignored by the process, guaranteeing termination.
+**[Solution](Solutions.md#exercise-5-conditions-for-using-the-at-command)**
 
 ---
 
-## Q8. Terminating a Background Job
+<br>
 
-**Question:** Given three background jobs as shown below, write the command to terminate job number 3:
-```
+## Exercise 6: Finding Processes by Username
+
+**Problem:** What command can be used to find all processes executed by a user named `guest`?
+
+**[Solution](Solutions.md#exercise-6-finding-processes-by-username)**
+
+---
+
+<br>
+
+## Exercise 7: Force Killing a Process
+
+**Problem:** The process with PID 5000 cannot be terminated with `kill 5000`. How should you forcefully terminate this process?
+
+**[Solution](Solutions.md#exercise-7-force-killing-a-process)**
+
+---
+
+<br>
+
+## Exercise 8: Terminating a Background Job
+
+**Problem:** Given three background jobs as shown below, write the command to terminate job number 3:
+
+```bash
 $ jobs
 [1] + Running    sleep 100
 [2] - Running    find / -name test
 [3]   Running    sleep 300
 ```
 
-**Answer:** `kill %3`
-
-**Explanation:** In bash, background jobs are referenced using `%` followed by the job number. `kill %3` sends SIGTERM to job number 3. This is different from `kill 3` which would attempt to kill the process with PID 3.
+**[Solution](Solutions.md#exercise-8-terminating-a-background-job)**
 
 ---
 
-## Q9. Crontab for Weekly Task
+<br>
 
-**Question:** Set up a crontab entry that runs every Sunday at 11 PM to check the process list of user `user01` and save it to `ps.out` in the user's home directory.
+## Exercise 9: Crontab for Weekly Task
 
-**Answer:** `0 23 * * 0 /bin/ps -u user01 > /home/user01/ps.out`
+**Problem:** Set up a crontab entry that runs every Sunday at 11 PM to check the process list of user `user01` and save it to `ps.out` in the user's home directory.
 
-**Explanation:** The crontab format is `minute hour day month weekday command`. For every Sunday at 11 PM: minute=0, hour=23, day=* (any), month=* (any), weekday=0 (Sunday). The `ps -u user01` command lists processes owned by `user01`, and the output is redirected to the specified file.
+**[Solution](Solutions.md#exercise-9-crontab-for-weekly-task)**
 
 ---
 
-## Q10. Removing a Scheduled `at` Job
+<br>
 
-**Question:** Given the following scheduled `at` jobs, what command deletes the first job?
-```
+## Exercise 10: Removing a Scheduled `at` Job
+
+**Problem:** Given the following scheduled `at` jobs, what command deletes the first job?
+
+```bash
 $ atq
 8  Sun May 31 15:30:00 2020  a  user1
 9  Sun May 31 16:00:00 2020  a  user1
 ```
 
-**Answer:** `atrm 8`
-
-**Explanation:** The `atrm` command removes scheduled `at` jobs by their job number. `atq` lists pending jobs with their IDs, and `atrm 8` removes job number 8. Alternatively, `at -d 8` can also be used to delete the job.
+**[Solution](Solutions.md#exercise-10-removing-a-scheduled-at-job)**
 
 ---
 
-## Q11. Allowing All Users to Use `at`
+<br>
 
-**Question:** How should Ubuntu Linux be configured so that all users can use the `at` command?
+## Exercise 11: Allowing All Users to Use `at`
 
-**Answer:** Delete the `/etc/at.allow` file (or ensure it does not exist) and ensure the `/etc/at.deny` file is either empty or does not exist.
+**Problem:** How should Ubuntu Linux be configured so that all users can use the `at` command?
 
-**Explanation:** The `at` access control logic works as follows: if `/etc/at.allow` exists, only users listed in it can use `at`. If `/etc/at.allow` does not exist and `/etc/at.deny` is empty or absent, all users are permitted to use the `at` command. By removing `/etc/at.allow` and keeping `/etc/at.deny` empty, no users are denied access.
+**[Solution](Solutions.md#exercise-11-allowing-all-users-to-use-at)**

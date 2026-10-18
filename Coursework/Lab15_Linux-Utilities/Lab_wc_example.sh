@@ -5,7 +5,7 @@
 # @date    2025-06-05
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PASSWD_FILE="$SCRIPT_DIR/passwd"
+PASSWD_FILE="$SCRIPT_DIR/data/passwd"
 
 echo "=== wc Command Examples ==="
 echo ""
@@ -43,7 +43,7 @@ echo ""
 # Count multiple files
 echo "--- Multiple Files ---"
 echo "Command: wc -l passwd s.dat"
-wc -l "$PASSWD_FILE" "$SCRIPT_DIR/s.dat" 2>/dev/null
+wc -l "$PASSWD_FILE" "$SCRIPT_DIR/data/s.dat" 2>/dev/null
 echo ""
 
 # Use wc with pipes

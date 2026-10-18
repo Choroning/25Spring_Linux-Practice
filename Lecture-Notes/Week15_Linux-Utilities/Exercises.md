@@ -1,106 +1,109 @@
-# Week 15 — Quiz
+# Week 15 Exercises — Linux Utilities
 
-> **Last Updated:** 2026-03-21
+[Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
----
-
-## Q1. Counting Lines, Words, and Characters
-
-**Question:** What Linux command outputs the number of lines, words, and characters in a text file?
-
-**Answer:** `wc`
-
-**Explanation:** The `wc` (word count) command displays the number of lines, words, and bytes (or characters) in a file. By default, `wc filename` outputs three values: line count, word count, and byte count. Specific counts can be obtained with `-l` (lines), `-w` (words), `-c` (bytes), or `-m` (characters).
+> **Last Updated:** 2026-10-19
 
 ---
 
-## Q2. Function of `wc -c`
+<br>
 
-**Question:** What does the following command do?
-```bash
+## Exercise 1: Counting Lines, Words, and Characters
+
+**Problem:** What Linux command outputs the number of lines, words, and characters in a text file?
+
+**[Solution](Solutions.md#exercise-1-counting-lines-words-and-characters)**
+
+---
+
+<br>
+
+## Exercise 2: Function of `wc -c`
+
+**Problem:** What does the following command do?
+
+```text
 $ wc -c /etc/passwd
 ```
 
-**Answer:** It outputs the byte count of the `/etc/passwd` file.
-
-**Explanation:** The `wc -c` option counts and displays the number of bytes in the specified file. For text files using single-byte encodings (like ASCII), the byte count equals the character count. For multi-byte encodings (like UTF-8), use `wc -m` to get the actual character count instead.
+**[Solution](Solutions.md#exercise-2-function-of-wc--c)**
 
 ---
 
-## Q3. Reverse Sort Option
+<br>
 
-**Question:** What option is used with the `sort` command to sort in reverse order?
+## Exercise 3: Reverse Sort Option
 
-**Answer:** `-r`
+**Problem:** What option is used with the `sort` command to sort in reverse order?
 
-**Explanation:** The `sort -r` option reverses the default sort order, producing output in descending order. This can be combined with other options, such as `sort -rn` to sort numerically in descending order, or `sort -rk2` to sort by the second field in reverse order.
-
----
-
-## Q4. Field Separator for Sort
-
-**Question:** What option is used with the `sort` command to set the field delimiter to `:`?
-
-**Answer:** `-t:`
-
-**Explanation:** The `sort -t:` option specifies `:` as the field separator. This is essential when sorting structured data like `/etc/passwd` where fields are colon-delimited. For example, `sort -t: -k3 -n /etc/passwd` sorts the passwd file numerically by the third field (UID).
+**[Solution](Solutions.md#exercise-3-reverse-sort-option)**
 
 ---
 
-## Q5. Numeric Sort Option
+<br>
 
-**Question:** What option is used with the `sort` command to treat numeric fields as numbers?
+## Exercise 4: Field Separator for Sort
 
-**Answer:** `-n`
+**Problem:** What option is used with the `sort` command to set the field delimiter to `:`?
 
-**Explanation:** The `sort -n` option performs numeric sorting instead of lexicographic sorting. Without `-n`, the string "9" would sort after "10" (since '9' > '1' lexicographically). With `-n`, numbers are compared by their numeric value, so 9 correctly appears before 10.
-
----
-
-## Q6. Default Filenames for `split`
-
-**Question:** When the `split` command generates files, what is the name of the second file created?
-
-**Answer:** `xab`
-
-**Explanation:** By default, `split` names output files using a prefix of `x` followed by alphabetic suffixes: `xaa`, `xab`, `xac`, and so on. The second file is therefore `xab`. A custom prefix can be specified as the second argument to `split`, e.g., `split -l 100 input.txt output_` would produce `output_aa`, `output_ab`, etc.
+**[Solution](Solutions.md#exercise-4-field-separator-for-sort)**
 
 ---
 
-## Q7. Unique-Only Lines with `uniq`
+<br>
 
-**Question:** What option is used with the `uniq` command to output only non-duplicated lines?
+## Exercise 5: Numeric Sort Option
 
-**Answer:** `-u`
+**Problem:** What option is used with the `sort` command to treat numeric fields as numbers?
 
-**Explanation:** The `uniq -u` option prints only lines that are not repeated in the input. Lines that appear more than once consecutively are suppressed entirely. Note that `uniq` only detects adjacent duplicates, so the input should typically be sorted first with `sort` to group identical lines together. The `-d` option does the opposite, showing only duplicated lines.
-
----
-
-## Q8. Field Delimiter for `cut`
-
-**Question:** What option is used with the `cut` command to set the field delimiter to `:`?
-
-**Answer:** `-d :`
-
-**Explanation:** The `cut -d :` option (or `cut -d:`) specifies `:` as the field delimiter. This is commonly used with the `-f` option to extract specific fields. For example, `cut -d: -f1,3 /etc/passwd` extracts the username (field 1) and UID (field 3) from the passwd file.
+**[Solution](Solutions.md#exercise-5-numeric-sort-option)**
 
 ---
 
-## Q9. Horizontal Paste
+<br>
 
-**Question:** What option is used with the `paste` command to merge files horizontally (serial mode)?
+## Exercise 6: Default Filenames for `split`
 
-**Answer:** `-s`
+**Problem:** When the `split` command generates files, what is the name of the second file created?
 
-**Explanation:** The `paste -s` option serializes the input, merging all lines of each file into a single line separated by tabs (or a custom delimiter). Without `-s`, `paste` merges files line by line (vertically). For example, if a file contains three lines, `paste -s file` outputs all three values on one tab-separated line.
+**[Solution](Solutions.md#exercise-6-default-filenames-for-split)**
 
 ---
 
-## Q10. Creating a File with `dd`
+<br>
 
-**Question:** Complete the `dd` command to create a 1 MB file.
+## Exercise 7: Unique-Only Lines with `uniq`
 
-**Answer:** `dd if=/dev/zero bs=1M count=1 of=dd_test`
+**Problem:** What option is used with the `uniq` command to output only non-duplicated lines?
 
-**Explanation:** The `dd` command copies data block by block. `if=/dev/zero` specifies the input source (an infinite stream of zero bytes), `bs=1M` sets the block size to 1 megabyte, `count=1` copies exactly one block, and `of=dd_test` specifies the output file. The result is a 1 MB file filled with null bytes. `dd` is commonly used for disk imaging, creating swap files, and benchmarking I/O performance.
+**[Solution](Solutions.md#exercise-7-unique-only-lines-with-uniq)**
+
+---
+
+<br>
+
+## Exercise 8: Field Delimiter for `cut`
+
+**Problem:** What option is used with the `cut` command to set the field delimiter to `:`?
+
+**[Solution](Solutions.md#exercise-8-field-delimiter-for-cut)**
+
+---
+
+<br>
+
+## Exercise 9: Horizontal Paste
+
+**Problem:** What option is used with the `paste` command to merge files horizontally (serial mode)?
+
+**[Solution](Solutions.md#exercise-9-horizontal-paste)**
+
+---
+
+<br>
+
+## Exercise 10: Creating a File with `dd`
+
+**Problem:** Complete the `dd` command to create a 1 MB file.
+
+**[Solution](Solutions.md#exercise-10-creating-a-file-with-dd)**

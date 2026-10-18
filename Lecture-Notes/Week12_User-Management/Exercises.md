@@ -1,145 +1,137 @@
-# Week 12 — Quiz
+# Week 12 Exercises — User Management
 
-> **Last Updated:** 2026-03-21
+[Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
----
-
-## Q1. Commands Supporting Duplicate UID/GID
-
-**Question:** Which command related to user account groups does **NOT** allow setting duplicate UID or GID?
-
-| Option | Command |
-|--------|---------|
-| A | `usermod` |
-| B | `useradd` |
-| C | `userdel` |
-| D | `groupadd` |
-
-**Answer:** C. `userdel`
-
-**Explanation:** The `userdel` command is used to delete user accounts and does not involve setting UID or GID values at all. Commands like `usermod`, `useradd`, and `groupadd` support the `-o` option which allows non-unique (duplicate) UID or GID assignments. Since `userdel` only removes accounts, the concept of duplicate UID/GID does not apply.
+> **Last Updated:** 2026-10-19
+>
+> 우분투 리눅스, 이종원, Ch 10
 
 ---
 
-## Q2. Creating a User with a Specific UID
+<br>
 
-**Question:** How do you create the user account `han01` with UID 1010 using the `adduser` command?
+## Exercise 1: Commands Supporting Duplicate UID/GID
 
-| Option | Command |
-|--------|---------|
-| A | `adduser 1010 han01` |
-| B | `adduser -u 1010 han01` |
-| C | `adduser -uid 1010 han01` |
-| D | `adduser --uid 1010 han01` |
+**Problem:** Which command related to user account groups does **not** allow setting duplicate UID or GID?
 
-**Answer:** D. `adduser --uid 1010 han01`
+- A. `usermod`
+- B. `useradd`
+- C. `userdel`
+- D. `groupadd`
 
-**Explanation:** The `adduser` command on Debian/Ubuntu uses the long option `--uid` to specify a custom UID. Note that `adduser` (Debian-specific, higher-level wrapper) differs from `useradd` (low-level, standard). For `useradd`, the short option `-u` works, but `adduser` requires the full `--uid` flag.
+**[Solution](Solutions.md#exercise-1-commands-supporting-duplicate-uidgid)**
 
 ---
 
-## Q3. Locking a User Password
+<br>
 
-**Question:** What command locks the password for the `han01` account?
+## Exercise 2: Creating a User with a Specific UID
 
-| Option | Command |
-|--------|---------|
-| A | `passwd -d han01` |
-| B | `passwd -u han01` |
-| C | `passwd -l han01` |
-| D | `passwd -x han01` |
+**Problem:** How do you create the user account `han01` with UID 1010 using the `adduser` command?
 
-**Answer:** C. `passwd -l han01`
+- A. `adduser 1010 han01`
+- B. `adduser -u 1010 han01`
+- C. `adduser -uid 1010 han01`
+- D. `adduser --uid 1010 han01`
 
-**Explanation:** The `-l` (lock) option of `passwd` disables a user's password by prepending a `!` to the encrypted password in `/etc/shadow`, making it impossible to authenticate. `-d` deletes the password, `-u` unlocks a locked password, and `-x` sets the maximum password age.
+**[Solution](Solutions.md#exercise-2-creating-a-user-with-a-specific-uid)**
 
 ---
 
-## Q4. Assigning Disk Quota
+<br>
 
-**Question:** What command assigns a disk quota to user account `han01`?
+## Exercise 3: Locking a User Password
 
-| Option | Command |
-|--------|---------|
-| A | `quotaon han01` |
-| B | `edquota -u han01` |
-| C | `edquota han01` |
-| D | `quotacheck -u han01` |
+**Problem:** What command locks the password for the `han01` account?
 
-**Answer:** B. `edquota -u han01`
+- A. `passwd -d han01`
+- B. `passwd -u han01`
+- C. `passwd -l han01`
+- D. `passwd -x han01`
 
-**Explanation:** The `edquota` command opens an editor to set disk quota limits for a user. The `-u` option explicitly specifies that the quota is for a user (as opposed to `-g` for groups). `quotaon` enables quota enforcement, `quotacheck` scans a file system for disk usage, and `edquota` without `-u` may be ambiguous.
+**[Solution](Solutions.md#exercise-3-locking-a-user-password)**
 
 ---
 
-## Q5. Specifying Login Shell
+<br>
 
-**Question:** What command creates user account `han01` with the Bourne shell as the login shell?
+## Exercise 4: Assigning Disk Quota
 
-| Option | Command |
-|--------|---------|
-| A | `useradd -b sh han01` |
-| B | `useradd -s sh han01` |
-| C | `useradd -b /bin/sh han01` |
-| D | `useradd -s /bin/sh han01` |
+**Problem:** What command assigns a disk quota to user account `han01`?
 
-**Answer:** D. `useradd -s /bin/sh han01`
+- A. `quotaon han01`
+- B. `edquota -u han01`
+- C. `edquota han01`
+- D. `quotacheck -u han01`
 
-**Explanation:** The `-s` option in `useradd` sets the login shell for the new user. The shell must be specified with its full absolute path (`/bin/sh`), not just the name. The `-b` option sets the base directory for home directories, not the shell. Therefore, `-s /bin/sh` is the correct combination.
+**[Solution](Solutions.md#exercise-4-assigning-disk-quota)**
 
 ---
 
-## Q6. Setting Maximum Password Age
+<br>
 
-**Question:** What command sets the maximum password usage period for `han01` to 200 days?
+## Exercise 5: Specifying Login Shell
 
-| Option | Command |
-|--------|---------|
-| A | `useradd -x 200 han01` |
-| B | `usermod -x 200 han01` |
-| C | `chage -M 200 han01` |
-| D | `chage -m 200 han01` |
+**Problem:** What command creates user account `han01` with the Bourne shell as the login shell?
 
-**Answer:** C. `chage -M 200 han01`
+- A. `useradd -b sh han01`
+- B. `useradd -s sh han01`
+- C. `useradd -b /bin/sh han01`
+- D. `useradd -s /bin/sh han01`
 
-**Explanation:** The `chage` command manages password aging policies. The `-M` (uppercase) option sets the maximum number of days a password remains valid. The `-m` (lowercase) option sets the minimum number of days between password changes. `useradd` and `usermod` do not use `-x` for this purpose in standard implementations.
+**[Solution](Solutions.md#exercise-5-specifying-login-shell)**
 
 ---
 
-## Q7. Checking EUID
+<br>
 
-**Question:** What commands can be used to check the EUID (Effective User ID)?
+## Exercise 6: Setting Maximum Password Age
 
-**Answer:** `whoami`, `id`
+**Problem:** What command sets the maximum password usage period for `han01` to 200 days?
 
-**Explanation:** The `whoami` command prints the effective user name associated with the current EUID. The `id` command displays the real and effective user and group IDs. Both can be used to verify the effective user identity, which is particularly useful when using `su` or `sudo` to switch user contexts.
+- A. `useradd -x 200 han01`
+- B. `usermod -x 200 han01`
+- C. `chage -M 200 han01`
+- D. `chage -m 200 han01`
 
----
-
-## Q8. Password Storage File
-
-**Question:** In which file are user passwords stored?
-
-**Answer:** `/etc/shadow`
-
-**Explanation:** User passwords are stored in hashed form in `/etc/shadow`. This file is readable only by root, providing better security than the older method of storing password hashes in `/etc/passwd`. Each line in `/etc/shadow` contains the username, hashed password, and various password aging fields.
+**[Solution](Solutions.md#exercise-6-setting-maximum-password-age)**
 
 ---
 
-## Q9. Default Group Information
+<br>
 
-**Question:** In which file can a user's default (primary) group be confirmed?
+## Exercise 7: Checking EUID
 
-**Answer:** `/etc/passwd`
+**Problem:** What commands can be used to check the EUID (Effective User ID)?
 
-**Explanation:** The `/etc/passwd` file contains basic user account information with seven colon-separated fields: `username:password:UID:GID:GECOS:home:shell`. The fourth field (GID) specifies the user's primary group ID. The group name corresponding to this GID can be looked up in `/etc/group`.
+**[Solution](Solutions.md#exercise-7-checking-euid)**
 
 ---
 
-## Q10. The `-r` Option in User Deletion
+<br>
 
-**Question:** What is the meaning of the `-r` option when deleting a user account?
+## Exercise 8: Password Storage File
 
-**Answer:** It deletes the user's home directory (and its contents) along with the user account.
+**Problem:** In which file are user passwords stored?
 
-**Explanation:** When using `userdel -r username`, the `-r` option ensures that the user's home directory and mail spool are removed along with the account entry. Without `-r`, only the user account is deleted from `/etc/passwd` and `/etc/shadow`, but the home directory and files remain on the system.
+**[Solution](Solutions.md#exercise-8-password-storage-file)**
+
+---
+
+<br>
+
+## Exercise 9: Default Group Information
+
+**Problem:** In which file can a user's default (primary) group be confirmed?
+
+**[Solution](Solutions.md#exercise-9-default-group-information)**
+
+---
+
+<br>
+
+## Exercise 10: The `-r` Option in User Deletion
+
+**Problem:** What is the meaning of the `-r` option when deleting a user account?
+
+**[Solution](Solutions.md#exercise-10-the--r-option-in-user-deletion)**

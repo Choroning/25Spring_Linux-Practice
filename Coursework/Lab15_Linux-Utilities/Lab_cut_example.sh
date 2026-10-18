@@ -5,7 +5,7 @@
 # @date    2025-06-05
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DATA_FILE="$SCRIPT_DIR/s.dat"
+DATA_FILE="$SCRIPT_DIR/data/s.dat"
 
 echo "=== cut Command Examples ==="
 echo ""
@@ -35,6 +35,6 @@ echo ""
 
 # Use cut with a custom delimiter on /etc/passwd style data
 echo "--- Extract from passwd file (delimiter ':') ---"
-PASSWD_FILE="$SCRIPT_DIR/passwd"
+PASSWD_FILE="$SCRIPT_DIR/data/passwd"
 echo "Command: cut -d: -f1,3 passwd  (username and UID)"
 cut -d: -f1,3 "$PASSWD_FILE"
