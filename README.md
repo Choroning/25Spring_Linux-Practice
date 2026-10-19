@@ -22,17 +22,13 @@ This repository archives bilingual lecture notes and coursework for the Linux Pr
 <br><a name="about-this-repository"></a>
 ## 📝 About This Repository
 
-This repository contains the lecture notes, exercises, Linux commands, and shell scripts written for a university-level Linux Practice course.
-
-- `Lecture-Notes/` holds, for each week, lecture notes with comprehensive explanations of Linux administration and shell usage (`Concepts_Lecture`), and every week except week 1 also has exercises with review questions (`Exercises`) and their solutions (`Solutions`). The units follow the class weeks and are numbered `Week01`-`Week15`, and week 8, the midterm week, has no unit.
-- Every lecture note, exercise set, and solution set comes as an English file (`.md`) and a Korean file (`.ko.md`) with the same structure.
-- `Coursework/` holds Bash lab scripts (`Lab13`, `Lab15`) that organize the lecture demonstration code (the example scripts of weeks 13 and 15), and two term projects. Submissions for the lab homework are not included.
-- The improved shell scripts carry **Doxygen-style headers** that document their purpose, usage, and structure.
-- The two **term projects** (System Monitoring Dashboard and Custom Shell) were designed with reference to the curricula of leading overseas CS universities. Their features, usage, and design are described in the `README.md` of each project folder.
-- All shell scripts were syntax-checked with Bash, and the lab scripts were run with sample input.
+- `Lecture-Notes/` holds a lecture note for each week (`Week01`-`Week15`), and most weeks also hold exercises of review questions with their solutions.
+- `Coursework/` holds the Bash lab scripts of Weeks 13 and 15 (`Lab13`, `Lab15`) and two term projects.
+- Every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
+- All shell scripts were syntax-checked with Bash.
 
 > **🤖 AI Agent Usage**
-> [Claude Code](https://claude.ai/download) was used to organize and translate the lecture notes and to restructure the repository.
+> [Claude Code](https://claude.ai/download) was used to organize and translate the notes and to restructure the repository.
 
 <br><a name="course-information"></a>
 ## 📚 Course Information
@@ -46,14 +42,12 @@ This repository contains the lecture notes, exercises, Linux commands, and shell
 
 ### Course Overview
 
-A major elective course on the basic usage of Linux systems, which are widely used in current ICT systems, and their various user commands and applications, learned through theory and practice, run as a SEMO class that combines online pre-study with in-class main sessions. Following the instructor's lecture PPT, it covers Linux installation, file and directory management, Vi/Vim editing, shell commands, file permissions, process management, disks and file systems, user administration, and Bash shell programming, along with booting and shutdown and Linux utilities. The instructor and teaching assistants, schedule and class format, assessment, course policies, weekly plan and progress, and references are in the [course information document](Course-Information.md).
+A major elective course on the basic use of Linux systems, their commands, and shell programming, taught through lectures and labs. The instructor and TA, schedule, assessment, course policies, and progress are in the [course information document](Course-Information.md).
 
 <br><a name="prerequisites"></a>
 ## ✅ Prerequisites
 
-- C/C++ programming skills are required.
-- No prior knowledge of Linux is required. The labs use Ubuntu Linux installed in virtual machine software.
-- Running the scripts in this repository requires Bash. The Custom Shell term project uses associative arrays and therefore requires Bash 4.0 or later.
+- C/C++ programming skills
 
 - **💻 Development Environment**
 
