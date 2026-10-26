@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 
 ## Table of Contents
 
@@ -135,22 +135,22 @@
 
 | Week | Class Dates (Tue, Thu) | Planned Topic | Lecture Decks Covered |
 |:-----|:-----|:-----|:-----|
-| 1 | 3/4, 3/6 | Overview and basic usage of Unix/Linux | 00.강의소개 (Course Introduction) |
-| 2 | 3/11, 3/13 | Working with directories | ch01 리눅스 설치와 기본 사용법 (Linux Installation and Basic Usage)<br>ch02 디렉터리와 파일 사용법 (1) (Using Directories and Files 1)<br>Homework 1. Linux Installation<br>Homework 2. Using Directories and Files 1 |
-| 3 | 3/18, 3/20 | Working with files | ch02 디렉터리와 파일 사용법 (2) (Using Directories and Files 2)<br>(팁) 우분투 원격접속 (Tip: Remote Access to Ubuntu)<br>Homework 3. Using Directories and Files 2 |
-| 4 | 3/25, 3/27 | Learning to use vi | Homework 4. Document Editing |
-| 5 | 4/1, 4/3 | Using the Bash shell | ch03 문서 편집 (Document Editing)<br>ch03 실습vi (vi Lab)<br>Homework 5. vi Lab<br>Homework 6. Shell Usage |
-| 6 | 4/8, 4/10 | Managing file access permissions | ch04 셸 사용법 (Shell Usage)<br>Homework 7. File Access Permission Management |
-| 7 | 4/15, 4/17 | Searching for files and directories | ch05 파일 접근 권한 관리 (File Access Permission Management) |
-| 8 | 4/22, 4/24 | Midterm exam | Midterm exam |
-| 9 | 4/29, 5/1 | Learning process and user commands | ch06 프로세스 관리 (Process Management)<br>Homework 8. Process Management<br>Homework 9. Lab: at and crontab |
-| 10 | 5/6, 5/8 | Learning file archive and compression commands | ch07 파일 시스템과 디스크 관리 (File Systems and Disk Management)<br>Homework 10. File Systems and Disk Management<br>Homework 11. Mounting HDD/USB File Systems |
-| 11 | 5/13, 5/15 | Learning Internet and communication commands | ch07 디스크 관리 RAID (Disk Management: RAID)<br>Homework 12. Creating LVM and RAID 5 |
-| 12 | 5/20, 5/22 | Using Unix/Linux utilities | ch10 사용자 관리 (User Management)<br>Homework 13. Lab: Setting Group Quotas |
-| 13 | 5/27, 5/29 | Understanding the Unix/Linux shell | ch11 배시쉘 프로그래밍 (Bash Shell Programming)<br>실습숙제.배시쉘 프로그래밍 (Lab Homework: Bash Shell Programming)<br>Homework 14. bash shell programming |
-| 14 | 6/3, 6/5 | Bash shell programming | ch08 리눅스의 부팅과 종료 (Linux Booting and Shutdown)<br>Homework 15. root Password Recovery |
-| 15 | 6/10, 6/12 | Basics of system administration | ch11 리눅스 유틸리티 이용하기 (Using Linux Utilities) |
-| 16 | 6/17, 6/19 | Final exam | Final exam<br>End of term |
+| W01 | 3/4, 3/6 | Overview and basic usage of Unix/Linux | 00.강의소개 (Course Introduction) |
+| W02 | 3/11, 3/13 | Working with directories | ch01 리눅스 설치와 기본 사용법 (Linux Installation and Basic Usage)<br>ch02 디렉터리와 파일 사용법 (1) (Using Directories and Files 1)<br>Homework 1. Linux Installation<br>Homework 2. Using Directories and Files 1 |
+| W03 | 3/18, 3/20 | Working with files | ch02 디렉터리와 파일 사용법 (2) (Using Directories and Files 2)<br>(팁) 우분투 원격접속 (Tip: Remote Access to Ubuntu)<br>Homework 3. Using Directories and Files 2 |
+| W04 | 3/25, 3/27 | Learning to use vi | Homework 4. Document Editing |
+| W05 | 4/1, 4/3 | Using the Bash shell | ch03 문서 편집 (Document Editing)<br>ch03 실습vi (vi Lab)<br>Homework 5. vi Lab<br>Homework 6. Shell Usage |
+| W06 | 4/8, 4/10 | Managing file access permissions | ch04 셸 사용법 (Shell Usage)<br>Homework 7. File Access Permission Management |
+| W07 | 4/15, 4/17 | Searching for files and directories | ch05 파일 접근 권한 관리 (File Access Permission Management) |
+| W08 | 4/22, 4/24 | Midterm exam | Midterm exam |
+| W09 | 4/29, 5/1 | Learning process and user commands | ch06 프로세스 관리 (Process Management)<br>Homework 8. Process Management<br>Homework 9. Lab: at and crontab |
+| W10 | 5/6, 5/8 | Learning file archive and compression commands | ch07 파일 시스템과 디스크 관리 (File Systems and Disk Management)<br>Homework 10. File Systems and Disk Management<br>Homework 11. Mounting HDD/USB File Systems |
+| W11 | 5/13, 5/15 | Learning Internet and communication commands | ch07 디스크 관리 RAID (Disk Management: RAID)<br>Homework 12. Creating LVM and RAID 5 |
+| W12 | 5/20, 5/22 | Using Unix/Linux utilities | ch10 사용자 관리 (User Management)<br>Homework 13. Lab: Setting Group Quotas |
+| W13 | 5/27, 5/29 | Understanding the Unix/Linux shell | ch11 배시쉘 프로그래밍 (Bash Shell Programming)<br>실습숙제.배시쉘 프로그래밍 (Lab Homework: Bash Shell Programming)<br>Homework 14. bash shell programming |
+| W14 | 6/3, 6/5 | Bash shell programming | ch08 리눅스의 부팅과 종료 (Linux Booting and Shutdown)<br>Homework 15. root Password Recovery |
+| W15 | 6/10, 6/12 | Basics of system administration | ch11 리눅스 유틸리티 이용하기 (Using Linux Utilities) |
+| W16 | 6/17, 6/19 | Final exam | Final exam<br>End of term |
 
 - The planned topics follow the weekly schedule of the syllabus, which planned week 1 as orientation and every other week except the exam weeks as lectures, practice, and discussion.
 - The schedule in the orientation slides followed the chapter order of the textbook: week 1 Linux installation and basic usage (Chapter 1), week 2 using directories and files (Chapter 2), week 3 document editing (Chapter 3), week 4 shell usage (Chapter 4), week 5 file access permission management (Chapter 5), week 6 process management (Chapter 6), week 7 file systems and disk management (Chapter 7), week 8 midterm exam, week 9 Linux booting and shutdown (Chapter 8), week 10 software management (Chapter 9), week 11 user management (Chapter 10), week 12 network configuration (Chapter 11), week 13 remote access and FTP (Chapter 12), week 14 DB server and web server (Chapter 13), week 15 NFS and Samba (Chapter 14), and week 16 final exam, and the slides noted that it could change as the course proceeded.
