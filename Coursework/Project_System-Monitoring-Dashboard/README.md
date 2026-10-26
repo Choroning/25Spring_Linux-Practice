@@ -1,12 +1,14 @@
-# Project: System Monitoring Dashboard
-> **Author:** Cheolwon Park  
-> **Date:** 2025-06-06
+# System Monitoring Dashboard
 
-A terminal-based (TUI) system monitoring dashboard built entirely in Bash. Displays real-time CPU, memory, disk, and network statistics with color-coded output and automatic alerting.
+[Repository Guide](../../README.md) | [English](README.md) | [한국어](README.ko.md)
+
+> **Last Updated:** 2026-10-26
+
+A terminal-based (TUI) system monitoring dashboard built entirely in Bash. It displays real-time CPU, memory, disk, and network statistics with color-coded output and automatic alerting.
 
 ## Structure
 
-```
+```text
 Project_System-Monitoring-Dashboard/
 ├── monitor.sh           # Main TUI dashboard (entry point)
 ├── cpu_monitor.sh       # CPU usage monitoring module
@@ -15,6 +17,7 @@ Project_System-Monitoring-Dashboard/
 ├── network_monitor.sh   # Network interface monitoring module
 ├── log_analyzer.sh      # System log analysis tool
 ├── install.sh           # Cron job setup for automated monitoring
+├── README.ko.md
 └── README.md
 ```
 
@@ -51,17 +54,17 @@ Each monitor module can run standalone:
 
 ## Features
 
-- **CPU**: Usage percentage, load average, core count, per-core breakdown
-- **Memory**: Total/used/free/available, swap usage, visual bar graph
-- **Disk**: Filesystem usage with color-coded warnings (yellow >80%, red >90%)
-- **Network**: Active interfaces, IP addresses, listening ports, traffic stats
-- **Log Analysis**: Error/warning counts, authentication events, top log sources
-- **Cron Integration**: Automated periodic monitoring with log rotation
+- **CPU:** Usage percentage, load average, core count, per-core breakdown
+- **Memory:** Total/used/free/available, swap usage, visual bar graph
+- **Disk:** Filesystem usage with color-coded warnings (yellow >80%, red >90%)
+- **Network:** Active interfaces, IP addresses, listening ports, traffic stats
+- **Log Analysis:** Error/warning counts, authentication events, top log sources
+- **Cron Integration:** Automated periodic monitoring with log rotation
 
 ## Platform Support
 
-- Primary: Linux (Ubuntu/Debian, CentOS/RHEL)
-- Partial: macOS (basic CPU and memory monitoring)
+- **Primary:** Linux (Ubuntu/Debian, CentOS/RHEL)
+- **Partial:** macOS (basic CPU and memory monitoring)
 
 ## References
 

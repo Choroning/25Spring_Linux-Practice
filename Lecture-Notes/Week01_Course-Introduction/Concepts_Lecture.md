@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 
 > **Learning Objectives:**
 > 1. Explain the history of Linux and UNIX and the philosophy of free software
@@ -199,7 +199,7 @@ Linux Kernel (1991)
 |   (command interpreter: bash)     |
 +-----------------------------------+
 |          Linux Kernel              |
-|  (process, filesystem, memory,    |
+|  (process, file system, memory,   |
 |   device, network management)     |
 +-----------------------------------+
 |           Hardware                 |
@@ -214,6 +214,8 @@ Linux Kernel (1991)
 - **Kernel:** The core of the OS; it manages hardware resources, processes, memory, and file systems.
 - **Shell:** The interface between the user and the kernel; it interprets and executes the commands the user enters. The default shell of Ubuntu is bash.
 - **Applications:** Programs that users interact with directly (editors, compilers, web servers, etc.).
+
+> **[Operating Systems]** From the viewpoint taught in Operating Systems, the kernel is a resource manager that divides hardware resources such as CPU time, memory, disks, and I/O devices among processes and protects the processes from interfering with one another. Applications do not access the hardware directly but request services from the kernel through system calls. The shell is itself a user program running on top of the kernel, so in Figure 2 both the shell and the applications use kernel functions only through system calls.
 
 ---
 

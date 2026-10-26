@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -314,7 +314,7 @@ The representative disk-based file systems of Linux are the ext family. ext (ext
 | **ext2** | No journaling; fast for flash storage | 2 TB | 32 TB |
 | **xfs** | High-performance; default on RHEL/CentOS | 8 EB | 8 EB |
 | **btrfs** | Copy-on-write; snapshots, compression | 16 EB | 16 EB |
-| **tmpfs** | RAM-based filesystem | (RAM size) | (RAM size) |
+| **tmpfs** | RAM-based file system | (RAM size) | (RAM size) |
 
 *Table 6. Characteristics and maximum sizes of Linux file systems*
 
@@ -372,10 +372,10 @@ nodev   devtmpfs
 
 ### 3.4 Journaling
 
-A **journal** logs changes before writing them to the main filesystem, enabling crash recovery.
+A **journal** logs changes before writing them to the main file system, enabling crash recovery.
 
 ```text
-Write request --> Journal (log) --> Main filesystem --> Journal cleared
+Write request --> Journal (log) --> Main file system --> Journal cleared
                     |
             Power failure? --> Replay journal on boot
 ```
@@ -804,6 +804,8 @@ $ sudo e2fsck -b 32768 -y /dev/sdd1
 ### 9.1 What is Swap?
 
 Swap space is used when physical RAM runs short. The kernel moves inactive pages from RAM to swap. Swap space can be a dedicated partition (partition type 82, Linux swap) or a swap file.
+
+> **[Operating Systems]** In terms of the virtual memory taught in Operating Systems, the address space of a process is divided into fixed-size units called **pages**, which are loaded into physical memory. When memory runs short, the kernel moves pages that have not been used recently out to the swap area (page-out), and when a process accesses such a page again, a page fault occurs and the page is read back from disk into memory (page-in). Swap makes it possible to use more memory than is physically installed, but disks are much slower than RAM, so when pages move back and forth often, the whole system slows down considerably.
 
 ### 9.2 Managing Swap
 

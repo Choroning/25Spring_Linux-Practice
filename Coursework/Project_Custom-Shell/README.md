@@ -1,16 +1,19 @@
-# Project: Custom Shell (minishell)
-> **Author:** Cheolwon Park  
-> **Date:** 2025-06-01
+# Custom Shell (minishell)
 
-A minimal shell implementation written entirely in Bash. Demonstrates core shell concepts including command parsing, built-in commands, pipes, redirections, and quoting.
+[Repository Guide](../../README.md) | [English](README.md) | [한국어](README.ko.md)
+
+> **Last Updated:** 2026-10-26
+
+A minimal shell implementation written entirely in Bash. It demonstrates core shell concepts including command parsing, built-in commands, pipes, redirections, and quoting.
 
 ## Structure
 
-```
+```text
 Project_Custom-Shell/
 ├── minishell.sh    # Main shell entry point (REPL loop)
 ├── builtins.sh     # Built-in command implementations
 ├── parser.sh       # Command parsing (pipes, redirections, quoting)
+├── README.ko.md
 └── README.md
 ```
 
@@ -36,30 +39,30 @@ chmod +x *.sh
 
 ## Features
 
-- **Custom Prompt**: Displays `user@host:directory$` with color coding
-- **Pipes**: `ls -la | grep ".sh" | wc -l`
-- **Output Redirection**: `echo "hello" > file.txt`, `echo "world" >> file.txt`
-- **Input Redirection**: `wc -l < file.txt`
-- **Command History**: Persistent across sessions (`~/.minishell_history`)
-- **Alias Support**: Define shorthand commands
-- **Signal Handling**: Ctrl+C shows new prompt, Ctrl+D exits gracefully
+- **Custom Prompt:** Displays `user@host:directory$` with color coding.
+- **Pipes:** `ls -la | grep ".sh" | wc -l`
+- **Output Redirection:** `echo "hello" > file.txt`, `echo "world" >> file.txt`
+- **Input Redirection:** `wc -l < file.txt`
+- **Command History:** Persists across sessions (`~/.minishell_history`).
+- **Alias Support:** Defines shorthand commands.
+- **Signal Handling:** Ctrl+C shows a new prompt, and Ctrl+D exits gracefully.
 
 ## Design
 
 The shell follows a classic REPL (Read-Eval-Print Loop) pattern:
 
-1. **Read**: Display prompt and read user input with readline support
-2. **Parse**: Tokenize input, expand aliases, detect pipes and redirections
-3. **Evaluate**: Execute built-in commands directly or fork external commands
-4. **Print**: Display command output to the terminal
-5. **Loop**: Return to step 1
+1. **Read:** Display a prompt and read user input with readline support.
+2. **Parse:** Tokenize the input, expand aliases, and detect pipes and redirections.
+3. **Evaluate:** Execute built-in commands directly or fork external commands.
+4. **Print:** Display command output in the terminal.
+5. **Loop:** Return to step 1.
 
 ### Why Built-in Commands?
 
 Some commands must be built into the shell because they modify the shell's own state:
-- `cd` changes the shell's working directory
-- `export` modifies the shell's environment variables
-- `alias` adds to the shell's alias table
+- `cd` changes the shell's working directory.
+- `export` modifies the shell's environment variables.
+- `alias` adds to the shell's alias table.
 
 If these were external programs, they would run in a child process and their changes would not affect the parent shell.
 

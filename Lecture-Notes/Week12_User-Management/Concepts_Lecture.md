@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -94,7 +94,7 @@ username:x:UID:GID:comment:home_directory:login_shell
 
 ```text
 root:x:0:0:root:/root:/bin/bash
-user1:x:1001:1001::/home/user1:/bin/bash
+user1:x:1000:1000::/home/user1:/bin/bash
 www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
 ```
 
@@ -134,6 +134,8 @@ user1:$6$NUpbDb6gYEQAhMyz$uqKHta1vl.nhPPe1u9pmPrd9Nq...:18994:0:99999:7:::
 ```
 
 The line for user1 holds a SHA-512 hash and means that the password was changed on day 18994 (2022-01-02), with MIN 0 days, MAX 99999 days, and WARNING 7 days, and that the remaining fields are empty. Ubuntu locks the password of the root account (`!`), so one cannot log in as root directly and uses `sudo` instead.
+
+> **[Information Security]** In terms of the cryptography taught in Information Security, the value of this field is not a ciphertext that can be decrypted but the output of a one-way hash function. In the `$`-separated form such as `$6$NUpbDb6gYEQAhMyz$...`, `6` identifies the hashing method (based on SHA-512), the second part is a salt chosen at random for each account, and the last part is the hash computed from the salt and the password. At login, the entered password is hashed again with the same salt and compared with the stored value. Because of the salt, the same password is stored as different values for different accounts, which makes it hard to recover passwords with precomputed hash tables. `/etc/shadow` is readable only by root and the shadow group to prevent attacks that take the hash values and guess passwords offline.
 
 ### 2.3 /etc/group
 

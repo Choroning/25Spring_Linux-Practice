@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 5
 
@@ -89,7 +89,7 @@ Change: 2026-10-18 14:53:38.655276264 +0000
 
 ### 1.2 User Categories
 
-Every file has three categories of users:
+Every file has three categories of users, and `a` refers to all three.
 
 | Category | Symbol | Description |
 |----------|--------|-------------|
@@ -174,7 +174,7 @@ Writing 1 for a granted permission and 0 for a missing one turns a three-charact
 | `555` | `r-xr-xr-x` | Everyone can only read and execute |
 | `640` | `rw-r-----` | Owner can read and write, group can only read |
 | `400` | `r--------` | Only the owner can read |
-| `000` | `----------` | No access |
+| `000` | `---------` | No access |
 
 *Table 5. Common permission values and their uses*
 
@@ -184,7 +184,7 @@ Writing 1 for a granted permission and 0 for a missing one turns a three-charact
 
 ## 3. Changing Permissions with chmod
 
-The `chmod` command changes access permissions. It has a **symbolic mode**, which expresses permissions with letters and symbols, and a **numeric mode**, which uses numbers. Only the owner of a file or root can change its permissions.
+The `chmod` command changes access permissions. It has a **symbolic mode**, which expresses permissions with letters and symbols, and an **octal mode** (numeric mode), which uses numbers. Only the owner of a file or root can change its permissions.
 
 ### 3.1 Symbolic Mode
 
@@ -226,7 +226,7 @@ For example, running `chmod u-w test.txt` on `test.txt` with permissions `rw-r--
 
 ### 3.2 Octal Mode
 
-The form of numeric mode is `chmod number filename`, where the number is three digits from 0 to 7 for the permissions of the owner, the group, and others.
+The form of octal mode is `chmod number filename`, where the number is three digits from 0 to 7 for the permissions of the owner, the group, and others.
 
 ```bash
 chmod 755 script.sh           # rwxr-xr-x
@@ -236,7 +236,7 @@ chmod 600 id_rsa              # rw-------
 chmod -R 755 /var/www/html/   # Recursive
 ```
 
-For example, running `chmod 444` on a file with permissions `644` (`rw-r--r--`) gives `r--r--r--`, and running `chmod 474` next gives `r--rwxr--`. Numeric mode sets the permissions of all three categories at once to the given value, so it is not affected by the umask.
+For example, running `chmod 444` on a file with permissions `644` (`rw-r--r--`) gives `r--r--r--`, and running `chmod 474` next gives `r--rwxr--`. Octal mode sets the permissions of all three categories at once to the given value, so it is not affected by the umask.
 
 ---
 
@@ -423,6 +423,8 @@ Anyone can create files in a directory with permissions `777` such as `/tmp`, an
 - Use `755` for directories and `644` for regular files as defaults.
 - Keep SUID/SGID programs to a minimum because they are potential security risks.
 - Use groups to share access rather than granting broad permissions.
+
+> **[Information Security]** In terms of the access control taught in Information Security, Linux file permissions are discretionary access control (DAC), in which the owner of a file decides who can do what with it. The guidelines above follow the principle of least privilege, which gives users and programs only the minimum permissions they need. A root-owned SetUID program runs with root's privileges no matter who runs it (Section 6.1), so if it has a flaw, an ordinary user can exploit it for privilege escalation to root.
 
 ### 7.2 Common Security Checks
 

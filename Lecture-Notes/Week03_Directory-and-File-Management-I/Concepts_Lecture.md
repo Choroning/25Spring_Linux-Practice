@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 2
 
@@ -117,7 +117,7 @@ Linux directories form a tree-shaped hierarchy with the root directory at the to
 ├── media/                 # Mount point for removable media
 ├── mnt/                   # Temporary mount point
 ├── opt/                   # Optional/add-on packages
-├── proc/                  # Virtual filesystem for process/kernel info
+├── proc/                  # Virtual file system for process/kernel info
 ├── root/                  # Root user's home directory
 ├── run/                   # Runtime data for running services
 ├── srv/                   # Service data (FTP, web)
