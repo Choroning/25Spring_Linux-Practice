@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 6
 
@@ -36,7 +36,7 @@
   - [4.3 Process Priority](#43-process-priority)
 - [5. Process Scheduling](#5-process-scheduling)
   - [5.1 Process Lifecycle](#51-process-lifecycle)
-  - [5.2 /proc Filesystem](#52-proc-filesystem)
+  - [5.2 /proc File System](#52-proc-file-system)
 - [6. Scheduled Tasks (cron and at)](#6-scheduled-tasks-cron-and-at)
   - [6.1 crontab: Recurring Tasks](#61-crontab-recurring-tasks)
   - [6.2 at: One-time Tasks](#62-at-one-time-tasks)
@@ -86,7 +86,7 @@ Every process in Linux has a parent-child relationship. A parent process creates
 
 | State | Symbol | Description |
 |-------|--------|-------------|
-| Running | `R` | Currently executing on CPU |
+| Running | `R` | Executing on a CPU or waiting for a CPU in the ready queue |
 | Sleeping | `S` | Waiting for an event (interruptible) |
 | Uninterruptible Sleep | `D` | Waiting for I/O (cannot be interrupted) |
 | Stopped | `T` | Suspended (e.g., Ctrl+Z) |
@@ -377,7 +377,7 @@ pkill -f "pattern"               # Kill processes matching pattern
 
 For example, if `man` is running in terminal 1, finding its PID in terminal 2 with `ps -fp $(pgrep -x man)` and running `kill -9 PID` terminates the `man` in terminal 1.
 
-- **pkill** finds and terminates processes by their command name (CMD) rather than by PID. For example, `pkill man` terminates all processes named `man`, and `pgrep -x man` then prints nothing.
+- **pkill** finds and terminates processes by their command name (CMD) rather than by PID. It finds processes the same way as `pgrep`: the given name is treated as a pattern, and every process whose command name contains that pattern is selected. For example, `pkill man` terminates not only `man` but also any other process whose name contains `man`, so to terminate only processes named exactly `man`, use `pkill -x man`. After that, `pgrep -x man` prints nothing.
 - **killall** also finds processes by command name and terminates all processes running under that name at once. A regular user can terminate only processes that the user owns.
 
 ### 4.3 Process Priority
@@ -411,7 +411,11 @@ Created (fork) --> Ready --> Running --> Terminated
 
 *Figure 1. Lifecycle of a process*
 
-### 5.2 /proc Filesystem
+A process is created by its parent with `fork`, and the new process waits for a CPU in the ready state. When the kernel's scheduler assigns it a CPU, it enters the running state; if it must wait for an event such as the completion of I/O while running, it moves to the waiting (sleeping) state and returns to the ready state when the event occurs. A process that has finished running enters the terminated state and remains a zombie (`Z`) until its parent collects its exit status (Section 1.2). In the symbols of Table 2, running and ready correspond to `R`, and waiting to `S` or `D`.
+
+> **[Operating Systems]** Figure 1 is a simplified form of the process state model taught in Operating Systems. The operating system keeps ready processes in a ready queue, and the CPU scheduler picks one of them according to its scheduling policy and assigns it a CPU. The nice value of Section 4.3 is a weight that the Linux scheduler takes into account when dividing CPU time, so among processes competing for the CPU, those with smaller nice values receive more CPU time.
+
+### 5.2 /proc File System
 
 ```bash
 ls /proc/                        # List all process directories
@@ -422,7 +426,7 @@ cat /proc/meminfo                # Memory information
 cat /proc/uptime                 # System uptime
 ```
 
-`/proc` is not a set of files stored on disk but a virtual filesystem through which the kernel presents process and system information as files. Every running process has a directory named after its PID.
+`/proc` is not a set of files stored on disk but a virtual file system through which the kernel presents process and system information as files. Every running process has a directory named after its PID.
 
 ---
 
@@ -616,7 +620,7 @@ The load average is the average number of processes that are running or waiting 
 | `nice`/`renice` | Process priority is adjusted with the nice value (-20 to 19). |
 | `crontab` | Recurring tasks are scheduled in the minute hour day month weekday format, and use is restricted with `cron.allow` and `cron.deny`. |
 | `at` | One-time tasks are scheduled, checked with `atq`, and removed with `atrm`, and use is restricted with `at.allow` and `at.deny`. |
-| `/proc` | `/proc` is a virtual filesystem that provides process and system information. |
+| `/proc` | `/proc` is a virtual file system that provides process and system information. |
 
 ---
 

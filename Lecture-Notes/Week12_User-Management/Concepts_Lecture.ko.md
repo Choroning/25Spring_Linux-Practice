@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -74,7 +74,7 @@
 
 ### 1.2 그룹
 
-- 모든 사용자는 최소 하나의 **주 그룹(primary group)** 에 소속되며, 주 그룹은 `/etc/passwd`의 GID 필드로 정한다.
+- 모든 사용자는 최소 하나의 **기본 그룹(primary group)** 에 소속되며, 기본 그룹은 `/etc/passwd`의 GID 필드로 정한다.
 - 사용자는 **보조 그룹(supplementary group)** 에도 소속될 수 있으며, 보조 그룹(2차 그룹)은 `/etc/group`에 기록한다.
 - 그룹은 공유 파일에 대한 접근을 제어한다.
 
@@ -94,7 +94,7 @@ username:x:UID:GID:comment:home_directory:login_shell
 
 ```text
 root:x:0:0:root:/root:/bin/bash
-user1:x:1001:1001::/home/user1:/bin/bash
+user1:x:1000:1000::/home/user1:/bin/bash
 www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
 ```
 
@@ -134,6 +134,8 @@ user1:$6$NUpbDb6gYEQAhMyz$uqKHta1vl.nhPPe1u9pmPrd9Nq...:18994:0:99999:7:::
 ```
 
 user1의 줄은 SHA-512 해시가 저장되어 있고, 18994일(2022-01-02)에 암호를 바꾸었으며, MIN 0일, MAX 99999일, WARNING 7일이고 나머지 필드는 비어 있음을 뜻한다. Ubuntu는 root 계정의 암호를 잠가 두므로(`!`) root로 직접 로그인할 수 없고 `sudo`를 쓴다.
+
+> **[정보보호]** 정보보호에서 배우는 암호학으로 보면, 이 필드의 값은 복호화할 수 있는 암호문이 아니라 일방향 해시 함수로 계산한 값이다. `$6$NUpbDb6gYEQAhMyz$...`처럼 `$`로 구분한 형식에서 `6`은 해시 기법(SHA-512 기반), 두 번째 부분은 계정마다 무작위로 정하는 솔트(salt), 마지막 부분은 솔트와 비밀번호로 계산한 해시 값이다. 로그인할 때는 입력한 비밀번호를 같은 솔트로 다시 해시하여 저장된 값과 비교한다. 솔트 때문에 같은 비밀번호도 계정마다 다른 값으로 저장되므로, 미리 계산해 둔 해시 표로 비밀번호를 알아내기 어렵다. `/etc/shadow`를 root와 shadow 그룹만 읽게 하는 것도 해시 값을 가져가 오프라인에서 비밀번호를 추측하는 공격을 막기 위해서이다.
 
 ### 2.3 /etc/group
 

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 
 ---
 
@@ -93,7 +93,7 @@ $ wc -c /etc/passwd
 
 **Answer:** `-n`
 
-**Explanation:** The `sort -n` option performs numeric sorting instead of lexicographic sorting. Without `-n`, the string "9" would sort after "10" (since '9' > '1' lexicographically). With `-n`, numbers are compared by their numeric value, so 9 correctly appears before 10.
+**Explanation:** The `sort -n` option performs numeric sorting instead of lexicographic sorting. Without `-n`, the string `9` would sort after `10` (since the first character `9` comes after `1` lexicographically). With `-n`, numbers are compared by their numeric value, so 9 correctly appears before 10.
 
 ---
 

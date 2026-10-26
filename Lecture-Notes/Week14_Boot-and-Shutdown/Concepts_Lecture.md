@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 8
 
@@ -114,7 +114,7 @@ By default, Ubuntu hides the GRUB menu and boots immediately. To print the GRUB 
 
 ### 1.5 Kernel Initialization Stage
 
-The kernel loaded into memory by the bootloader first checks the devices connected to the system, such as memory, disks, keyboard, and mouse, and initializes the required drivers. When basic initialization such as the device check is done, the kernel creates kernel threads (Section 7.2) and the first user process, mounts the root file system, and runs systemd as process 1.
+The kernel loaded into memory by the bootloader first checks the devices connected to the system, such as memory, disks, keyboard, and mouse, and initializes the required drivers. When basic initialization such as the device check is done, the kernel creates kernel threads (Section 7.2), mounts the root file system, and runs systemd as process 1, the first user process.
 
 ### 1.6 systemd Service Stage
 
@@ -673,7 +673,7 @@ When the root password is forgotten, the kernel parameters are changed temporari
 2. Select the kernel entry and press `e` to edit.
 3. Find the line starting with `linux` and append `init=/bin/bash`.
 4. Press `Ctrl+X` or `F10` to boot.
-5. Remount the root filesystem as read-write: `mount -o remount,rw /`
+5. Remount the root file system as read-write: `mount -o remount,rw /`
 6. Change the root password: `passwd root`
 7. Reboot: `exec /sbin/init` or `reboot -f`
 

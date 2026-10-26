@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -117,16 +117,16 @@
 
 ## Exercise 6: Extending a Logical Volume
 
-**Problem:** An LVM logical volume `/dev/vg_data/lv_home` is running out of space. Describe the two commands needed to add 10 GB to this volume and make the filesystem recognize the new space.
+**Problem:** An LVM logical volume `/dev/vg_data/lv_home` is running out of space. Describe the two commands needed to add 10 GB to this volume and make the file system recognize the new space.
 
 ### Solution
 
 **Answer:**
 
 1. `sudo lvextend -L +10G /dev/vg_data/lv_home`: extends the logical volume by 10 GB.
-2. `sudo resize2fs /dev/vg_data/lv_home`: resizes the ext4 filesystem to fill the expanded volume.
+2. `sudo resize2fs /dev/vg_data/lv_home`: resizes the ext4 file system to fill the expanded volume.
 
-**Explanation:** `lvextend` increases the logical volume size but does not automatically resize the filesystem within it. `resize2fs` is needed to grow the ext2/ext3/ext4 filesystem to use the newly available space. For XFS filesystems, use `xfs_growfs` instead. Alternatively, `lvextend -r` can perform both operations in a single step. Both commands can be run while the volume is mounted.
+**Explanation:** `lvextend` increases the logical volume size but does not automatically resize the file system within it. `resize2fs` is needed to grow the ext2/ext3/ext4 file system to use the newly available space. For XFS file systems, use `xfs_growfs` instead. Alternatively, `lvextend -r` can perform both operations in a single step. Both commands can be run while the volume is mounted.
 
 ---
 
@@ -145,7 +145,7 @@
 
 **Answer:** B. `defaults,usrquota,grpquota`
 
-**Explanation:** To enable disk quotas, the `usrquota` and `grpquota` mount options must be specified in `/etc/fstab` for the target partition. After adding these options, the filesystem must be remounted (`mount -o remount /home`), quota files initialized (`quotacheck -cugm /home`), and quotas activated (`quotaon /home`). Individual user limits are then set with `edquota -u username`.
+**Explanation:** To enable disk quotas, the `usrquota` and `grpquota` mount options must be specified in `/etc/fstab` for the target partition. After adding these options, the file system must be remounted (`mount -o remount /home`), quota files initialized (`quotacheck -cugm /home`), and quotas activated (`quotaon /home`). Individual user limits are then set with `edquota -u username`.
 
 ---
 

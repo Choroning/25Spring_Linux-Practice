@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 2
 
@@ -194,7 +194,7 @@ flowchart LR
 | Feature | Hard Link | Symbolic Link |
 |---------|-----------|---------------|
 | Inode | Same as original | Different |
-| Cross-filesystem | No | Yes |
+| Across file systems | No | Yes |
 | Link to directory | No | Yes |
 | Target deleted | File still accessible | Dangling (broken) link |
 | File size | Same as original | Size of path string |
@@ -418,6 +418,8 @@ rm test_?.log                     # Remove test_1.log, test_A.log, etc.
 
 *Table 7. Standard I/O streams and their file descriptors*
 
+A process starts with three streams: standard input (stdin), standard output (stdout), and standard error (stderr). A command usually reads input from the keyboard and prints normal results to standard output and error messages to standard error, both on the screen. Because the two outputs are separate, results and error messages can be sent to different places.
+
 ### 7.2 Output Redirection
 
 ```bash
@@ -431,12 +433,16 @@ command &> file                   # Shorthand for above (bash)
 
 `/dev/null` is a special file that discards everything written to it, so writing `2> /dev/null` discards error messages instead of printing them on the screen.
 
+> **[Systems Programming]** In terms of the system I/O taught in Systems Programming, a file descriptor is a small integer that refers to a file a process has opened, and descriptors 0, 1, and 2 in Table 7 are the standard streams that every process has open from the start. Before running a command, the shell handles `> file` by opening the file and copying its descriptor into slot 1 (the `dup2` system call), and `2>&1` by copying whatever slot 1 refers to at that moment into slot 2. The command itself only reads and writes descriptors 0, 1, and 2 without knowing about the redirection. Redirections are applied from left to right, so `> file 2>&1` sends both outputs to the file, while `2>&1 > file` leaves standard error on the original screen and sends only standard output to the file.
+
 ### 7.3 Input Redirection
 
 ```bash
 command < file                    # Read input from file
 sort < unsorted.txt               # Sort from file input
 ```
+
+`<` makes a command read standard input from the given file instead of the keyboard. `sort < unsorted.txt` gives the same result as `sort unsorted.txt`, but in the former the shell opens the file and connects it to the standard input of `sort`, while in the latter `sort` opens the file it receives as an argument.
 
 ### 7.4 Pipes
 
@@ -448,12 +454,16 @@ ps aux | grep nginx               # Find nginx processes
 history | tail -20                # Show last 20 commands
 ```
 
+A **pipe** `|` connects the standard output of the command before it to the standard input of the command after it, so that several commands can be chained without intermediate files. Standard error does not pass through a pipe, so to pass error messages to the next command as well, write `command 2>&1 | less`.
+
 ### 7.5 tee: Write to File and Screen
 
 ```bash
 command | tee file.txt            # Write to both file and screen
 command | tee -a file.txt         # Append to file and show on screen
 ```
+
+`tee` writes what it receives on standard input to the given file and also passes the same content to standard output. It is therefore used to record results in a file while watching them on the screen, or to save the intermediate result of a pipeline. With `-a`, it appends to the file instead of overwriting it.
 
 ---
 

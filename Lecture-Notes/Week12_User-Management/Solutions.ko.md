@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -177,7 +177,7 @@
 
 **정답:** `/etc/passwd`
 
-**해설:** `/etc/passwd` 파일에는 콜론으로 구분된 7개 필드로 기본 사용자 계정 정보가 포함된다(`username:password:UID:GID:GECOS:home:shell`). 네 번째 필드(GID)가 사용자의 주 그룹 ID를 지정한다. 이 GID에 해당하는 그룹 이름은 `/etc/group`에서 조회할 수 있다.
+**해설:** `/etc/passwd` 파일에는 콜론으로 구분된 7개 필드로 기본 사용자 계정 정보가 포함된다(`username:password:UID:GID:GECOS:home:shell`). 네 번째 필드(GID)가 사용자의 기본 그룹 ID를 지정한다. 이 GID에 해당하는 그룹 이름은 `/etc/group`에서 조회할 수 있다.
 
 ---
 

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -82,7 +82,7 @@
 
 ## Exercise 6: Extending a Logical Volume
 
-**Problem:** An LVM logical volume `/dev/vg_data/lv_home` is running out of space. Describe the two commands needed to add 10 GB to this volume and make the filesystem recognize the new space.
+**Problem:** An LVM logical volume `/dev/vg_data/lv_home` is running out of space. Describe the two commands needed to add 10 GB to this volume and make the file system recognize the new space.
 
 **[Solution](Solutions.md#exercise-6-extending-a-logical-volume)**
 

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-26
 >
 > 우분투 리눅스, 이종원, Ch 1
 
@@ -62,7 +62,7 @@ The Linux system consists of two major components, the kernel and the applicatio
 |    Application Programs   |  <-- Text editors, compilers, web servers
 |  (User Space)             |
 +---------------------------+
-|       Linux Kernel        |  <-- Process mgmt, filesystem, memory, devices
+|       Linux Kernel        |  <-- Process mgmt, file system, memory, devices
 |  (Kernel Space)           |
 +---------------------------+
 |        Hardware           |  <-- CPU, RAM, Disk, NIC
@@ -381,6 +381,8 @@ ifconfig            # May need: sudo apt install net-tools
 ```
 
 In the output, the address next to `inet` is the IPv4 address of that interface. After finding this address on Ubuntu Desktop and on Ubuntu Server, run `ssh username@IP_address` in a terminal on the host (for example, Terminal on macOS) to connect to each virtual machine.
+
+> **[Computer Networks]** In terms of the TCP/IP layers taught in Computer Networks, SSH is an application-layer protocol that runs over TCP. The IP address is used to find the destination host on the network (here, the virtual machine), and the port number identifies the process on that host that accepts the connection. So `ssh username@IP_address` finds the VM by its IP address and opens a TCP connection to the default port 22 on which the SSH server is waiting, and if the server uses another port, the port number is given with `-p`.
 
 ---
 
