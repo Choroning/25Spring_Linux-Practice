@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-10-27
 
 ## Table of Contents
 
@@ -100,10 +100,6 @@
   - **Midterm and Final Exams:** Each has 5-10 system programming problems.
   - **Participation:** 2 points are deducted for each absence and 0.5 points for each late arrival, and an absence of more than 11 days (1/3) results in an F.
 - Fifteen lab homework assignments were given, from Homework 1 to Homework 15, and the weeks in which they were given are listed in [5. Weekly Plan and Progress](#5-weekly-plan-and-progress).
-- **Homework 14 (bash shell programming):** Write a bash shell script `user.sh` that is run from a root shell as `./user.sh user.txt`.
-  - Create accounts with the user names listed in `user.txt` (for example, `user01`, `user02`, `tmskim`, `u01`, `u02`).
-  - In each user's home directory, create the folder `username.d1` with the empty files `1`, `2`, `3`, `4`, `5` and the folder `username.d2` with the empty files `a`, `b`, `c`, `d`, `e` (for example, `user01.d1` and `user01.d2`).
-  - Submit the source code and the execution results as a ppt.
 
 ---
 
@@ -172,7 +168,7 @@
   - `ch08 리눅스의 부팅과 종료` (Linux Booting and Shutdown): [`Week14`](Lecture-Notes/Week14_Boot-and-Shutdown/)
   - `ch11 리눅스 유틸리티 이용하기` (Using Linux Utilities): [`Week15`](Lecture-Notes/Week15_Linux-Utilities/)
 - `(팁) 우분투 원격접속` (Tip: Remote Access to Ubuntu) describes how to find the IP address on Ubuntu with `ifconfig` or `ip addr` and connect from the macOS terminal with `ssh username@IP`, and its content is covered in the remote access setup section of the [Week 2 lecture notes](Lecture-Notes/Week02_Linux-Installation/Concepts_Lecture.md).
-- `실습숙제.배시쉘 프로그래밍` is the brief for Homework 14. The lab scripts based on the example script bundle of week 13 (`ex.sh`) and the lab file bundle of week 15 (`lab.util`) are in `Lab13` and `Lab15` of the [`Coursework` index](Coursework/README.md).
+- `실습숙제.배시쉘 프로그래밍` is the brief for Homework 14 (bash shell programming). Homework 14 asks for a bash shell script `user.sh`, run from a root shell as `./user.sh user.txt`, that creates accounts with the user names listed in `user.txt` (for example, `user01`, `user02`, `tmskim`, `u01`, `u02`) and, in each user's home directory, the folder `username.d1` with the empty files `1`, `2`, `3`, `4`, `5` and the folder `username.d2` with the empty files `a`, `b`, `c`, `d`, `e` (for example, `user01.d1` and `user01.d2`); the source code and the execution results are submitted as a ppt. The lab scripts based on the example script bundle of week 13 (`ex.sh`) and the lab file bundle of week 15 (`lab.util`) are in `Lab13` and `Lab15` of the [`Coursework` index](Coursework/README.md).
 
 ---
 

@@ -2,7 +2,7 @@
 
 [레포지토리 안내](README.ko.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **최종 수정일:** 2026-10-26
+> **최종 수정일:** 2026-10-27
 
 ## 목차
 
@@ -100,10 +100,6 @@
   - **중간시험과 기말시험:** 각각 시스템 프로그래밍 문제 5~10문항을 출제한다.
   - **참여도:** 결석 1회에 2점, 지각 1회에 0.5점을 감점하고, 11일(1/3)을 넘게 결석하면 F이다.
 - 실습 숙제는 숙제1부터 숙제15까지 15회 나왔으며, 나온 주차는 [5. 주차별 계획 및 진도](#5-주차별-계획-및-진도)에 적었다.
-- **숙제14 (bash shell 프로그래밍):** root 셸에서 `./user.sh user.txt`로 실행하는 bash 셸 스크립트 `user.sh`를 만든다.
-  - `user.txt`에 적힌 사용자 이름(예: `user01`, `user02`, `tmskim`, `u01`, `u02`)으로 계정을 만든다.
-  - 각 사용자의 홈 디렉터리에 폴더 `사용자이름.d1`과 그 안의 빈 파일 `1`, `2`, `3`, `4`, `5`, 폴더 `사용자이름.d2`와 그 안의 빈 파일 `a`, `b`, `c`, `d`, `e`를 만든다(예: `user01.d1`, `user01.d2`).
-  - 소스 코드와 실행 내용을 ppt로 만들어 제출한다.
 
 ---
 
@@ -172,7 +168,7 @@
   - `ch08 리눅스의 부팅과 종료`: [`Week14`](Lecture-Notes/Week14_Boot-and-Shutdown/)
   - `ch11 리눅스 유틸리티 이용하기`: [`Week15`](Lecture-Notes/Week15_Linux-Utilities/)
 - `(팁) 우분투 원격접속`은 Ubuntu에서 `ifconfig`나 `ip addr`로 IP 주소를 확인하고 macOS 터미널에서 `ssh 사용자명@IP`로 접속하는 절차를 적은 자료로, 그 내용은 [2주차 강의 노트](Lecture-Notes/Week02_Linux-Installation/Concepts_Lecture.ko.md)의 원격 접속 설정 절에서 다룬다.
-- `실습숙제.배시쉘 프로그래밍`은 숙제14의 과제 설명 자료이다. 13주차의 예제 스크립트 묶음(`ex.sh`)과 15주차의 실습 파일 묶음(`lab.util`)을 정리한 실습 스크립트는 [`Coursework` 색인](Coursework/README.ko.md)의 `Lab13`, `Lab15`에 있다.
+- `실습숙제.배시쉘 프로그래밍`은 숙제14(bash shell 프로그래밍)의 과제 설명 자료이다. 숙제14는 root 셸에서 `./user.sh user.txt`로 실행하는 bash 셸 스크립트 `user.sh`를 만들어, `user.txt`에 적힌 사용자 이름(예: `user01`, `user02`, `tmskim`, `u01`, `u02`)으로 계정을 만들고 각 사용자의 홈 디렉터리에 폴더 `사용자이름.d1`과 그 안의 빈 파일 `1`, `2`, `3`, `4`, `5`, 폴더 `사용자이름.d2`와 그 안의 빈 파일 `a`, `b`, `c`, `d`, `e`를 만드는 과제이며(예: `user01.d1`, `user01.d2`), 소스 코드와 실행 내용을 ppt로 만들어 제출한다. 13주차의 예제 스크립트 묶음(`ex.sh`)과 15주차의 실습 파일 묶음(`lab.util`)을 정리한 실습 스크립트는 [`Coursework` 색인](Coursework/README.ko.md)의 `Lab13`, `Lab15`에 있다.
 
 ---
 
