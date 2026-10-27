@@ -25,7 +25,7 @@ This repository archives bilingual lecture notes and coursework for the Linux Pr
 - `Lecture-Notes/` holds a lecture note for each week (`Week01`-`Week15`), and most weeks also hold exercises of review questions with their solutions.
 - `Coursework/` holds the Bash lab scripts of Weeks 13 and 15 (`Lab13`, `Lab15`) and two term projects.
 - Every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
-- All shell scripts were syntax-checked with Bash.
+- All shell scripts are Bash scripts.
 
 > **🤖 AI Agent Usage**
 > [Claude Code](https://claude.ai/download) was used to organize and translate the notes and to restructure the repository.
