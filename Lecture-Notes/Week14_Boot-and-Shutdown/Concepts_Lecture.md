@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 8
 
@@ -71,19 +71,12 @@
 
 **Booting** is the process from turning on the computer's power until the operating system runs and a user can log in. As Figure 1 shows, Linux boots through the BIOS (or UEFI) stage, the bootloader stage, the kernel initialization stage, and the systemd service stage, and ends by printing the login prompt. Of these, the BIOS stage is the **PC boot** that every PC performs regardless of the installed operating system, and the part from the bootloader stage to the login prompt is the **Linux boot**.
 
-```text
-Power On
-    |
-    v
-+--------+     +-----------+     +--------+     +---------+
-|  BIOS/ | --> | Bootloader| --> | Kernel | --> | systemd |
-|  UEFI  |     |  (GRUB)   |     | (init) |     | services|
-+--------+     +-----------+     +--------+     +---------+
-    |                |                |               |
-    v                v                v               v
-POST &          Load kernel      Mount root      Start services
-find boot       + initramfs      filesystem      (network, ssh,
-device                                            login, etc.)
+```mermaid
+flowchart LR
+    P["Power On"] --> B["BIOS/UEFI<br/>POST, find boot device"]
+    B --> G["Bootloader (GRUB)<br/>Load kernel + initramfs"]
+    G --> K["Kernel (init)<br/>Mount root filesystem"]
+    K --> S["systemd services<br/>Start services (network, ssh, login, etc.)"]
 ```
 
 *Figure 1. Linux boot sequence and the work of each stage*
