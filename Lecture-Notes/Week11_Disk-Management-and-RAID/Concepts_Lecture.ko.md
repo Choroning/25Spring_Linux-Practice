@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -110,27 +110,36 @@ sudo umount /media/usb
 
 LVM은 물리 볼륨(PV)을 볼륨 그룹(VG)으로 묶고, VG에서 논리 볼륨(LV)을 나누어 마운트한다. LVM의 용어(PV, VG, LV, PE)와 생성 절차는 10주차 6절에서 다룬다.
 
-```text
-+----------+  +----------+  +----------+
-| /dev/sda1|  | /dev/sdb1|  | /dev/sdc1|   Physical Volumes (PV)
-+----+-----+  +----+-----+  +----+-----+
-     |             |              |
-     +------+------+------+------+
-            |             |
-     +------+------+ +----+-----+
-     | Volume Group| | Volume   |          Volume Groups (VG)
-     | (vg_data)   | | Group 2  |
-     +------+------+ +----------+
-            |
-     +------+------+------+
-     |             |      |
-+----+----+ +-----+---+ +-+--------+
-| Logical | | Logical  | | Logical  |  Logical Volumes (LV)
-| Volume  | | Volume   | | Volume   |
-| (lv_home| | (lv_var) | | (lv_tmp) |
-+---------+ +----------+ +----------+
-     |            |           |
-  /home        /var        /tmp               Mount Points
+```mermaid
+flowchart TD
+    subgraph PV["Physical Volumes (PV)"]
+        SDA["/dev/sda1"]
+        SDB["/dev/sdb1"]
+        SDC["/dev/sdc1"]
+    end
+    subgraph VG["Volume Groups (VG)"]
+        VG1["Volume Group (vg_data)"]
+        VG2["Volume Group 2"]
+    end
+    subgraph LV["Logical Volumes (LV)"]
+        LV1["Logical Volume (lv_home)"]
+        LV2["Logical Volume (lv_var)"]
+        LV3["Logical Volume (lv_tmp)"]
+    end
+    subgraph MP["Mount Points"]
+        M1["/home"]
+        M2["/var"]
+        M3["/tmp"]
+    end
+    SDA --> VG1
+    SDB --> VG1
+    SDC --> VG2
+    VG1 --> LV1
+    VG1 --> LV2
+    VG1 --> LV3
+    LV1 --> M1
+    LV2 --> M2
+    LV3 --> M3
 ```
 
 *그림 1. LVM의 물리 볼륨, 볼륨 그룹, 논리 볼륨 계층*
@@ -328,14 +337,14 @@ RAID 6은 RAID 5를 개선한 방식으로, 스트라이프마다 서로 다른 
 
 ### 4.5 RAID 10 (미러링 후 스트라이핑)
 
-```text
-                RAID 0 (striping)
-          +-----------+-----------+
-          |                       |
-   RAID 1 (mirror)         RAID 1 (mirror)
-   Disk 1   Disk 2         Disk 3   Disk 4
-   A1       A1             A2       A2
-   B1       B1             B2       B2
+```mermaid
+flowchart TD
+    R0["RAID 0 (striping)"] --> M1["RAID 1 (mirror)"]
+    R0 --> M2["RAID 1 (mirror)"]
+    M1 --> D1["Disk 1<br/>A1, B1"]
+    M1 --> D2["Disk 2<br/>A1, B1"]
+    M2 --> D3["Disk 3<br/>A2, B2"]
+    M2 --> D4["Disk 4<br/>A2, B2"]
 ```
 
 *그림 6. 미러 쌍 두 개를 스트라이핑한 RAID 10의 구성*
