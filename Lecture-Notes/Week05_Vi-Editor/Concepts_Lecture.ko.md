@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 3
 
@@ -120,25 +120,17 @@ Linux의 편집기는 그래픽 환경에서 쓰는 GUI 편집기와 터미널�
 
 ### 2.1 세 가지 모드
 
-```text
-                    i, I, a, A, o, O
-    +-------------+  ──────────────>  +-------------+
-    | 명령 모드   |                   |  입력 모드   |
-    | (Normal)    |  <──────────────  | (Insert)     |
-    +------+------+      Esc          +-------------+
-           │
-      : / ?│         Enter
-           v           │
-    +------+------+    │
-    | 마지막 줄   |────┘
-    | 모드 (Ex)   |
-    +------+------+
-           │
-     :q :wq :q!
-           v
-    +-------------+
-    |   Vi 종료   |
-    +-------------+
+```mermaid
+stateDiagram-v2
+    state "명령 모드 (Normal)" as cmd
+    state "입력 모드 (Insert)" as ins
+    state "마지막 줄 모드 (Ex)" as ex
+    state "Vi 종료" as quit
+    cmd --> ins: i, I, a, A, o, O
+    ins --> cmd: Esc
+    cmd --> ex: :, /, ?
+    ex --> cmd: Enter
+    ex --> quit: :q, :wq, :q!
 ```
 
 *그림 1. vi의 세 가지 동작 모드와 모드 전환*
