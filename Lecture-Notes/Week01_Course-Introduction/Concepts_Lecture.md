@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-04
 
 > **Learning Objectives:**
 > 1. Explain the history of Linux and UNIX and the philosophy of free software
@@ -150,19 +150,16 @@ A Linux distribution is a version that bundles the **Linux kernel** with suitabl
 
 ### 4.1 Major Distribution Families
 
-```text
-Linux Kernel (1991)
-    |
-    +-- Debian (1993)
-    |       +-- Ubuntu (2004) --> Linux Mint (2006)
-    |
-    +-- Slackware (1993)
-    |       +-- S.u.S.E (1994) --> SuSE (1998) --> openSUSE (2006)
-    |
-    +-- Red Hat (1994)
-            +-- RHEL 2.1 (2003) --> RHEL 9 (2022)
-            +-- Fedora Core (2003) --> Fedora 36 (2022)
-            +-- CentOS (2003) --> CentOS Stream 9 (2021)
+```mermaid
+flowchart LR
+    K["Linux Kernel (1991)"] --> DEB["Debian (1993)"]
+    K --> SLK["Slackware (1993)"]
+    K --> RH["Red Hat (1994)"]
+    DEB --> UBU["Ubuntu (2004)"] --> MINT["Linux Mint (2006)"]
+    SLK --> SUSE1["S.u.S.E (1994)"] --> SUSE2["SuSE (1998)"] --> OSUSE["openSUSE (2006)"]
+    RH --> RHEL1["RHEL 2.1 (2003)"] --> RHEL9["RHEL 9 (2022)"]
+    RH --> FC["Fedora Core (2003)"] --> F36["Fedora 36 (2022)"]
+    RH --> CENT["CentOS (2003)"] --> CENTS["CentOS Stream 9 (2021)"]
 ```
 
 *Figure 1. Lineage of the major Linux distribution families*
@@ -190,21 +187,11 @@ Linux Kernel (1991)
 
 ### 5.1 System Structure
 
-```text
-+-----------------------------------+
-|       Application Programs        |
-|  (text editors, compilers, etc.)  |
-+-----------------------------------+
-|            Shell                   |
-|   (command interpreter: bash)     |
-+-----------------------------------+
-|          Linux Kernel              |
-|  (process, file system, memory,   |
-|   device, network management)     |
-+-----------------------------------+
-|           Hardware                 |
-|  (CPU, Memory, Disk, NIC, etc.)   |
-+-----------------------------------+
+```mermaid
+flowchart TD
+    APP["Application Programs<br/>(text editors, compilers, etc.)"] --- SH["Shell<br/>(command interpreter: bash)"]
+    SH --- KER["Linux Kernel<br/>(process, file system, memory, device, network management)"]
+    KER --- HW["Hardware<br/>(CPU, Memory, Disk, NIC, etc.)"]
 ```
 
 *Figure 2. Layered structure of a Linux system*

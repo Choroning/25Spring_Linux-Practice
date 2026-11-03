@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 4
 
@@ -70,9 +70,14 @@
 
 **셸(Shell)** 은 사용자와 Linux 커널 사이의 인터페이스 역할을 하는 명령줄 해석기이다.
 
-```text
-사용자 입력 --> 셸 (해석) --> 커널 (실행) --> 하드웨어
-            <-- 셸 (표시) <-- 커널 (반환) <--
+```mermaid
+flowchart LR
+    U["사용자"] -->|"입력"| S["셸"]
+    S -->|"해석"| K["커널"]
+    K -->|"실행"| H["하드웨어"]
+    H --> K
+    K -->|"반환"| S
+    S -->|"표시"| U
 ```
 
 *그림 1. 사용자, 셸, 커널, 하드웨어 사이의 명령 처리 흐름*
@@ -640,11 +645,11 @@ PS1='\[\e[35;43m\]\u@\h $\[\e[0m\] '          # 갈색 배경, 보라색 글자
 
 ### 10.2 로딩 순서 (로그인 셸)
 
-```text
-/etc/profile
-    └── /etc/bash.bashrc
-    └── ~/.bash_profile (또는 ~/.profile)
-            └── ~/.bashrc
+```mermaid
+flowchart TD
+    P["/etc/profile"] --> B["/etc/bash.bashrc"]
+    P --> BP["~/.bash_profile (또는 ~/.profile)"]
+    BP --> RC["~/.bashrc"]
 ```
 
 *그림 4. 로그인 셸에서 환경 설정 파일이 읽히는 순서*

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -94,16 +94,12 @@ Linux represents disks as device files under `/dev`. A SCSI/SATA disk is named `
 
 ### 1.3 Inodes and Data Blocks
 
-```text
-+--------+     +---------+     +------------+
-| Inode  | --> | Direct  | --> | Data Block |
-| Table  |     | Pointers|     | (4KB)      |
-+--------+     +---------+     +------------+
-                    |
-               +---------+     +------------+
-               | Indirect| --> | Data Block |
-               | Pointer |     +------------+
-               +---------+
+```mermaid
+flowchart LR
+    IT["Inode Table"] --> DP["Direct Pointers"]
+    DP --> DB1["Data Block (4KB)"]
+    IT --> IP["Indirect Pointer"]
+    IP --> DB2["Data Block"]
 ```
 
 *Figure 1. Path from an inode through direct and indirect pointers to data blocks*
@@ -374,10 +370,13 @@ nodev   devtmpfs
 
 A **journal** logs changes before writing them to the main file system, enabling crash recovery.
 
-```text
-Write request --> Journal (log) --> Main file system --> Journal cleared
-                    |
-            Power failure? --> Replay journal on boot
+```mermaid
+flowchart LR
+    W["Write request"] --> J["Journal (log)"]
+    J --> M["Main file system"]
+    M --> C["Journal cleared"]
+    J --> F{"Power failure?"}
+    F --> R["Replay journal on boot"]
 ```
 
 *Figure 5. Write and crash recovery flow of a journaling file system*

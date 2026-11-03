@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -110,27 +110,36 @@ sudo umount /media/usb
 
 LVM combines physical volumes (PVs) into volume groups (VGs) and carves logical volumes (LVs) out of a VG to mount them. The terms of LVM (PV, VG, LV, PE) and the creation procedure are covered in Week 10, Section 6.
 
-```text
-+----------+  +----------+  +----------+
-| /dev/sda1|  | /dev/sdb1|  | /dev/sdc1|   Physical Volumes (PV)
-+----+-----+  +----+-----+  +----+-----+
-     |             |              |
-     +------+------+------+------+
-            |             |
-     +------+------+ +----+-----+
-     | Volume Group| | Volume   |          Volume Groups (VG)
-     | (vg_data)   | | Group 2  |
-     +------+------+ +----------+
-            |
-     +------+------+------+
-     |             |      |
-+----+----+ +-----+---+ +-+--------+
-| Logical | | Logical  | | Logical  |  Logical Volumes (LV)
-| Volume  | | Volume   | | Volume   |
-| (lv_home| | (lv_var) | | (lv_tmp) |
-+---------+ +----------+ +----------+
-     |            |           |
-  /home        /var        /tmp               Mount Points
+```mermaid
+flowchart TD
+    subgraph PV["Physical Volumes (PV)"]
+        SDA["/dev/sda1"]
+        SDB["/dev/sdb1"]
+        SDC["/dev/sdc1"]
+    end
+    subgraph VG["Volume Groups (VG)"]
+        VG1["Volume Group (vg_data)"]
+        VG2["Volume Group 2"]
+    end
+    subgraph LV["Logical Volumes (LV)"]
+        LV1["Logical Volume (lv_home)"]
+        LV2["Logical Volume (lv_var)"]
+        LV3["Logical Volume (lv_tmp)"]
+    end
+    subgraph MP["Mount Points"]
+        M1["/home"]
+        M2["/var"]
+        M3["/tmp"]
+    end
+    SDA --> VG1
+    SDB --> VG1
+    SDC --> VG2
+    VG1 --> LV1
+    VG1 --> LV2
+    VG1 --> LV3
+    LV1 --> M1
+    LV2 --> M2
+    LV3 --> M3
 ```
 
 *Figure 1. Hierarchy of physical volumes, volume groups, and logical volumes in LVM*
@@ -328,14 +337,14 @@ RAID 6 improves on RAID 5 by storing, in a distributed way, two parities (P and 
 
 ### 4.5 RAID 10 (Mirroring then Striping)
 
-```text
-                RAID 0 (striping)
-          +-----------+-----------+
-          |                       |
-   RAID 1 (mirror)         RAID 1 (mirror)
-   Disk 1   Disk 2         Disk 3   Disk 4
-   A1       A1             A2       A2
-   B1       B1             B2       B2
+```mermaid
+flowchart TD
+    R0["RAID 0 (striping)"] --> M1["RAID 1 (mirror)"]
+    R0 --> M2["RAID 1 (mirror)"]
+    M1 --> D1["Disk 1<br/>A1, B1"]
+    M1 --> D2["Disk 2<br/>A1, B1"]
+    M2 --> D3["Disk 3<br/>A2, B2"]
+    M2 --> D4["Disk 4<br/>A2, B2"]
 ```
 
 *Figure 6. Structure of RAID 10 striping two mirrored pairs*

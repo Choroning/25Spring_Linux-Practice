@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-26
+> **최종 수정일:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 8
 
@@ -71,19 +71,12 @@
 
 **부팅(booting)** 은 컴퓨터의 전원을 켠 뒤 운영체제가 동작하여 사용자가 로그인할 수 있는 상태가 되기까지의 과정이다. 리눅스의 부팅은 그림 1처럼 바이오스(또는 UEFI) 단계, 부트로더 단계, 커널 초기화 단계, systemd 서비스 단계를 거쳐 로그인 프롬프트를 출력하는 것으로 끝난다. 이 가운데 바이오스 단계는 설치된 운영체제와 관계없이 PC가 공통으로 수행하는 **PC 부팅**이고, 부트로더 단계부터 로그인 프롬프트까지가 **리눅스 부팅**이다.
 
-```text
-Power On
-    |
-    v
-+--------+     +-----------+     +--------+     +---------+
-|  BIOS/ | --> | Bootloader| --> | Kernel | --> | systemd |
-|  UEFI  |     |  (GRUB)   |     | (init) |     | services|
-+--------+     +-----------+     +--------+     +---------+
-    |                |                |               |
-    v                v                v               v
-POST &          커널 로드        루트 파일         서비스 시작
-부팅 장치       + initramfs     시스템 마운트     (network, ssh,
-탐색                                              login 등)
+```mermaid
+flowchart LR
+    P["Power On"] --> B["BIOS/UEFI<br/>POST, 부팅 장치 탐색"]
+    B --> G["Bootloader (GRUB)<br/>커널 로드 + initramfs"]
+    G --> K["Kernel (init)<br/>루트 파일 시스템 마운트"]
+    K --> S["systemd services<br/>서비스 시작 (network, ssh, login 등)"]
 ```
 
 *그림 1. Linux의 부팅 순서와 단계별 작업*

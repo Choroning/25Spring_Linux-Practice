@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 3
 
@@ -120,25 +120,17 @@ Linux editors are divided into GUI editors used in a graphical environment and e
 
 ### 2.1 Three Modes
 
-```text
-                    i, I, a, A, o, O
-    +-------------+  ──────────────>  +-------------+
-    | Command Mode|                   |  Input Mode  |
-    | (Normal)    |  <──────────────  | (Insert)     |
-    +------+------+      Esc          +-------------+
-           │
-      : / ?│         Enter
-           v           │
-    +------+------+    │
-    | Last-Line   |────┘
-    | Mode (Ex)   |
-    +------+------+
-           │
-     :q :wq :q!
-           v
-    +-------------+
-    |   Vi Exit   |
-    +-------------+
+```mermaid
+stateDiagram-v2
+    state "Command Mode (Normal)" as cmd
+    state "Input Mode (Insert)" as ins
+    state "Last-Line Mode (Ex)" as ex
+    state "Vi Exit" as quit
+    cmd --> ins: i, I, a, A, o, O
+    ins --> cmd: Esc
+    cmd --> ex: :, /, ?
+    ex --> cmd: Enter
+    ex --> quit: :q, :wq, :q!
 ```
 
 *Figure 1. The three operating modes of vi and the transitions between them*

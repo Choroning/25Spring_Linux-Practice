@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 1
 
@@ -57,16 +57,10 @@
 
 The Linux system consists of two major components, the kernel and the applications, with the hardware beneath them. The area where applications run is called **user space**, and the area where the kernel runs is called **kernel space**.
 
-```text
-+---------------------------+
-|    Application Programs   |  <-- Text editors, compilers, web servers
-|  (User Space)             |
-+---------------------------+
-|       Linux Kernel        |  <-- Process mgmt, file system, memory, devices
-|  (Kernel Space)           |
-+---------------------------+
-|        Hardware           |  <-- CPU, RAM, Disk, NIC
-+---------------------------+
+```mermaid
+flowchart TD
+    APP["Application Programs (User Space)<br/>Text editors, compilers, web servers"] --- KER["Linux Kernel (Kernel Space)<br/>Process mgmt, file system, memory, devices"]
+    KER --- HW["Hardware<br/>CPU, RAM, Disk, NIC"]
 ```
 
 *Figure 1. Relationship among the Linux kernel, applications, and hardware*

@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-26
+> **최종 수정일:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -94,16 +94,12 @@ Linux는 디스크를 `/dev` 아래의 장치 파일로 나타낸다. SCSI/SATA 
 
 ### 1.3 inode와 데이터 블록
 
-```text
-+--------+     +---------+     +------------+
-| Inode  | --> | Direct  | --> | Data Block |
-| Table  |     | Pointers|     | (4KB)      |
-+--------+     +---------+     +------------+
-                    |
-               +---------+     +------------+
-               | Indirect| --> | Data Block |
-               | Pointer |     +------------+
-               +---------+
+```mermaid
+flowchart LR
+    IT["Inode Table"] --> DP["Direct Pointers"]
+    DP --> DB1["Data Block (4KB)"]
+    IT --> IP["Indirect Pointer"]
+    IP --> DB2["Data Block"]
 ```
 
 *그림 1. inode에서 직접 포인터와 간접 포인터를 거쳐 데이터 블록에 이르는 구조*
@@ -374,10 +370,13 @@ nodev   devtmpfs
 
 **저널(Journal)** 은 메인 파일 시스템에 쓰기 전에 변경 사항을 기록하여 장애 복구를 가능하게 한다.
 
-```text
-쓰기 요청 --> 저널 (기록) --> 메인 파일 시스템 --> 저널 삭제
-                    |
-            전원 장애? --> 부팅 시 저널 재실행
+```mermaid
+flowchart LR
+    W["쓰기 요청"] --> J["저널 (기록)"]
+    J --> M["메인 파일 시스템"]
+    M --> C["저널 삭제"]
+    J --> F{"전원 장애?"}
+    F --> R["부팅 시 저널 재실행"]
 ```
 
 *그림 5. 저널링 파일 시스템의 쓰기와 장애 복구 흐름*

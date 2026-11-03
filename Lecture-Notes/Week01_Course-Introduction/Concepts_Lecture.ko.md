@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-26
+> **최종 수정일:** 2026-11-04
 
 > **학습 목표:**
 > 1. Linux와 UNIX의 역사, 자유 소프트웨어 철학을 설명할 수 있다
@@ -150,19 +150,16 @@ Linux 배포판은 **Linux 커널**과 **응용 프로그램**을 적절하게 �
 
 ### 4.1 주요 배포판 계열
 
-```text
-Linux Kernel (1991)
-    |
-    +-- Debian (1993)
-    |       +-- Ubuntu (2004) --> Linux Mint (2006)
-    |
-    +-- Slackware (1993)
-    |       +-- S.u.S.E (1994) --> SuSE (1998) --> openSUSE (2006)
-    |
-    +-- Red Hat (1994)
-            +-- RHEL 2.1 (2003) --> RHEL 9 (2022)
-            +-- Fedora Core (2003) --> Fedora 36 (2022)
-            +-- CentOS (2003) --> CentOS Stream 9 (2021)
+```mermaid
+flowchart LR
+    K["Linux Kernel (1991)"] --> DEB["Debian (1993)"]
+    K --> SLK["Slackware (1993)"]
+    K --> RH["Red Hat (1994)"]
+    DEB --> UBU["Ubuntu (2004)"] --> MINT["Linux Mint (2006)"]
+    SLK --> SUSE1["S.u.S.E (1994)"] --> SUSE2["SuSE (1998)"] --> OSUSE["openSUSE (2006)"]
+    RH --> RHEL1["RHEL 2.1 (2003)"] --> RHEL9["RHEL 9 (2022)"]
+    RH --> FC["Fedora Core (2003)"] --> F36["Fedora 36 (2022)"]
+    RH --> CENT["CentOS (2003)"] --> CENTS["CentOS Stream 9 (2021)"]
 ```
 
 *그림 1. 주요 Linux 배포판 계열의 계보*
@@ -190,21 +187,11 @@ Linux Kernel (1991)
 
 ### 5.1 시스템 구조
 
-```text
-+-----------------------------------+
-|       응용 프로그램               |
-|  (텍스트 편집기, 컴파일러 등)     |
-+-----------------------------------+
-|            Shell                   |
-|   (명령어 해석기: bash)           |
-+-----------------------------------+
-|          Linux 커널               |
-|  (프로세스, 파일 시스템, 메모리,  |
-|   장치, 네트워크 관리)           |
-+-----------------------------------+
-|           하드웨어                |
-|  (CPU, 메모리, 디스크, NIC 등)   |
-+-----------------------------------+
+```mermaid
+flowchart TD
+    APP["응용 프로그램<br/>(텍스트 편집기, 컴파일러 등)"] --- SH["Shell<br/>(명령어 해석기: bash)"]
+    SH --- KER["Linux 커널<br/>(프로세스, 파일 시스템, 메모리, 장치, 네트워크 관리)"]
+    KER --- HW["하드웨어<br/>(CPU, 메모리, 디스크, NIC 등)"]
 ```
 
 *그림 2. Linux 시스템의 계층 구조*
