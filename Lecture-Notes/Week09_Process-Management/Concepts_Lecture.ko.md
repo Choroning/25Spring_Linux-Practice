@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-26
+> **최종 수정일:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 6
 
@@ -402,11 +402,18 @@ nice 값은 `top`의 NI 열에 표시된다. 일반 사용자는 nice 값을 올
 
 ### 5.1 프로세스 생명주기
 
-```text
-생성 (fork) --> 준비 --> 실행 --> 종료
-                 ^          |
-                 |          v
-                 +-- 대기/수면
+```mermaid
+stateDiagram-v2
+    state "생성 (fork)" as created
+    state "준비" as ready
+    state "실행" as running
+    state "대기/수면" as waiting
+    state "종료" as done
+    created --> ready
+    ready --> running
+    running --> waiting
+    waiting --> ready
+    running --> done
 ```
 
 *그림 1. 프로세스의 생명주기*

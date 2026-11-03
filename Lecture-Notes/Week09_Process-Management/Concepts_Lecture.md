@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 6
 
@@ -402,11 +402,18 @@ The nice value is shown in the NI column of `top`. A regular user can only raise
 
 ### 5.1 Process Lifecycle
 
-```text
-Created (fork) --> Ready --> Running --> Terminated
-                     ^          |
-                     |          v
-                     +-- Waiting/Sleeping
+```mermaid
+stateDiagram-v2
+    state "Created (fork)" as created
+    state "Ready" as ready
+    state "Running" as running
+    state "Waiting/Sleeping" as waiting
+    state "Terminated" as done
+    created --> ready
+    ready --> running
+    running --> waiting
+    waiting --> ready
+    running --> done
 ```
 
 *Figure 1. Lifecycle of a process*
