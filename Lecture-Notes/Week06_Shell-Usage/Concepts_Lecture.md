@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-04
 >
 > 우분투 리눅스, 이종원, Ch 4
 
@@ -70,9 +70,14 @@
 
 The **shell** is a command-line interpreter that acts as an interface between the user and the Linux kernel.
 
-```text
-User Input --> Shell (interprets) --> Kernel (executes) --> Hardware
-           <-- Shell (displays)  <-- Kernel (returns)  <--
+```mermaid
+flowchart LR
+    U["User"] -->|"input"| S["Shell"]
+    S -->|"interprets"| K["Kernel"]
+    K -->|"executes"| H["Hardware"]
+    H --> K
+    K -->|"returns"| S
+    S -->|"displays"| U
 ```
 
 *Figure 1. Command processing flow among the user, shell, kernel, and hardware*
@@ -640,11 +645,11 @@ Shell configuration files are divided into **system configuration files**, which
 
 ### 10.2 Loading Order (Login Shell)
 
-```text
-/etc/profile
-    └── /etc/bash.bashrc
-    └── ~/.bash_profile (or ~/.profile)
-            └── ~/.bashrc
+```mermaid
+flowchart TD
+    P["/etc/profile"] --> B["/etc/bash.bashrc"]
+    P --> BP["~/.bash_profile (or ~/.profile)"]
+    BP --> RC["~/.bashrc"]
 ```
 
 *Figure 4. Order in which configuration files are read by a login shell*
