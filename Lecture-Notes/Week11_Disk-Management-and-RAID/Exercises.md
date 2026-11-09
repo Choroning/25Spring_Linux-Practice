@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-10
 >
 > 우분투 리눅스, 이종원, Ch 7
 
