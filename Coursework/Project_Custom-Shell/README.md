@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](README.md) | [한국어](README.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-17
 
 A minimal shell implementation written entirely in Bash. It demonstrates core shell concepts including command parsing, built-in commands, pipes, redirections, and quoting.
 
@@ -23,6 +23,8 @@ Project_Custom-Shell/
 chmod +x *.sh
 ./minishell.sh
 ```
+
+The alias table is stored in an associative array (`declare -A`), so Bash 4.0 or later is required.
 
 ## Built-in Commands
 
@@ -52,8 +54,8 @@ chmod +x *.sh
 The shell follows a classic REPL (Read-Eval-Print Loop) pattern:
 
 1. **Read:** Display a prompt and read user input with readline support.
-2. **Parse:** Tokenize the input, expand aliases, and detect pipes and redirections.
-3. **Evaluate:** Execute built-in commands directly or fork external commands.
+2. **Parse:** Check the first word for a built-in command, expand aliases, and detect pipes and redirections.
+3. **Evaluate:** Execute built-in commands directly, and pass external commands and command lines with pipes or redirections to the `eval` of Bash. Bash forks the processes of external commands.
 4. **Print:** Display command output in the terminal.
 5. **Loop:** Return to step 1.
 

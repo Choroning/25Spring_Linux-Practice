@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 
 ## Table of Contents
 
@@ -181,7 +181,7 @@
 | Textbook | J. Lee, *IT CookBook, 우분투 리눅스* (Ubuntu Linux), 3rd ed. Seoul, South Korea: Hanbit Academy, 2022. |
 | Reference | J. Woo, *IT CookBook, 리눅스 실습 for Beginner* (Linux Practice for Beginner). Seoul, South Korea: Hanbit Academy, 2022. |
 | Lecture Slides | Lecture PPT slides provided by the instructor (00.강의소개, ch01-ch08, ch10, ch11) and lab materials (ch03 실습vi, the week 13 lab homework, the week 13 example scripts `ex.sh`, the week 15 lab files `lab.util`) |
-| Lecture Videos | Online lecture videos provided by the instructor. There is one video for each deck except ch07 Disk Management: RAID, 12 in total, and week 2 also has two lab videos (Linux installation and basic usage). |
+| Lecture Videos | Online lecture videos provided by the instructor. There is one video for each lecture PPT deck except 00.강의소개 (Course Introduction) and ch07 Disk Management: RAID, 12 in total, and week 2 also has two lab videos (Linux installation and basic usage). |
 | Reference Site | The official Ubuntu site (<https://ubuntu.com/>) |
 
 - The syllabus designates Lecture PPT as the main material, and the orientation slides introduce the textbook and reference above. The ISBN of the textbook is 9791156646075, and that of the reference is 9791156644705.

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-17
 
 > **Learning Objectives:**
 > 1. Explain the history of Linux and UNIX and the philosophy of free software
@@ -77,7 +77,7 @@ Linux is a **free and open-source operating system** based on the Unix operating
 - **Born:** December 28, 1969, in Helsinki, Finland
 - **Education:** University of Helsinki
 - **1991:** He created a new operating system, Linux, by referencing Minix, an educational OS.
-- **August 26, 1991:** The official birthday of Linux. It is the day Torvalds posted the message below to the comp.os.minix newsgroup; in Coordinated Universal Time (UTC) it was August 25.
+- **August 26, 1991:** The day Torvalds posted the message below to the comp.os.minix newsgroup, which is commonly regarded as the birthday of Linux. This date is in Korea Standard Time; in Coordinated Universal Time (UTC) it was August 25.
 
 ```text
 "Hello everybody out there using minix -

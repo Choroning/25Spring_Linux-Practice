@@ -19,7 +19,7 @@ echo ""
 
 # Create a small file with specific content
 echo "--- Create a File from String ---"
-echo "Command: echo 'Hello dd' | dd of=hello.dat"
+echo "Command: echo 'Hello, dd command!' | dd of=hello.dat"
 echo "Hello, dd command!" | dd of="$WORK_DIR/hello.dat" 2>&1
 echo "Content:"
 cat "$WORK_DIR/hello.dat"

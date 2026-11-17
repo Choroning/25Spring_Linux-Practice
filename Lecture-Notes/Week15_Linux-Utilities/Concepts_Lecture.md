@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-17
 
 > **Learning Objectives:**
 > 1. Process data by combining text processing utilities with pipes
@@ -374,10 +374,12 @@ LC_ALL=C sort file.txt    # Use C locale for consistent results
 
 `s.dat` is tab-separated, so only `-k4` is used, without a delimiter. Specifying a space as the delimiter with `-t' '` leaves a tab-separated line with only one field, since it contains no spaces, so the 4th field is empty on every line and the lines are not sorted by score. A numeric field such as the UID of `/etc/passwd` puts `100` before `2` when sorted without `-n`, so `-n` is used with it.
 
-The following `test_sort1` is a file mixing lines that start with digits, uppercase and lowercase letters, and special characters, and lines that start with spaces (`  700`, `  abcd`). Sorting it by default in the C locale reveals the ASCII code order as is.
+The following `test_sort1` is a file mixing lines that start with digits, uppercase and lowercase letters, and special characters, lines that start with spaces (`  700`, `  abcd`), and two empty lines. Sorting it by default in the C locale reveals the ASCII code order as is.
 
 ```text
 $ LC_ALL=C sort test_sort1
+
+
   700
   abcd
 !abc
@@ -399,12 +401,14 @@ love
 ~love
 ```
 
-Lines starting with spaces come first, and special characters such as `!`, `#`, and `&` come before digits. `<` and `@` come between digits and uppercase letters, `^`, `_`, and `` ` `` between uppercase and lowercase letters, and `{` and `~` after lowercase letters. Digits are also compared as characters, so `1234` comes before `50`.
+The two empty lines and the lines starting with spaces come first, and special characters such as `!`, `#`, and `&` come before digits. `<` and `@` come between digits and uppercase letters, `^`, `_`, and `` ` `` between uppercase and lowercase letters, and `{` and `~` after lowercase letters. Digits are also compared as characters, so `1234` comes before `50`.
 
 With `-d`, special characters are ignored and only blanks, letters, and digits are compared. For example, `&987` is treated as `987`, `{Love` as `Love`, and `!abc` as `abc`. `-r` prints the reverse of the default sort.
 
 ```text
 $ LC_ALL=C sort -d test_sort1
+
+
 @_@
   700
   abcd
@@ -444,9 +448,11 @@ Linux
 !abc
   abcd
   700
+
+
 ```
 
-In the `-d` result, `@_@` comes first because no character is left to compare, and the two lines starting with spaces are compared by the characters after the spaces.
+In the `-d` result, `@_@` comes right after the empty lines because no character is left to compare, and the two lines starting with spaces are compared by the characters after the spaces.
 
 The examples of sorting by field use `test_sort2`, which has the same contents as `s.dat` separated by spaces. Both `+1` and `-k 2` sort by the part from the second field (last name) to the end of the line.
 

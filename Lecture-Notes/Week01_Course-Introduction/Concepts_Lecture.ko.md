@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-17
 
 > **학습 목표:**
 > 1. Linux와 UNIX의 역사, 자유 소프트웨어 철학을 설명할 수 있다
@@ -77,7 +77,7 @@ Linux는 Unix 운영체제에 기반한 **무료 오픈소스 운영체제**이�
 - **출생:** 1969년 12월 28일, 핀란드 헬싱키
 - **학력:** 헬싱키 대학교
 - **1991년:** 교육용 운영체제인 Minix를 참고하여 새로운 운영체제인 Linux를 개발했다.
-- **1991년 8월 26일:** Linux의 공식 생일이다. Torvalds가 comp.os.minix 뉴스그룹에 아래 글을 올린 날이며, 협정 세계시(UTC)로는 8월 25일이다.
+- **1991년 8월 26일:** Torvalds가 comp.os.minix 뉴스그룹에 아래 글을 올린 날로, 흔히 Linux의 탄생일로 꼽는다. 이 날짜는 한국 시간 기준이며, 협정 세계시(UTC)로는 8월 25일이다.
 
 ```text
 "Hello everybody out there using minix -
