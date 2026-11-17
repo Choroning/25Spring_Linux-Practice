@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-18
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -19,7 +19,7 @@
 ## Table of Contents
 
 - [1. Linux File Systems Overview](#1-linux-file-systems-overview)
-  - [1.1 What is a File System?](#11-what-is-a-file-system)
+  - [1.1 The Concept of a File System](#11-the-concept-of-a-file-system)
   - [1.2 Disk Device Naming](#12-disk-device-naming)
   - [1.3 Inodes and Data Blocks](#13-inodes-and-data-blocks)
   - [1.4 Structure of the ext4 File System](#14-structure-of-the-ext4-file-system)
@@ -55,7 +55,7 @@
   - [8.2 badblocks: Checking for Bad Blocks](#82-badblocks-checking-for-bad-blocks)
   - [8.3 Recovery with a Backup Superblock](#83-recovery-with-a-backup-superblock)
 - [9. Swap Space](#9-swap-space)
-  - [9.1 What is Swap?](#91-what-is-swap)
+  - [9.1 The Concept of Swap](#91-the-concept-of-swap)
   - [9.2 Managing Swap](#92-managing-swap)
 - [10. Best Practices](#10-best-practices)
 - [Summary](#summary)
@@ -67,7 +67,7 @@
 
 ## 1. Linux File Systems Overview
 
-### 1.1 What is a File System?
+### 1.1 The Concept of a File System
 
 A **file system** is a method of organizing and storing files on a storage device. It defines the following.
 
@@ -800,7 +800,7 @@ $ sudo e2fsck -b 32768 -y /dev/sdd1
 
 ## 9. Swap Space
 
-### 9.1 What is Swap?
+### 9.1 The Concept of Swap
 
 Swap space is used when physical RAM runs short. The kernel moves inactive pages from RAM to swap. Swap space can be a dedicated partition (partition type 82, Linux swap) or a swap file.
 

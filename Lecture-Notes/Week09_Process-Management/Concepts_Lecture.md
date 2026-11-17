@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-18
 >
 > 우분투 리눅스, 이종원, Ch 6
 
@@ -18,7 +18,7 @@
 ## Table of Contents
 
 - [1. Understanding Processes](#1-understanding-processes)
-  - [1.1 What is a Process?](#11-what-is-a-process)
+  - [1.1 The Concept of a Process](#11-the-concept-of-a-process)
   - [1.2 Process Types](#12-process-types)
   - [1.3 Process States](#13-process-states)
 - [2. Viewing Processes](#2-viewing-processes)
@@ -55,7 +55,7 @@
 
 ## 1. Understanding Processes
 
-### 1.1 What is a Process?
+### 1.1 The Concept of a Process
 
 A **process** is a running instance of a program. Linux is a multi-process system that runs many processes at the same time. Each process has:
 - **PID (Process ID):** A unique number that identifies the process.

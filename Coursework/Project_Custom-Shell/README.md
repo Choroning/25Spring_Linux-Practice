@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](README.md) | [한국어](README.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 
 A minimal shell implementation written entirely in Bash. It demonstrates core shell concepts including command parsing, built-in commands, pipes, redirections, and quoting.
 
@@ -59,7 +59,7 @@ The shell follows a classic REPL (Read-Eval-Print Loop) pattern:
 4. **Print:** Display command output in the terminal.
 5. **Loop:** Return to step 1.
 
-### Why Built-in Commands?
+### The Need for Built-in Commands
 
 Some commands must be built into the shell because they modify the shell's own state:
 - `cd` changes the shell's working directory.

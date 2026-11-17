@@ -16,15 +16,15 @@
 
 ## Table of Contents
 
-- [1. What is Linux?](#1-what-is-linux)
+- [1. The Concept of Linux](#1-the-concept-of-linux)
   - [1.1 Key Characteristics](#11-key-characteristics)
-  - [1.2 Why Learn Linux?](#12-why-learn-linux)
+  - [1.2 Reasons to Learn Linux](#12-reasons-to-learn-linux)
 - [2. History of Linux](#2-history-of-linux)
   - [2.1 Linus Torvalds](#21-linus-torvalds)
   - [2.2 Richard Stallman](#22-richard-stallman)
   - [2.3 Timeline](#23-timeline)
 - [3. GNU Project and Free Software](#3-gnu-project-and-free-software)
-  - [3.1 What is the GNU Project?](#31-what-is-the-gnu-project)
+  - [3.1 The Concept of the GNU Project](#31-the-concept-of-the-gnu-project)
   - [3.2 The Four Freedoms of Free Software](#32-the-four-freedoms-of-free-software)
   - [3.3 GPL (GNU General Public License)](#33-gpl-gnu-general-public-license)
 - [4. Linux Distributions](#4-linux-distributions)
@@ -46,7 +46,7 @@
 
 <br>
 
-## 1. What is Linux?
+## 1. The Concept of Linux
 
 Linux is a **free and open-source operating system** based on the Unix operating system. Linus Torvalds first created it in 1991, and it is one of the most widely used operating systems in the world. It is distributed under the GNU General Public License (GPL), so anyone can modify and distribute the source code, and it has a large and active community of developers and users.
 
@@ -59,7 +59,7 @@ Linux is a **free and open-source operating system** based on the Unix operating
 - **Flexibility:** It runs on a wide range of devices, from servers and supercomputers to smartphones, smartwatches, IoT devices, drones, and autonomous vehicles.
 - **GUI Environment:** Although it is widely used as a server operating system, it also provides a convenient GUI through desktop environments such as GNOME, KDE, and XFCE.
 
-### 1.2 Why Learn Linux?
+### 1.2 Reasons to Learn Linux
 
 - Over **80%** of smartphones worldwide run Android, which is Linux-based.
 - Over **95%** of cloud servers run Linux.
@@ -120,7 +120,7 @@ and professional like gnu) for 386(486) AT clones."
 
 ## 3. GNU Project and Free Software
 
-### 3.1 What is the GNU Project?
+### 3.1 The Concept of the GNU Project
 
 GNU stands for **GNU's Not Unix**, a recursive acronym, that is, an acronym whose expansion contains the acronym itself. The GNU Project develops **free software** compatible with Unix, with the goal that all software can be used freely.
 

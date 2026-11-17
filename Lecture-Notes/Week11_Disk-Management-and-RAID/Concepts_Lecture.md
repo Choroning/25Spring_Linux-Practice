@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-18
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -26,7 +26,7 @@
   - [2.2 LVM Commands](#22-lvm-commands)
   - [2.3 LVM Advantages](#23-lvm-advantages)
 - [3. RAID Overview](#3-raid-overview)
-  - [3.1 What is RAID?](#31-what-is-raid)
+  - [3.1 The Concept of RAID](#31-the-concept-of-raid)
   - [3.2 Hardware vs. Software RAID](#32-hardware-vs-software-raid)
   - [3.3 Comparison of Storage Layouts](#33-comparison-of-storage-layouts)
 - [4. RAID Levels](#4-raid-levels)
@@ -186,7 +186,7 @@ In `lvcreate`, `-L` gives the size as a capacity, and `-l` as a number of PEs or
 
 ## 3. RAID Overview
 
-### 3.1 What is RAID?
+### 3.1 The Concept of RAID
 
 **RAID** (Redundant Array of Independent Disks) combines multiple physical disks into a single logical unit for the following purposes.
 

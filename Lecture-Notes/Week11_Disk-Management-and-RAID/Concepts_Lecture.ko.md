@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-18
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -26,7 +26,7 @@
   - [2.2 LVM 명령어](#22-lvm-명령어)
   - [2.3 LVM의 장점](#23-lvm의-장점)
 - [3. RAID 개요](#3-raid-개요)
-  - [3.1 RAID란?](#31-raid란)
+  - [3.1 RAID의 개념](#31-raid의-개념)
   - [3.2 하드웨어 RAID vs. 소프트웨어 RAID](#32-하드웨어-raid-vs-소프트웨어-raid)
   - [3.3 저장 방식의 비교](#33-저장-방식의-비교)
 - [4. RAID 레벨](#4-raid-레벨)
@@ -186,7 +186,7 @@ sudo resize2fs /dev/vg_data/lv_home          # 파일 시스템 크기 조정
 
 ## 3. RAID 개요
 
-### 3.1 RAID란?
+### 3.1 RAID의 개념
 
 **RAID** (Redundant Array of Independent Disks)는 여러 물리 디스크를 하나의 논리적 단위로 결합하는 기술로, 다음을 목적으로 한다.
 

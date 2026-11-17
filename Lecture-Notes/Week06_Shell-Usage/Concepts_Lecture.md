@@ -18,7 +18,7 @@
 
 ## Table of Contents
 
-- [1. What is a Shell?](#1-what-is-a-shell)
+- [1. The Concept of a Shell](#1-the-concept-of-a-shell)
   - [1.1 Shell Responsibilities](#11-shell-responsibilities)
   - [1.2 Terminal and Prompt](#12-terminal-and-prompt)
   - [1.3 Structure of a Command](#13-structure-of-a-command)
@@ -69,7 +69,7 @@
 
 <br>
 
-## 1. What is a Shell?
+## 1. The Concept of a Shell
 
 The **shell** is a command-line interpreter that acts as an interface between the user and the Linux kernel.
 
