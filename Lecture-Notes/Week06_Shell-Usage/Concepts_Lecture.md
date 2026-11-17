@@ -2,16 +2,16 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-18
 >
-> 우분투 리눅스, 이종원, Ch 4
+> 우분투 리눅스, 이종원, Ch 1, 4
 
 > **Learning Objectives:**
-> 1. Explain the functions and types of shells
+> 1. Explain the functions and types of shells and the structure of a command
 > 2. Distinguish and use shell special characters and quoting rules
 > 3. Apply I/O redirection and piping
 > 4. Customize the shell environment with variables and aliases
-> 5. Use command history and tab completion effectively
+> 5. Use command history, tab completion, and command-line editing shortcuts effectively
 > 6. Distinguish system configuration files from user configuration files
 
 ---
@@ -20,6 +20,9 @@
 
 - [1. What is a Shell?](#1-what-is-a-shell)
   - [1.1 Shell Responsibilities](#11-shell-responsibilities)
+  - [1.2 Terminal and Prompt](#12-terminal-and-prompt)
+  - [1.3 Structure of a Command](#13-structure-of-a-command)
+  - [1.4 Basic Commands and Help](#14-basic-commands-and-help)
 - [2. Types of Shells](#2-types-of-shells)
   - [2.1 Common Shells](#21-common-shells)
   - [2.2 Checking and Changing Your Shell](#22-checking-and-changing-your-shell)
@@ -92,6 +95,65 @@ The shell has three main functions: the **command interpreter function**, which 
 - It manages background processes.
 - It executes external programs by forking child processes.
 - It provides scripting capabilities.
+
+### 1.2 Terminal and Prompt
+
+A **terminal** is a window for operating the system by typing commands, and the shell runs inside it to take the user's input. On the GNOME desktop of Ubuntu, open it by choosing Terminal in Show Apps or by pressing `Ctrl + Alt + T`.
+
+```text
+username@hostname:~$    # Prompt of a regular user
+root@hostname:~#        # Prompt of the root user
+```
+
+The **prompt** is the indicator that the shell is waiting for the user to enter a command. The default prompt of Ubuntu is `username@hostname:current_directory` followed by `$` or `#`, and its format can be changed with the environment variable `PS1` (Section 9.1). The `~` in the prompt denotes the **home directory**. The home directory is the default directory of a user account and the place where you start when you open a terminal, and the current location is checked with the `pwd` command (Week 3). Close the terminal by clicking the window's close button, typing `exit`, or pressing `Ctrl + D` on an empty command line.
+
+> **Key Point:** The `$` prompt indicates a regular user, and `#` indicates root (the superuser).
+
+### 1.3 Structure of a Command
+
+A Linux command is entered in the form `command [options] [arguments]`. Square brackets mean that the part may be omitted.
+
+- **Command:** The name of the program the user wants to run; there are hundreds, such as `date`, `man`, `ls`, `cp`, and `mv`.
+- **Options:** They select detailed functions of the command. They start with `-` or `--` and consist of lowercase or uppercase letters. Which options exist and what they do differ by command, so consult the usage of that command.
+- **Arguments:** Values passed to the command, usually file or directory names. Some commands take no arguments, and the required arguments differ by command.
+
+```bash
+ls              # Command only: list the current directory
+ls -a           # Command and option: include hidden files
+ls /tmp         # Command and argument: list the /tmp directory
+ls -a /tmp      # Command, option, and argument: list /tmp including hidden files
+```
+
+The shell splits the entered line into words at whitespace, takes the first word as the command to run, and passes the remaining words to that command, and each command decides which of the passed words it interprets as options.
+
+### 1.4 Basic Commands and Help
+
+The following commands show basic information about the system.
+
+```bash
+date                # Print the current date and time
+# Output: Fri Mar 21 14:30:00 KST 2025
+cal                 # Print the calendar of this month
+cal 2025            # Print the calendar of the whole year 2025
+clear               # Clear the screen
+hostname            # Print the hostname
+uname -r            # Print the kernel release
+uname -a            # Print all information, including the kernel name, hostname, release, and architecture
+uptime              # Print the system uptime and load averages
+```
+
+In a Korean locale, `date` prints in the form `2025. 03. 21. (금) 14:30:00 KST`. Load averages are covered in Week 9.
+
+The usage of a command is found with the following commands.
+
+```bash
+man ls              # Manual page for ls
+man -k keyword      # Search manual pages by keyword
+ls --help           # Short help built into most commands
+info ls             # GNU info documentation
+```
+
+A **manual page** is divided into sections such as NAME (a brief description of the command), SYNOPSIS (a usage summary), and DESCRIPTION (a detailed description); press `q` to exit. Whether a command is a shell builtin or an executable file is checked with `type` (Section 2.4).
 
 ---
 
@@ -524,6 +586,22 @@ You can recall a previous command with the arrow keys `↑` and `↓`, move the 
 
 Pressing the `Tab` key makes the shell complete the command name or file name being typed. If there are several candidates, it completes only the common part, and pressing `Tab` once more shows the list of possible candidates.
 
+The following shortcuts move the cursor or delete what has been typed.
+
+| Shortcut | Action |
+|----------|--------|
+| `Backspace`, `Delete` | Delete the character before or at the cursor |
+| `Ctrl + A` | Move the cursor to the beginning of the line |
+| `Ctrl + E` | Move the cursor to the end of the line |
+| `Ctrl + W` | Delete one word before the cursor |
+| `Ctrl + U` | Delete from the cursor to the beginning of the line |
+| `Ctrl + K` | Delete from the cursor to the end of the line |
+| `Ctrl + L` | Clear the screen |
+| `Ctrl + C` | Cancel the command being typed |
+| `Ctrl + D` | Signal the end of input (EOF); on an empty command line, exit the shell (log out) |
+
+*Table 9. Command-line editing shortcuts*
+
 ---
 
 <br>
@@ -555,7 +633,7 @@ The prompt string is stored in the environment variable `PS1`, and changing the 
 | `\[` | Start of a string that is not printed |
 | `\]` | End of a string that is not printed |
 
-*Table 9. Escape characters used in PS1*
+*Table 10. Escape characters used in PS1*
 
 ```bash
 # Custom prompt examples
@@ -586,7 +664,7 @@ The form of a color prompt is `PS1='\[\e[x;y;nm\]prompt\[\e[0m\]'`.
 | Cyan | 36 | 46 |
 | White | 37 | 47 |
 
-*Table 10. Color numbers for the prompt*
+*Table 11. Color numbers for the prompt*
 
 | Number | Function |
 |--------|----------|
@@ -599,7 +677,7 @@ The form of a color prompt is `PS1='\[\e[x;y;nm\]prompt\[\e[0m\]'`.
 | 38 | Underline enabled |
 | 39 | Underline disabled |
 
-*Table 11. Special function numbers for the prompt*
+*Table 12. Special function numbers for the prompt*
 
 ```bash
 PS1='\[\e[34m\]Linux $\[\e[0m\] '             # Blue prompt
@@ -629,7 +707,7 @@ Shell configuration files are divided into **system configuration files**, which
 | `~/.bashrc` | Every interactive shell | User-specific |
 | `~/.bash_logout` | On logout | User-specific |
 
-*Table 12. When and for whom bash startup files are read*
+*Table 13. When and for whom bash startup files are read*
 
 | File | Main Contents |
 |------|---------------|
@@ -641,7 +719,7 @@ Shell configuration files are divided into **system configuration files**, which
 | `~/.bash_logout` | Sets commands to run at logout. |
 | `~/.bash_aliases` | Stores user-defined aliases in a separate file (read by `~/.bashrc`). |
 
-*Table 13. Main contents of system and user configuration files*
+*Table 14. Main contents of system and user configuration files*
 
 ### 10.2 Loading Order (Login Shell)
 
@@ -732,6 +810,9 @@ renice -n 5 -p PID              # Change priority of running process
 | Concept | Key Summary |
 |---------|-------------|
 | Shell | The shell is a command interpreter between the user and the kernel and also provides programming and user environment functions. |
+| Prompt Symbols | `$` indicates a regular user and `#` the root user, and the `~` in the prompt denotes the home directory. |
+| Command Structure | A command takes the form `command [options] [arguments]`, and options start with `-` or `--`. |
+| Manual Pages | A manual page is built-in documentation opened with `man command` and is divided into sections such as NAME, SYNOPSIS, and DESCRIPTION. |
 | Bash | bash is compatible with the Bourne shell, includes features of the C shell and the Korn shell, and is the default shell (`/bin/bash`) on most Linux systems. |
 | Login Shell and Subshell | The shell started at login is the login shell, a shell started inside it is a subshell, and `exit` returns to the previous shell. |
 | Metacharacters | Characters such as `*`, `?`, `[]`, `\|`, `>`, `>>`, `&`, `;`, and `$` are interpreted specially by the shell. |
@@ -783,5 +864,23 @@ renice -n 5 -p PID              # Change priority of running process
    <summary>Answer</summary>
 
    Set it as `PS1='\[\e[34m\]\u@\h:\w\$ \[\e[0m\]'`. `\e[34m` sets the text color to blue (34), and the trailing `\e[0m` resets it to the default color. `\[` and `\]` tell the shell that the characters between them are not printed on the screen. Without them, the shell counts the control characters as part of the prompt length, so when you type a long command, the cursor returns to the start of the line before reaching the edge of the screen and overwrites the same line.
+
+   </details>
+
+5. **Command structure:** In `ls -a /tmp`, identify the command, the option, and the argument, and explain what this command prints.
+
+   <details>
+   <summary>Answer</summary>
+
+   The command is `ls`, the option is `-a`, and the argument is `/tmp`. `ls` prints the contents of a directory, the argument `/tmp` specifies the target directory, and the option `-a` makes it include hidden files whose names start with `.`. It therefore prints all files and directories in `/tmp`, including hidden ones.
+
+   </details>
+
+6. **Command types:** On Ubuntu, `type cd` prints `cd is a shell builtin`, but `which cd` prints nothing. Explain why.
+
+   <details>
+   <summary>Answer</summary>
+
+   `cd` is not a separate executable file but a command built into the shell. `type` distinguishes shell builtins, aliases, and external commands, whereas `which` searches only for executable files in the directories of PATH. Since there is no executable named `cd`, `which cd` prints nothing and fails.
 
    </details>

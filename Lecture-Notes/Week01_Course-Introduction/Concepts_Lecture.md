@@ -2,12 +2,14 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
+>
+> 우분투 리눅스, 이종원, Ch 1
 
 > **Learning Objectives:**
 > 1. Explain the history of Linux and UNIX and the philosophy of free software
 > 2. Explain the families and use cases of major Linux distributions and the real-world domains of Linux
-> 3. Explain the layered structure of a Linux system (hardware, kernel, shell, applications)
+> 3. Explain the layered structure of a Linux system (hardware, kernel, shell, applications) and the distinction between user space and kernel space
 > 4. Explain the concept of a virtual machine and the main features of VMware
 
 ---
@@ -55,6 +57,7 @@ Linux is a **free and open-source operating system** based on the Unix operating
 - **Multi-user and Multi-tasking:** It supports multiple users and multiple processes simultaneously.
 - **Stability and Security:** It is widely known for robust security and system stability.
 - **Flexibility:** It runs on a wide range of devices, from servers and supercomputers to smartphones, smartwatches, IoT devices, drones, and autonomous vehicles.
+- **GUI Environment:** Although it is widely used as a server operating system, it also provides a convenient GUI through desktop environments such as GNOME, KDE, and XFCE.
 
 ### 1.2 Why Learn Linux?
 
@@ -202,6 +205,8 @@ flowchart TD
 - **Shell:** The interface between the user and the kernel; it interprets and executes the commands the user enters. The default shell of Ubuntu is bash.
 - **Applications:** Programs that users interact with directly (editors, compilers, web servers, etc.).
 
+The area where applications and the shell run is called **user space**, and the area where the kernel runs is called **kernel space**. Programs in user space do not access the hardware directly but ask the kernel to perform operations such as reading and writing files.
+
 > **[Operating Systems]** From the viewpoint taught in Operating Systems, the kernel is a resource manager that divides hardware resources such as CPU time, memory, disks, and I/O devices among processes and protects the processes from interfering with one another. Applications do not access the hardware directly but request services from the kernel through system calls. The shell is itself a user program running on top of the kernel, so in Figure 2 both the shell and the applications use kernel functions only through system calls.
 
 ---
@@ -268,6 +273,7 @@ A **Virtual Machine (VM)** is an application that creates a virtual machine (har
 | GPL | It is a Copyleft license that keeps derivative works free software. |
 | Distributions | A distribution bundles the kernel with applications; examples are Ubuntu, RHEL, and Fedora. |
 | Architecture | The kernel, the shell, and applications form successive layers on top of the hardware. |
+| User Space and Kernel Space | Applications and the shell run in user space and the kernel runs in kernel space, and applications use the hardware through the kernel. |
 | Virtual Machine | It allows multiple operating systems to run on one physical machine. |
 | Real-world Usage | Linux dominates servers, cloud, mobile, supercomputing, and IoT. |
 
@@ -319,5 +325,14 @@ A **Virtual Machine (VM)** is an application that creates a virtual machine (har
    <summary>Answer</summary>
 
    Ubuntu and Linux Mint, which is derived from Ubuntu, belong to the Debian family. Fedora and CentOS Stream belong to the Red Hat family.
+
+   </details>
+
+6. **User space and kernel space:** When you save a file with a text editor, explain what the editor and the kernel each do, following the layers of Figure 2.
+
+   <details>
+   <summary>Answer</summary>
+
+   The editor is an application running in user space; it holds the user's input in memory and asks the kernel to write it to a file. The kernel receives the request in kernel space, updates the file system, and writes the actual data to the disk (hardware) through device I/O. Applications do not handle the hardware directly but go through the kernel.
 
    </details>

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-11-10
+> **Last Updated:** 2026-11-18
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -22,6 +22,7 @@
 - [Exercise 8: Password Storage File](#exercise-8-password-storage-file)
 - [Exercise 9: Default Group Information](#exercise-9-default-group-information)
 - [Exercise 10: The `-r` Option in User Deletion](#exercise-10-the--r-option-in-user-deletion)
+- [Exercise 11: Purpose of sudo](#exercise-11-purpose-of-sudo)
 
 ---
 
@@ -192,3 +193,22 @@
 **Answer:** It deletes the user's home directory (and its contents) along with the user account.
 
 **Explanation:** When using `userdel -r username`, the `-r` option ensures that the user's home directory and mail spool are removed along with the account entry. Without `-r`, only the user account is deleted from `/etc/passwd` and `/etc/shadow`, but the home directory and files remain on the system. Files owned by the user outside the home directory are not deleted even with `-r`.
+
+---
+
+<br>
+
+## Exercise 11: Purpose of sudo
+
+**Problem:** Which of the following best describes the purpose of `sudo`?
+
+- A. It permanently switches the current session to root.
+- B. It executes a single command with superuser privileges.
+- C. It creates a new root user account.
+- D. It disables the root account.
+
+### Solution
+
+**Answer:** B. It executes a single command with superuser privileges.
+
+**Explanation:** `sudo` (superuser do) allows a permitted user to execute a single command as root without switching to the root account. After the command completes, the user returns to their normal privilege level. This is safer than logging in as root because it limits the scope of elevated privileges and leaves an audit trail of who ran which command.

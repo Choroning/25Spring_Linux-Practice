@@ -2,9 +2,9 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-18
 >
-> 우분투 리눅스, 이종원, Ch 4
+> 우분투 리눅스, 이종원, Ch 1, 4
 
 ---
 
@@ -20,6 +20,9 @@
 - [Exercise 6: Quoting Rules](#exercise-6-quoting-rules)
 - [Exercise 7: Command History](#exercise-7-command-history)
 - [Exercise 8: Modifying PATH](#exercise-8-modifying-path)
+- [Exercise 9: Terminal Prompt Symbols](#exercise-9-terminal-prompt-symbols)
+- [Exercise 10: Checking the Kernel Version](#exercise-10-checking-the-kernel-version)
+- [Exercise 11: Command Line Shortcuts](#exercise-11-command-line-shortcuts)
 
 ---
 
@@ -167,3 +170,60 @@ echo "Hello $name"
 **Answer:** `export PATH=$PATH:/opt/myapp/bin`
 
 **Explanation:** This appends `/opt/myapp/bin` to the existing `PATH` variable. The shell searches directories listed in `PATH` (separated by colons) when looking for commands. By appending, existing commands remain accessible. To make this permanent, add the `export` line to `~/.bashrc`. Prepending (`PATH=/opt/myapp/bin:$PATH`) would give the custom directory priority over system directories, so a program in that directory with the same name as a system command such as `ls` would run instead, which can be a security risk.
+
+---
+
+<br>
+
+## Exercise 9: Terminal Prompt Symbols
+
+**Problem:** What does the prompt symbol indicate about the user's privilege level?
+
+- A. `$` indicates the root user, and `#` indicates a regular user.
+- B. `$` indicates a regular user, and `#` indicates the root user.
+- C. Both `$` and `#` indicate regular users.
+- D. The prompt symbol has no relation to user privileges.
+
+### Solution
+
+**Answer:** B. `$` indicates a regular user, and `#` indicates the root user.
+
+**Explanation:** In Linux, the shell prompt displays `$` for regular (non-root) users and `#` for the root (superuser). This visual cue helps users recognize their current privilege level, which is important for preventing accidental execution of destructive commands with root privileges.
+
+---
+
+<br>
+
+## Exercise 10: Checking the Kernel Version
+
+**Problem:** Which command correctly displays the currently running Linux kernel version?
+
+- A. `kernel -v`
+- B. `uname -r`
+- C. `version --kernel`
+- D. `cat /etc/kernel`
+
+### Solution
+
+**Answer:** B. `uname -r`
+
+**Explanation:** The `uname -r` command prints the kernel release version (e.g., `5.15.0-56-generic`). The `-r` option specifically requests the kernel release. Using `uname -a` displays all system information, including the kernel name, hostname, kernel release and version, architecture, and OS.
+
+---
+
+<br>
+
+## Exercise 11: Command Line Shortcuts
+
+**Problem:** You have typed a long command but need to discard it entirely and start over. With the cursor at the end of the line, which keyboard shortcut deletes everything from the cursor to the beginning of the line?
+
+- A. `Ctrl + K`
+- B. `Ctrl + U`
+- C. `Ctrl + L`
+- D. `Ctrl + C`
+
+### Solution
+
+**Answer:** B. `Ctrl + U`
+
+**Explanation:** `Ctrl + U` deletes everything from the cursor position to the beginning of the line. `Ctrl + K` deletes from the cursor to the end of the line. `Ctrl + L` clears the screen but keeps the current command. `Ctrl + C` cancels the command being typed or the running process and gives a fresh prompt.

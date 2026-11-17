@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 
 ## Table of Contents
 
@@ -76,6 +76,9 @@
   - **Clone:** Duplicates an entire VM for testing.
   - **Suspend:** Saves and restores the VM state.
   - **Snapshot:** Saves a checkpoint to revert to later.
+- The lab VM is created by choosing Create a New Virtual Machine in VMware Workstation Player. Only an empty hard disk is created so that the operating system is installed later (I will install the operating system later), and the guest OS type is Linux, the disk size is 20 GB, and the storage method is Split virtual disk into multiple files. The version of VMware Workstation given in the lecture slides is 17.6.2 as of March 2025, and the key that moves the mouse focus from the guest to the host is `Ctrl + Alt`.
+- The Ubuntu installation image (ISO) is downloaded from the official Ubuntu site and assigned to the CD/DVD drive of the VM. The labs install both the Desktop edition (with the GNOME desktop) and the Server edition (command line only) of Ubuntu 24.04 in VMs, and the installer choices are Korean and Install Ubuntu for the language and installation method, Korean for the keyboard layout, minimal installation without downloading updates for the software and updates, Erase disk and install Ubuntu for the installation type (only the virtual disk is erased), Seoul for the time zone, and user name user1 and computer name myubuntu for the user account. After the installation, the VM reboots and the user logs in.
+- To connect to a VM remotely from the host, check the IPv4 address next to `inet` with `ip addr` or `ifconfig` on each VM, and run `ssh username@IP_address` in a terminal on the host (for example, the macOS terminal). The SSH server (`openssh-server`) must be installed and running on the VM.
 
 ---
 
@@ -155,7 +158,7 @@
 - The midterm exam was held in week 8, and the final exam was held in week 16, which ended the term.
 - The lecture decks correspond to the units as follows. The units are listed in the [`Lecture-Notes` index](Lecture-Notes/README.md).
   - `00.강의소개` (Course Introduction): [`Week01`](Lecture-Notes/Week01_Course-Introduction/)
-  - `ch01 리눅스 설치와 기본 사용법` (Linux Installation and Basic Usage): [`Week02`](Lecture-Notes/Week02_Linux-Installation/)
+  - `ch01 리눅스 설치와 기본 사용법` (Linux Installation and Basic Usage): the Linux basics are organized in [`Week01`](Lecture-Notes/Week01_Course-Introduction/) and the terminal and command usage in [`Week06`](Lecture-Notes/Week06_Shell-Usage/). The VM and Ubuntu installation is lab environment setup material, so no lecture note was written for it, and it is described under the lab environment in [Section 2](#2-schedule-and-class-format).
   - `ch02 디렉터리와 파일 사용법 (1)`, `(2)` (Using Directories and Files 1 and 2): [`Week03`](Lecture-Notes/Week03_Directory-and-File-Management-I/), [`Week04`](Lecture-Notes/Week04_Directory-and-File-Management-II/)
   - `ch03 문서 편집` (Document Editing), `ch03 실습vi` (vi Lab): [`Week05`](Lecture-Notes/Week05_Vi-Editor/)
   - `ch04 셸 사용법` (Shell Usage): [`Week06`](Lecture-Notes/Week06_Shell-Usage/)
@@ -167,7 +170,7 @@
   - `ch11 배시쉘 프로그래밍` (Bash Shell Programming): [`Week13`](Lecture-Notes/Week13_Bash-Shell-Programming/)
   - `ch08 리눅스의 부팅과 종료` (Linux Booting and Shutdown): [`Week14`](Lecture-Notes/Week14_Boot-and-Shutdown/)
   - `ch11 리눅스 유틸리티 이용하기` (Using Linux Utilities): [`Week15`](Lecture-Notes/Week15_Linux-Utilities/)
-- `(팁) 우분투 원격접속` (Tip: Remote Access to Ubuntu) describes how to find the IP address on Ubuntu with `ifconfig` or `ip addr` and connect from the macOS terminal with `ssh username@IP`, and its content is covered in the remote access setup section of the [Week 2 lecture notes](Lecture-Notes/Week02_Linux-Installation/Concepts_Lecture.md).
+- `(팁) 우분투 원격접속` (Tip: Remote Access to Ubuntu) describes how to find the IP address on Ubuntu with `ifconfig` or `ip addr` and connect from the macOS terminal with `ssh username@IP`, and its content is described under the lab environment in [Section 2](#2-schedule-and-class-format).
 - `실습숙제.배시쉘 프로그래밍` is the brief for Homework 14 (bash shell programming). Homework 14 asks for a bash shell script `user.sh`, run from a root shell as `./user.sh user.txt`, that creates accounts with the user names listed in `user.txt` (for example, `user01`, `user02`, `tmskim`, `u01`, `u02`) and, in each user's home directory, the folder `username.d1` with the empty files `1`, `2`, `3`, `4`, `5` and the folder `username.d2` with the empty files `a`, `b`, `c`, `d`, `e` (for example, `user01.d1` and `user01.d2`); the source code and the execution results are submitted as a ppt. The lab scripts based on the example script bundle of week 13 (`ex.sh`) and the lab file bundle of week 15 (`lab.util`) are in `Lab13` and `Lab15` of the [`Coursework` index](Coursework/README.md).
 
 ---

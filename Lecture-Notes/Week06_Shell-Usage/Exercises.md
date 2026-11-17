@@ -2,9 +2,9 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-18
 >
-> 우분투 리눅스, 이종원, Ch 4
+> 우분투 리눅스, 이종원, Ch 1, 4
 
 ---
 
@@ -120,3 +120,48 @@ echo "Hello $name"
 **Problem:** You installed a custom application in `/opt/myapp/bin` and want its commands to be available from any directory. Write the command to add this directory to your `PATH`.
 
 **[Solution](Solutions.md#exercise-8-modifying-path)**
+
+---
+
+<br>
+
+## Exercise 9: Terminal Prompt Symbols
+
+**Problem:** What does the prompt symbol indicate about the user's privilege level?
+
+- A. `$` indicates the root user, and `#` indicates a regular user.
+- B. `$` indicates a regular user, and `#` indicates the root user.
+- C. Both `$` and `#` indicate regular users.
+- D. The prompt symbol has no relation to user privileges.
+
+**[Solution](Solutions.md#exercise-9-terminal-prompt-symbols)**
+
+---
+
+<br>
+
+## Exercise 10: Checking the Kernel Version
+
+**Problem:** Which command correctly displays the currently running Linux kernel version?
+
+- A. `kernel -v`
+- B. `uname -r`
+- C. `version --kernel`
+- D. `cat /etc/kernel`
+
+**[Solution](Solutions.md#exercise-10-checking-the-kernel-version)**
+
+---
+
+<br>
+
+## Exercise 11: Command Line Shortcuts
+
+**Problem:** You have typed a long command but need to discard it entirely and start over. With the cursor at the end of the line, which keyboard shortcut deletes everything from the cursor to the beginning of the line?
+
+- A. `Ctrl + K`
+- B. `Ctrl + U`
+- C. `Ctrl + L`
+- D. `Ctrl + C`
+
+**[Solution](Solutions.md#exercise-11-command-line-shortcuts)**

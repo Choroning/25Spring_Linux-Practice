@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-18
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -135,3 +135,18 @@
 **Problem:** What is the meaning of the `-r` option when deleting a user account?
 
 **[Solution](Solutions.md#exercise-10-the--r-option-in-user-deletion)**
+
+---
+
+<br>
+
+## Exercise 11: Purpose of sudo
+
+**Problem:** Which of the following best describes the purpose of `sudo`?
+
+- A. It permanently switches the current session to root.
+- B. It executes a single command with superuser privileges.
+- C. It creates a new root user account.
+- D. It disables the root account.
+
+**[Solution](Solutions.md#exercise-11-purpose-of-sudo)**

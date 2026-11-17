@@ -2,7 +2,7 @@
 
 [레포지토리 안내](README.ko.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **최종 수정일:** 2026-11-17
+> **최종 수정일:** 2026-11-18
 
 ## 목차
 
@@ -76,6 +76,9 @@
   - **Clone(복제):** 테스트를 위해 VM 전체를 복제한다.
   - **Suspend(일시 중지):** VM 상태를 저장하고 복원한다.
   - **Snapshot(스냅샷):** 나중에 되돌릴 수 있는 체크포인트를 저장한다.
+- 실습용 가상 머신은 VMware Workstation Player에서 Create a New Virtual Machine을 선택하여 만든다. 운영체제는 나중에 설치하도록(I will install the operating system later) 빈 하드디스크만 만들고, 게스트 OS 종류는 Linux, 디스크 용량은 20GB, 저장 방식은 여러 파일로 나누어 저장(Split virtual disk into multiple files)으로 정한다. 강의자료가 안내한 VMware Workstation의 버전은 2025년 3월 기준 17.6.2이며, 게스트에서 호스트로 마우스 포커스를 옮기는 키는 `Ctrl + Alt`이다.
+- Ubuntu 설치 이미지(ISO)는 Ubuntu 공식 사이트에서 받아 가상 머신의 CD/DVD 장치에 지정한다. 실습에서는 Ubuntu 24.04의 Desktop(GNOME 데스크톱 포함)과 Server(명령줄만 제공)를 각각 가상 머신에 설치하며, 설치 프로그램에서 언어와 설치 방법(한국어, Ubuntu 설치), 키보드 레이아웃(Korean), 설치할 소프트웨어와 업데이트(최소 설치, 업데이트 다운로드 해제), 설치 형식(디스크를 지우고 Ubuntu 설치, 가상 디스크만 지워짐), 시간대(Seoul), 사용자 계정(사용자 이름 user1, 컴퓨터 이름 myubuntu)을 고른다. 설치가 끝나면 재부팅하여 로그인한다.
+- 호스트에서 가상 머신에 원격 접속할 때는 각 가상 머신에서 `ip addr`나 `ifconfig`로 `inet` 옆의 IPv4 주소를 확인한 뒤, 호스트의 터미널(예: macOS의 터미널)에서 `ssh 사용자명@IP주소`를 실행한다. 가상 머신에는 SSH 서버(`openssh-server`)가 설치되어 동작하고 있어야 한다.
 
 ---
 
@@ -155,7 +158,7 @@
 - 8주차에 중간고사를 치렀고, 16주차에 기말고사를 치르고 종강했다.
 - 강의자료와 단원의 대응은 다음과 같다. 단원 목록은 [`Lecture-Notes` 색인](Lecture-Notes/README.ko.md)에 있다.
   - `00.강의소개`: [`Week01`](Lecture-Notes/Week01_Course-Introduction/)
-  - `ch01 리눅스 설치와 기본 사용법`: [`Week02`](Lecture-Notes/Week02_Linux-Installation/)
+  - `ch01 리눅스 설치와 기본 사용법`: 리눅스 기초는 [`Week01`](Lecture-Notes/Week01_Course-Introduction/)에, 터미널과 명령 사용법은 [`Week06`](Lecture-Notes/Week06_Shell-Usage/)에 정리했다. 가상 머신과 Ubuntu 설치는 실습 환경 구성 자료이므로 강의 노트를 만들지 않고 [2절](#2-수업-일정-및-형식)의 실습 환경에 적었다.
   - `ch02 디렉터리와 파일 사용법 (1)`, `(2)`: [`Week03`](Lecture-Notes/Week03_Directory-and-File-Management-I/), [`Week04`](Lecture-Notes/Week04_Directory-and-File-Management-II/)
   - `ch03 문서 편집`, `ch03 실습vi`: [`Week05`](Lecture-Notes/Week05_Vi-Editor/)
   - `ch04 셸 사용법`: [`Week06`](Lecture-Notes/Week06_Shell-Usage/)
@@ -167,7 +170,7 @@
   - `ch11 배시쉘 프로그래밍`: [`Week13`](Lecture-Notes/Week13_Bash-Shell-Programming/)
   - `ch08 리눅스의 부팅과 종료`: [`Week14`](Lecture-Notes/Week14_Boot-and-Shutdown/)
   - `ch11 리눅스 유틸리티 이용하기`: [`Week15`](Lecture-Notes/Week15_Linux-Utilities/)
-- `(팁) 우분투 원격접속`은 Ubuntu에서 `ifconfig`나 `ip addr`로 IP 주소를 확인하고 macOS 터미널에서 `ssh 사용자명@IP`로 접속하는 절차를 적은 자료로, 그 내용은 [2주차 강의 노트](Lecture-Notes/Week02_Linux-Installation/Concepts_Lecture.ko.md)의 원격 접속 설정 절에서 다룬다.
+- `(팁) 우분투 원격접속`은 Ubuntu에서 `ifconfig`나 `ip addr`로 IP 주소를 확인하고 macOS 터미널에서 `ssh 사용자명@IP`로 접속하는 절차를 적은 자료로, 그 내용은 [2절](#2-수업-일정-및-형식)의 실습 환경에 적었다.
 - `실습숙제.배시쉘 프로그래밍`은 숙제14(bash shell 프로그래밍)의 과제 설명 자료이다. 숙제14는 root 셸에서 `./user.sh user.txt`로 실행하는 bash 셸 스크립트 `user.sh`를 만들어, `user.txt`에 적힌 사용자 이름(예: `user01`, `user02`, `tmskim`, `u01`, `u02`)으로 계정을 만들고 각 사용자의 홈 디렉터리에 폴더 `사용자이름.d1`과 그 안의 빈 파일 `1`, `2`, `3`, `4`, `5`, 폴더 `사용자이름.d2`와 그 안의 빈 파일 `a`, `b`, `c`, `d`, `e`를 만드는 과제이며(예: `user01.d1`, `user01.d2`), 소스 코드와 실행 내용을 ppt로 만들어 제출한다. 13주차의 예제 스크립트 묶음(`ex.sh`)과 15주차의 실습 파일 묶음(`lab.util`)을 정리한 실습 스크립트는 [`Coursework` 색인](Coursework/README.ko.md)의 `Lab13`, `Lab15`에 있다.
 
 ---

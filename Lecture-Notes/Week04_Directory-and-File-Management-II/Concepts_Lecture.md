@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-18
 >
 > 우분투 리눅스, 이종원, Ch 2
 
@@ -357,7 +357,7 @@ which python3
 # /usr/bin/python3
 ```
 
-`which` searches the directories listed in the PATH environment variable for the command file and prints its path. To also check shell builtins and aliases, use `type`, covered in Week 2.
+`which` searches the directories listed in the PATH environment variable for the command file and prints its path. To also check shell builtins and aliases, use `type`, covered in Week 6.
 
 ### 5.4 locate: Fast File Search (Database-based)
 
