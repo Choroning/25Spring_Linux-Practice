@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-19
 
 > **Learning Objectives:**
 > 1. Write bash scripts with variables, conditionals, and loops
@@ -29,6 +29,7 @@
   - [2.5 Special Variables](#25-special-variables)
   - [2.6 Quoting and Command Substitution](#26-quoting-and-command-substitution)
   - [2.7 Arithmetic](#27-arithmetic)
+  - [2.8 Arrays](#28-arrays)
 - [3. Input and Output](#3-input-and-output)
   - [3.1 read: User Input](#31-read-user-input)
   - [3.2 echo and printf](#32-echo-and-printf)
@@ -48,6 +49,7 @@
   - [6.1 Defining Functions](#61-defining-functions)
   - [6.2 Return Values](#62-return-values)
   - [6.3 Listing and Deleting Functions](#63-listing-and-deleting-functions)
+  - [6.4 Local Variables and Variable Scope](#64-local-variables-and-variable-scope)
 - [7. String and File Operations](#7-string-and-file-operations)
   - [7.1 String Operations](#71-string-operations)
   - [7.2 File Type Testing](#72-file-type-testing)
@@ -56,9 +58,12 @@
   - [8.2 Exit Status](#82-exit-status)
   - [8.3 Comments and Self-printing Scripts](#83-comments-and-self-printing-scripts)
   - [8.4 Debugging](#84-debugging)
+  - [8.5 Argument Processing and Options That Expose Errors Early](#85-argument-processing-and-options-that-expose-errors-early)
 - [9. Best Practices](#9-best-practices)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -435,6 +440,44 @@ This session shows the following.
 - `3 ^ 5` is the bitwise XOR of 011 and 101, giving 110, that is, 6.
 
 [Lab_arithmetic.sh](../../Coursework/Lab13_Bash-Shell-Programming/Lab_arithmetic.sh) compares the calculation methods `(( ))`, `$(( ))`, `let`, and `expr` with two integer arguments.
+
+### 2.8 Arrays
+
+A Bash **array** holds several values in one variable, distinguished by numbers (subscripts). Subscripts start at 0 [1].
+
+```bash
+#!/bin/bash
+fruits=(apple "green grape" cherry)          # create an array of three elements
+echo "count: ${#fruits[@]}"                  # number of elements
+echo "first: ${fruits[0]}, last: ${fruits[2]}"
+fruits+=(melon)                              # append an element
+for f in "${fruits[@]}"; do echo "[$f]"; done    # one word per element
+for f in ${fruits[@]}; do echo "<$f>"; done      # without quotes, word splitting again
+echo "indices: ${!fruits[@]}"                # list of subscripts in use
+```
+
+```text
+count: 3
+first: apple, last: cherry
+[apple]
+[green grape]
+[cherry]
+[melon]
+<apple>
+<green>
+<grape>
+<cherry>
+<melon>
+indices: 0 1 2 3
+```
+
+- Line 2 creates one element for each word inside the parentheses. `"green grape"` is one element because of the quotes.
+- `${#array[@]}` on line 3 is the number of elements, and `${array[n]}` on line 4 is the nth element. Writing `$fruits[0]` without braces attaches the string `[0]` to `$fruits` (the first element), giving `apple[0]`.
+- `+=` on line 5 appends elements to the end.
+- `"${array[@]}"` on line 6 expands into one word per element, like `"$@"` for positional parameters (Section 2.5), so elements containing spaces are preserved. Without quotes, as on line 7, word splitting (Week 6, Section 4.2) occurs and `green grape` is split into two words.
+- `${!array[@]}` on line 8 is the list of subscripts.
+
+Bash 4 and later (Ubuntu 24.04 has 5.2) also provide **associative arrays**, whose subscripts are strings, with `declare -A`. For example, `declare -A score; score[kim]=90; echo ${score[kim]}` prints `90` [1]. Arrays are a Bash feature and do not exist in POSIX `sh`, so the shebang of a script that uses arrays must be `#!/bin/bash`, not `#!/bin/sh` (Section 1.4).
 
 ---
 
@@ -1174,6 +1217,30 @@ $
 
 After `unset -f trash`, `typeset -f` prints nothing. Ksh has a `functions` command, an alias of `typeset -f`, but bash has none by default.
 
+### 6.4 Local Variables and Variable Scope
+
+A variable created inside a function is by default a **global variable** visible throughout the script. A variable used only inside a function must be declared with `local` so that it does not overwrite a variable of the same name outside the function [1].
+
+```bash
+#!/bin/bash
+count=10
+inc_global() { count=$((count + 1)); }
+inc_local() { local count=0; count=$((count + 1)); echo "inside: $count"; }
+inc_global; echo "after inc_global: $count"
+inc_local; echo "after inc_local: $count"
+```
+
+```text
+after inc_global: 11
+inside: 1
+after inc_local: 11
+```
+
+- `inc_global` changes the global variable `count`, so the value 10 remains 11 after the function ends.
+- `local count=0` in `inc_local` creates a new variable that exists only while the function runs. Inside the function `count` goes from 0 to 1, but it disappears when the function ends, and the global `count` stays 11.
+
+A function can return a value in two ways. `return n` returns only an exit status from 0 to 255 (Section 6.2), so it is used to signal success or failure; strings and large numbers are printed with `echo` inside the function and received by the caller through command substitution, as in `result=$(function args)`. Command substitution runs in a subshell, so global variables changed inside it are not reflected in the parent shell (Week 6, Section 6.4).
+
 ---
 
 <br>
@@ -1345,6 +1412,59 @@ Sum from 1 to 10 : 55
 
 Since the trap occurs before a command runs, `count` is still empty right before line 6 (`count=1`), and the value right before line 12 (`let count+=1`) is the value before the increment.
 
+### 8.5 Argument Processing and Options That Expose Errors Early
+
+**shift.** `shift` moves the positional parameters forward by one, making `$2` into `$1`, and decreases `$#` by 1. When the number of arguments is unknown, a loop can look only at `$1`.
+
+```bash
+#!/bin/bash
+echo "args: $# -> $*"
+while [ $# -gt 0 ]; do
+    echo "processing: $1"
+    shift
+done
+echo "left: $#"
+```
+
+```text
+$ ./shift_demo.sh a "b c" d
+args: 3 -> a b c d
+processing: a
+processing: b c
+processing: d
+left: 0
+```
+
+The argument `"b c"` is one argument because of the quotes, so `$#` is 3, and the space is preserved because `$1` is printed inside double quotes.
+
+**Options that expose errors early.** By default a shell script keeps running the next line even if a command fails or an undefined variable is used. The following `set` options keep such errors from passing silently [1].
+
+| Option | Effect |
+|:-----|:-----|
+| `set -u` | Expanding an undefined variable reports an error and exits |
+| `set -e` | The script exits when a command fails (exit status other than 0) |
+| `set -o pipefail` | A failure in the middle of a pipeline also counts as a failure of the whole pipeline (Week 4, Section 7.6) |
+
+*Table 11. set options that expose errors early*
+
+```text
+$ cat set_u.sh
+#!/bin/bash
+set -u
+name=world
+echo "hello $name"
+echo "value: $undefined_var"
+echo "not reached"
+$ bash set_u.sh; echo "rc=$?"
+hello world
+set_u.sh: line 5: undefined_var: unbound variable
+rc=1
+```
+
+Without `set -u`, line 5 prints `value: ` and moves on, so a typo in a variable name goes unnoticed and the script runs with an empty value. For example, misspelling the name of `dir` in `rm -rf "$dir/"` can turn the command into `rm -rf /`; `set -u` stops such an accident before it executes.
+
+> **Caution:** `set -e` does not act on the failure of the condition of `if` or `while`, of commands joined with `&&` or `||` (except the last one), or of commands preceded by `!` [1]. Rather than relying on `set -e` alone, it is therefore safer to handle failures of important commands directly, as in `cp a b || exit 1`.
+
 ---
 
 <br>
@@ -1359,6 +1479,22 @@ Since the trap occurs before a command runs, `count` is still empty right before
 - Use `set -euo pipefail` for strict error handling. `-e` ends the script when a command fails, `-u` treats the use of an undefined variable as an error, and `-o pipefail` makes a pipeline fail when any command in it fails.
 - Add meaningful comments to complex logic.
 - Use `shellcheck` to analyze scripts statically and catch common mistakes.
+
+---
+
+<br>
+
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| The array `arr=(a "b c" d)` has 4 elements. | **F.** The quoted `"b c"` is one element, so there are 3. |
+| `for x in ${arr[@]}` treats an element containing a space as one value. | **F.** Without quotes word splitting occurs, so `"${arr[@]}"` must be used. |
+| A variable assigned inside a function without `local` disappears when the function ends. | **F.** A variable created without `local` is global, so it remains outside the function. |
+| `return 300` returns 300 as the function's return value. | **F.** The return value is an exit status from 0 to 255, so 300 cannot be returned as it is; values are received with `echo` and command substitution. |
+| With `set -e` on, the script exits even when a command in an `if` condition fails. | **F.** `set -e` does not act on failures in `if` conditions or in commands joined with `&&` or `\|\|`. |
 
 ---
 
@@ -1384,6 +1520,9 @@ Since the trap occurs before a command runs, `count` is still empty right before
 | Functions | A function is defined with `function name { }`, takes arguments, uses `local` for local variables, and returns an exit status of 0-255 with `return`. |
 | trap | `trap 'cmd' SIGNAL` runs a command each time the signal arrives, and the `DEBUG` trap occurs right before each command. |
 | Debugging | `bash -x script` prints each command before running it, and `trap 'cmd' DEBUG` lets variable values be checked line by line. |
+| Arrays | They are created with `arr=(...)` and used as `${arr[n]}`, `${#arr[@]}`, and `"${arr[@]}"`, and string subscripts use associative arrays with `declare -A`. |
+| Local variables | Variables in functions are global by default and are valid only inside the function when declared with `local`. |
+| Error-exposing options | `set -u` exposes undefined variables, `set -e` failed commands, and `pipefail` failures in the middle of pipelines. |
 
 ---
 
@@ -1435,3 +1574,35 @@ Since the trap occurs before a command runs, `count` is still empty right before
    An exit status is 0-255, so 300 becomes its remainder modulo 256, 44, and `44` is printed. To get 300 as is, write the value to standard output, as in `f() { echo 300; }`, and capture it on the calling side with command substitution, as in `result=$(f)`.
 
    </details>
+
+6. **Arrays and quoting:** Write the output of the following script.
+
+   ```bash
+   files=("my file.txt" b.txt)
+   echo ${#files[@]}
+   for f in "${files[@]}"; do echo "-> $f"; done
+   ```
+
+   <details>
+   <summary>Answer</summary>
+
+   There are two elements, `my file.txt` and `b.txt`, so the first line is `2`. `"${files[@]}"` expands into one word per element, so the two lines `-> my file.txt` and `-> b.txt` follow.
+
+   </details>
+
+7. **Returning values from functions:** Write a function `add` that returns the sum of two numbers, and receive it with `sum=$(add 200 300)` so that `500` is printed. Also explain why the sum should not be returned with `return`.
+
+   <details>
+   <summary>Answer</summary>
+
+   Define `add() { echo $(( $1 + $2 )); }` and run `sum=$(add 200 300); echo "$sum"`, which prints `500`. `return` can return only an exit status from 0 to 255, so 500 would become 244, its remainder modulo 256.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. C. Ramey and B. Fox, "bash(1), GNU Bash 5.3 manual page." [Online]. Available: https://man7.org/linux/man-pages/man1/bash.1.html
