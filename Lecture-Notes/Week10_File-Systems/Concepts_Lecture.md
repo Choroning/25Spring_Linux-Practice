@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -24,6 +24,7 @@
   - [1.3 Inodes and Data Blocks](#13-inodes-and-data-blocks)
   - [1.4 Structure of the ext4 File System](#14-structure-of-the-ext4-file-system)
   - [1.5 File Systems and the Directory Hierarchy](#15-file-systems-and-the-directory-hierarchy)
+  - [1.6 Computing the Numbers of Blocks and Inodes](#16-computing-the-numbers-of-blocks-and-inodes)
 - [2. Disk Partitioning](#2-disk-partitioning)
   - [2.1 Partition Types](#21-partition-types)
   - [2.2 Partitioning Tools](#22-partitioning-tools)
@@ -43,6 +44,7 @@
   - [5.3 umount: Detach File System](#53-umount-detach-file-system)
   - [5.4 /etc/fstab: Persistent Mounts](#54-etcfstab-persistent-mounts)
   - [5.5 Mounting Removable Devices](#55-mounting-removable-devices)
+  - [5.6 Effects of Mount Options](#56-effects-of-mount-options)
 - [6. LVM (Logical Volume Manager)](#6-lvm-logical-volume-manager)
   - [6.1 Concepts and Terms of LVM](#61-concepts-and-terms-of-lvm)
   - [6.2 LVM Commands](#62-lvm-commands)
@@ -50,6 +52,7 @@
 - [7. Disk Usage Monitoring](#7-disk-usage-monitoring)
   - [7.1 df: Disk Free Space](#71-df-disk-free-space)
   - [7.2 du: Disk Usage](#72-du-disk-usage)
+  - [7.3 File Size, Disk Usage, and Reserved Blocks](#73-file-size-disk-usage-and-reserved-blocks)
 - [8. Checking and Repairing File Systems](#8-checking-and-repairing-file-systems)
   - [8.1 fsck and e2fsck](#81-fsck-and-e2fsck)
   - [8.2 badblocks: Checking for Bad Blocks](#82-badblocks-checking-for-bad-blocks)
@@ -58,8 +61,10 @@
   - [9.1 The Concept of Swap](#91-the-concept-of-swap)
   - [9.2 Managing Swap](#92-managing-swap)
 - [10. Best Practices](#10-best-practices)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -192,6 +197,21 @@ flowchart TB
 
 In Figure 3, `/usr/bin` and `/usr/lib` are stored in file system 2 and `/home/user1` in file system 3, yet the user sees a single tree.
 
+### 1.6 Computing the Numbers of Blocks and Inodes
+
+ext4 creates only as many inodes as were set when the file system was made, and the number cannot be increased later. `mke2fs` creates one inode for every `bytes-per-inode` bytes of disk space (set with `-i`) [1], and if it is not given, it uses the `inode_ratio` of `/etc/mke2fs.conf` (usually 16384). With a block size of 4 KiB and an inode ratio of 16 KiB, the counts for each size are as follows.
+
+| File system size | Number of blocks (size ÷ 4 KiB) | Number of inodes (size ÷ 16 KiB) |
+|:-----|-----:|-----:|
+| 1 GiB | 262,144 | 65,536 |
+| 20 GiB | 5,242,880 | 1,310,720 |
+
+*Table 3. Numbers of blocks and inodes with a block size of 4 KiB and an inode ratio of 16 KiB*
+
+Each file uses one inode regardless of its size, so if there are very many tiny files, the inodes run out before the blocks do. In that case `df -h` shows free space, yet creating a file gives the error `No space left on device`, and `IUse%` of `df -i` shows 100%. A file system that will store very many small files is created with a smaller ratio, as in `mkfs.ext4 -i 4096`, to make more inodes.
+
+> **Caution:** When a "disk full" error appears, check `df -i` as well as `df -h`. The remedy (cleaning up large files or small files) differs depending on whether the blocks or the inodes have run out.
+
 ---
 
 <br>
@@ -208,7 +228,7 @@ A **partition** is a logical region of a disk, and each partition can hold its o
 | **Extended** | Container for logical partitions (counts as 1 primary) |
 | **Logical** | Created inside an extended partition |
 
-*Table 3. Types of MBR partitions*
+*Table 4. Types of MBR partitions*
 
 ### 2.2 Partitioning Tools
 
@@ -252,7 +272,7 @@ The form of `fdisk` is `fdisk [options] [device]`. `-l` prints the partition tab
 | `w` | Write the partition information to disk and exit |
 | `x` | Enter extra functions for experts, such as changing the number of cylinders |
 
-*Table 4. Internal commands of fdisk*
+*Table 5. Internal commands of fdisk*
 
 The system ID set with `t` is a hexadecimal code for the purpose of the partition: 83 is Linux, 82 is Linux swap, 8e is Linux LVM, and fd is Linux RAID autodetect.
 
@@ -289,7 +309,7 @@ Nothing is written to the disk before `w` is entered, so after a mistake you can
 | Boot mode | BIOS | UEFI |
 | Backup | None | Backup at end of disk |
 
-*Table 5. Comparison of MBR and GPT*
+*Table 6. Comparison of MBR and GPT*
 
 The maximum disk sizes assume 512-byte sectors (MBR addresses $2^{32}$ sectors and GPT $2^{64}$ sectors). The boot mode row shows the usual pairing; with a boot loader such as GRUB, a BIOS system can also boot from a GPT disk.
 
@@ -312,7 +332,7 @@ The representative disk-based file systems of Linux are the ext family. ext (ext
 | **btrfs** | Copy-on-write; snapshots, compression | 16 EB | 16 EB |
 | **tmpfs** | RAM-based file system | (RAM size) | (RAM size) |
 
-*Table 6. Characteristics and maximum sizes of Linux file systems*
+*Table 7. Characteristics and maximum sizes of Linux file systems*
 
 The maximum sizes depend on the block size, and the table shows typical maximums (4KB blocks for ext4).
 
@@ -333,7 +353,7 @@ Linux also supports file systems of other operating systems and network file sys
 | **hpfs** | File system for supporting HPFS of OS/2 |
 | **hfs** | File system for supporting the HFS file system of Mac computers |
 
-*Table 7. Non-Linux file systems supported by Linux*
+*Table 8. Non-Linux file systems supported by Linux*
 
 ### 3.3 Virtual File Systems
 
@@ -349,7 +369,7 @@ There are also special-purpose **virtual file systems** that are not stored on a
 | **ramfs** | File system that supports RAM disks |
 | **rootfs** | Root File System of the `/` directory; manages what is needed for system initialization and management |
 
-*Table 8. Special-purpose virtual file systems*
+*Table 9. Special-purpose virtual file systems*
 
 The file system types the running kernel supports are listed in `/proc/filesystems`. Entries marked `nodev` are virtual file systems mounted without a block device, and disk-based file systems such as ext4 appear by name only, without `nodev`.
 
@@ -422,7 +442,7 @@ The form of `mkfs` is `mkfs [options] [device]`, and `-t type` sets the file sys
 | `-i bytes-per-inode` | Set how many bytes of space get one inode (the default comes from `/etc/mke2fs.conf`: 16,384B for typical sizes and 4,096B for small file systems under 512MB) |
 | `-m reserved-percent` | Set the percentage of blocks reserved for the superuser (default 5%) |
 
-*Table 9. Main options of mke2fs*
+*Table 10. Main options of mke2fs*
 
 For example, the following commands create ext2 on `/dev/sdb1`, ext3 on `/dev/sdb2` and `/dev/sdc1`, and ext4 with a 4,096B block size on `/dev/sdc2`.
 
@@ -519,7 +539,7 @@ Examples of mount commands for various devices are as follows.
 | Read-write mount | `mount -w /dev/sdb1 /mnt` |
 | Remote disk (NFS) | `mount -t nfs server_address:/directory_on_NFS_server /mnt` |
 
-*Table 10. Example mount commands for various devices*
+*Table 11. Example mount commands for various devices*
 
 ### 5.3 umount: Detach File System
 
@@ -557,11 +577,11 @@ tmpfs             /tmp          tmpfs  defaults        0     0
 | 1 | Device | The device to mount, written as a device name such as `/dev/sdb1` or as `UUID=...`. A UUID is a 128-bit number that uniquely identifies a file system |
 | 2 | Mount point | The directory to which the file system is attached |
 | 3 | File system type | ext4, xfs, vfat, swap, and so on |
-| 4 | Options | Comma-separated mount options (Table 12) |
+| 4 | Options | Comma-separated mount options (Table 13) |
 | 5 | Dump setting | 0 excludes the file system from backup by the `dump` command, and 1 includes it |
 | 6 | Check order | 0 skips the `fsck` check at boot. 1 is for the root file system and 2 for other file systems, and 1 is checked first |
 
-*Table 11. Fields of /etc/fstab*
+*Table 12. Fields of /etc/fstab*
 
 Right after Ubuntu is installed, `/etc/fstab` contains lines like the following. `errors=remount-ro` remounts the file system read-only when a file system error occurs.
 
@@ -589,7 +609,7 @@ UUID=A7A5-E2E2  /boot/efi  vfat  umask=0077  0  1
 | `usrquota` | Enable per-user disk quotas |
 | `grpquota` | Enable per-group disk quotas |
 
-*Table 12. Main mount options*
+*Table 13. Main mount options*
 
 ```bash
 # Apply fstab changes without reboot
@@ -607,6 +627,34 @@ sudo mount -a
 **USB memory for Windows.** It is formatted as FAT32, so mounting it as in `sudo mount -t vfat /dev/sdb1 /mnt` makes it usable as a directory. When finished, unmount it with `umount`.
 
 **CD-ROM/DVD.** In most cases it is recognized and mounted automatically. To mount it manually, use `/dev/cdrom` or `/dev/sr0` (`/dev/sr#`) as the device name; mounting it as in `sudo mount -t iso9660 /dev/cdrom /mnt/cdrom` attaches it read-only. When finished, unmount it with `umount`.
+
+### 5.6 Effects of Mount Options
+
+Among the options written with `mount -o` and in the fourth field of `/etc/fstab`, those related to security and performance are as follows [2].
+
+| Option | Effect |
+|:-----|:-----|
+| `ro` / `rw` | Mount read-only / read-write |
+| `noexec` | Do not allow direct execution of programs on that file system |
+| `nosuid` | Ignore the SUID and SGID bits (Week 7, Section 6) |
+| `nodev` | Do not interpret character and block special files as devices |
+| `relatime` / `noatime` | Update the atime only when needed / never (Week 4, Section 2.5) |
+| `defaults` | `rw,suid,dev,exec,auto,nouser,async` |
+
+*Table 14. Mount options related to security and performance*
+
+If `/tmp`, which anyone can write to, or removable media are mounted with `noexec,nosuid,nodev`, an attacker cannot execute programs or SUID files placed there. Running a script where `noexec` applies is refused even if it has execute permission.
+
+```text
+$ mount | grep /mnt/usb
+/dev/sdc1 on /mnt/usb type vfat (rw,nosuid,nodev,noexec,relatime,...)
+$ /mnt/usb/run.sh
+bash: /mnt/usb/run.sh: Permission denied
+$ bash /mnt/usb/run.sh
+hello
+```
+
+`noexec` only stops the kernel from executing the file, so if an interpreter is made to read the file, as in `bash run.sh`, the script runs. `noexec` is therefore a safeguard against mistakes and simple attacks, not a complete barrier. To change only the options while mounted, use `remount`, as in `sudo mount -o remount,ro /mnt/usb`.
 
 ---
 
@@ -662,7 +710,7 @@ With LVM, space can be added by adding PVs to the VG and LVs can be resized, so 
 | LV | Extend an LV | `lvextend -l +number_of_PEs LV_path` |
 | LV | Shrink an LV | `lvreduce -l -number_of_PEs LV_path` |
 
-*Table 13. LVM commands*
+*Table 15. LVM commands*
 
 In `lvcreate`, `lvextend`, and `lvreduce`, `-l` gives the size as a number of PEs and `-L` as a capacity such as `10G`.
 
@@ -728,6 +776,28 @@ du -ah /var/log | sort -rh | head -10   # Top 10 largest files
 ```
 
 > **Note:** `df` reads the block usage information of the file system, while `du` walks the files one by one and adds their sizes, so the two results can differ. For example, the space of a file that has been deleted but is still held open by a process remains in use for `df` but does not appear in `du`.
+
+### 7.3 File Size, Disk Usage, and Reserved Blocks
+
+The **file size** shown by `ls -l` differs from the **disk usage** shown by `du`. Disk space is allocated in blocks, so even a 1-byte file occupies one block (4 KiB), and a 10,000-byte file occupies ⌈10000 ÷ 4096⌉ = 3 blocks, that is, 12 KiB. `du --apparent-size` adds up file sizes instead of disk usage.
+
+```text
+$ printf 'a' > one.txt
+$ head -c 10000 /dev/zero > ten.txt
+$ truncate -s 10000 sparse.txt
+$ ls -l one.txt ten.txt sparse.txt | awk '{print $5, $9}'
+1 one.txt
+10000 sparse.txt
+10000 ten.txt
+$ du -h one.txt ten.txt sparse.txt
+4.0K	one.txt
+12K	ten.txt
+0	sparse.txt
+```
+
+`sparse.txt`, whose size was only extended with `truncate -s`, is a **sparse file** that has no blocks allocated for the parts never written. Reading it gives 10,000 bytes of zeros, but it uses almost no disk space. Virtual machine disk images use this method.
+
+In `df`, Used + Avail is also often smaller than Size. By default ext4 reserves 5% of the blocks for root, so that root-owned daemons can keep working after ordinary users have filled the disk [1]. For a 20 GiB file system, about 1 GiB is reserved and excluded from Avail. On a data-only disk, the reserved percentage can be reduced, as in `sudo tune2fs -m 1 /dev/sdb1`.
 
 ---
 
@@ -842,6 +912,22 @@ sudo swapoff /swapfile
 
 <br>
 
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| The number of inodes in ext4 grows as needed each time a file is created. | **F.** Only the number of inodes set at `mkfs` time is created, and it cannot be increased later. |
+| If `df -h` shows free space, a file can be created. | **F.** When inodes run out, `No space left on device` occurs even with free blocks, so `df -i` should also be checked. |
+| A script on a file system mounted with `noexec` cannot be run by any means. | **F.** Only direct execution is blocked, so the script runs if an interpreter is made to read it, as in `bash run.sh`. |
+| The disk usage of a 1-byte file is 1 byte. | **F.** Space is allocated in blocks, so it occupies one 4 KiB block. |
+| In ext4, Used plus Avail in `df` being smaller than Size is an error. | **F.** It is because the default 5% of reserved blocks is excluded from Avail. |
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Summary |
@@ -859,6 +945,10 @@ sudo swapoff /swapfile
 | `du` | It shows disk usage by directory. |
 | `fsck`/`e2fsck` | They check and repair file systems, and `-b` selects a backup superblock. |
 | Swap | It is a virtual memory area that supplements physical memory with disk space. |
+| Number of inodes | `mkfs` creates one for every `bytes-per-inode` (usually 16 KiB), and with many small files the inodes run out before the blocks. |
+| Mount options | `noexec`, `nosuid`, and `nodev` block execution, special permissions, and device files, and `remount` changes options while mounted. |
+| Size and usage | `ls -l` shows the file size and `du` the usage in blocks, and a sparse file occupies blocks only for the parts written. |
+| Reserved blocks | ext4 reserves 5% of the blocks for root by default, so the Avail of `df` is that much smaller. |
 
 ---
 
@@ -910,3 +1000,30 @@ sudo swapoff /swapfile
    With the file system unmounted, find the location of a backup superblock. Use the value recorded earlier with `dumpe2fs /dev/sdd1 | grep superblock`, or run `mke2fs -n /dev/sdd1` with the same options used to create the file system (with 4KB blocks the first backup is usually at 32768). Then recover with `sudo e2fsck -b 32768 -y /dev/sdd1` and mount again. Spreading the backups over several groups means that if one region of the disk is damaged, copies in other locations remain for recovery.
 
    </details>
+
+6. **Inode computation:** An 8 GiB ext4 created with a block size of 4 KiB and an inode ratio of 16 KiB keeps receiving files of 2 KiB on average. Find whether the blocks or the inodes run out first and roughly how many files are stored at that point (ignore reserved blocks and metadata).
+
+   <details>
+   <summary>Answer</summary>
+
+   The number of inodes is 8 GiB ÷ 16 KiB = 524,288. A 2 KiB file also occupies one block (4 KiB), so by blocks 8 GiB ÷ 4 KiB = 2,097,152 files could be stored. The inodes therefore run out first, at about 524,288 files, when the space used is only 524,288 × 4 KiB = 2 GiB, a quarter of the total.
+
+   </details>
+
+7. **Designing mount options:** An external USB stick is to be mounted at `/mnt/usb` while blocking program execution, SUID files, and device files on it. Write one line of `/etc/fstab` (the device is vfat with UUID `1A2B-3C4D`).
+
+   <details>
+   <summary>Answer</summary>
+
+   `UUID=1A2B-3C4D  /mnt/usb  vfat  defaults,noexec,nosuid,nodev,nofail  0  0`. The options written after `defaults` override its `exec`, `suid`, and `dev`. `nofail` keeps booting from stopping when the USB stick is not plugged in. vfat may be excluded from fsck, so the last two fields are `0 0`.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. "mke2fs(8), Linux manual page," *e2fsprogs*. [Online]. Available: https://man7.org/linux/man-pages/man8/mke2fs.8.html
+2. "mount(8), Linux manual page," *util-linux*. [Online]. Available: https://man7.org/linux/man-pages/man8/mount.8.html
