@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-19
 
 > **Learning Objectives:**
 > 1. Process data by combining text processing utilities with pipes
@@ -10,6 +10,7 @@
 > 3. Sort files and remove duplicate lines with sort and uniq
 > 4. Split files and cut and paste fields with split, cut, and paste
 > 5. Create, convert, and copy files with dd
+> 6. Explain how sed and awk process input and write line-based and field-based transformations
 
 ---
 
@@ -25,12 +26,14 @@
 - [4. sort: Sort Lines](#4-sort-sort-lines)
   - [4.1 Usage](#41-usage)
   - [4.2 Examples](#42-examples)
+  - [4.3 Exact Meaning of Sort Keys](#43-exact-meaning-of-sort-keys)
 - [5. uniq: Remove Duplicates](#5-uniq-remove-duplicates)
   - [5.1 Usage](#51-usage)
   - [5.2 Examples](#52-examples)
 - [6. wc: Word Count](#6-wc-word-count)
   - [6.1 Usage](#61-usage)
   - [6.2 Examples](#62-examples)
+  - [6.3 Definitions of Lines, Words, Bytes, and Characters](#63-definitions-of-lines-words-bytes-and-characters)
 - [7. split: Split Files](#7-split-split-files)
   - [7.1 Usage](#71-usage)
   - [7.2 Examples](#72-examples)
@@ -42,9 +45,14 @@
   - [9.2 sed: Stream Editor](#92-sed-stream-editor)
   - [9.3 awk: Pattern Processing](#93-awk-pattern-processing)
   - [9.4 xargs: Build Commands from Input](#94-xargs-build-commands-from-input)
+  - [9.5 How sed Works and Its Main Commands](#95-how-sed-works-and-its-main-commands)
+  - [9.6 How awk Works and the Structure of Its Programs](#96-how-awk-works-and-the-structure-of-its-programs)
+  - [9.7 Character Sets of tr and Argument Construction of xargs](#97-character-sets-of-tr-and-argument-construction-of-xargs)
 - [10. Best Practices](#10-best-practices)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -536,6 +544,53 @@ uucp:x:5:5:uucp Admin:/usr/lib/uucp:
 
 A `sort` practice can proceed as follows. Copy the lab data to the current directory and check its contents, then run in turn `sort s.dat` (default sort), `sort -f s.dat` (case-insensitive), `sort -r s.dat` (reverse), `sort +2 s.dat` (by the 3rd field), and `sort -o sort.out s.dat` (save the result to a file), and sort with `sort +2 +3 s.dat` by the part from the 3rd field and, if equal, from the 4th field. Finally, `sort -m s.dat sort.out` merges the two already sorted files. Since `s.dat` is sorted by ID and has the same contents as `sort.out`, each line appears twice in the merged result. [Lab_sort_example.sh](../../Coursework/Lab15_Linux-Utilities/Lab_sort_example.sh) runs examples of sorting by score, sorting by UID, and `-u`.
 
+### 4.3 Exact Meaning of Sort Keys
+
+`-k POS1[,POS2]` uses as the key the part from field POS1 to field POS2 (both inclusive), and if POS2 is omitted, the key runs **to the end of the line** [1]. `-k 2` therefore means not "field 2" but "from field 2 to the end of the line". When all keys compare equal, `sort` compares the entire lines as a last resort, and with `-s` (stable) it skips this comparison and keeps the input order [1]. The difference can be seen with the tab-separated lab data `s.dat` (number, surname, given name, score, sex).
+
+```text
+$ sort -t $'\t' -k 2 s.dat | grep Lee
+007	Lee	Mi-Ra	59	F
+003	Lee	Na-Young	54	F
+$ sort -t $'\t' -k 2,2 s.dat | grep Lee
+003	Lee	Na-Young	54	F
+007	Lee	Mi-Ra	59	F
+```
+
+- The keys for `-k 2` are `Lee	Mi-Ra	59	F` and `Lee	Na-Young	54	F`. The `M` of the third field comes before `N`, so `Mi-Ra` comes first.
+- The keys for `-k 2,2` are `Lee` for both lines. The comparison therefore falls back to the last-resort comparison of entire lines, and `003...` comes before `007...`.
+- `$'\t'` is a quoting form that Bash turns into a tab character. Without `-t`, runs of spaces and tabs separate the fields.
+
+Each key can have its own ordering options. `-k 4,4nr` means that only the fourth field is compared numerically (`n`) from largest to smallest (`r`), and when several keys are given, the next key is compared when the earlier keys are equal.
+
+```text
+$ sort -t $'\t' -k 5,5 -k 4,4nr s.dat
+004	Kim	Chan-Sook	60	F
+007	Lee	Mi-Ra	59	F
+003	Lee	Na-Young	54	F
+006	Jyun	Doo-Ri	49	F
+002	Park	Ji-Soo	100	M
+001	Hong	Gil-Dong	80	M
+005	Han	Ju-Hyun	75	M
+```
+
+The lines are grouped first by sex (the fifth field) and, within the same sex, sorted from the highest score. Why a numeric comparison is needed is clear from the next example.
+
+```text
+$ printf '10\n9\n100\n' | sort
+10
+100
+9
+$ printf '10\n9\n100\n' | sort -n
+9
+10
+100
+```
+
+Without `-n`, numbers are treated as strings and compared from their first character, so `10` and `100`, which begin with `1`, come before `9`. This is also why `sort -k 4` put the score of 100 first in Self-Check Question 2.
+
+> **Caution:** `sort -k 4 -n` and `sort -k 4,4n` often give the same result but mean different things. The former is a global option that applies `-n` to every key, and its key runs to the end of the line. To restrict a key to exactly one field, it is always safer to use the form `-k N,N`.
+
 ---
 
 <br>
@@ -687,6 +742,23 @@ $ wc -c test_wc
 ```
 
 This example saves the output of `ls -l` to `test_wc` and counts its bytes. [Lab_wc_example.sh](../../Coursework/Lab15_Linux-Utilities/Lab_wc_example.sh) runs each option on `data/passwd` and counts logged-in users with `who | wc -l`.
+
+### 6.3 Definitions of Lines, Words, Bytes, and Characters
+
+The units that `wc` counts are defined as follows.
+
+- **Lines:** The number of newline characters (`\n`). If the last line does not end with a newline, that line is not counted. `printf 'a\nb' | wc -l` gives 1, not 2.
+- **Words:** Nonempty sequences of non-whitespace characters separated by whitespace characters. The locale determines which characters are whitespace.
+- **Bytes (`-c`) and characters (`-m`):** In UTF-8 one Hangul syllable is 3 bytes, so the two values differ.
+
+```text
+$ printf '한글\n' | wc -c
+7
+$ printf '한글\n' | wc -m
+3
+```
+
+`한글\n` is two Hangul syllables (3 + 3 bytes) and a newline (1 byte), so it is 7 bytes and three characters. `-m` counts this way only in a UTF-8 locale; in the C locale it gives the same value as the byte count. When counting a list of file names with `ls | wc -l`, it is also worth knowing that names containing a newline character are counted more than once.
 
 ---
 
@@ -912,6 +984,114 @@ echo "a b c" | xargs -n1 echo         # One arg per command
 
 `xargs` runs a command with the words received on standard input appended as arguments. The first example passes the file names found by `find` as arguments of `rm`, and the second passes arguments one at a time with `-n1`, running `echo` three times so that `a`, `b`, and `c` are each printed on their own line. If file names may contain spaces, separate them with null characters, as in `find . -name "*.tmp" -print0 | xargs -0 rm`.
 
+### 9.5 How sed Works and Its Main Commands
+
+`sed` reads one line of input into a buffer called the **pattern space**, applies the commands of the script in order, prints the pattern space, and moves on to the next line, repeating this until the input ends [2]. `-n` turns off the automatic printing at the end, in which case the lines to print are chosen explicitly with the `p` command. A command may be preceded by an **address** that selects the lines to which it applies.
+
+| Address | Lines selected |
+|:-----|:-----|
+| (none) | All lines |
+| `3` | Line 3 |
+| `$` | The last line |
+| `/re/` | Lines matching the regular expression `re` |
+| `3,7` | Lines 3 through 7 |
+| `/^start/,/^end/` | From a line starting with `start` to the first following line starting with `end` |
+| `3!` | All lines except line 3 |
+
+*Table 3. Address forms of sed*
+
+In the replacement of the substitution command `s/regex/replacement/flags`, `&` refers to the whole matched string, and `\1`, `\2` refer to the nth group of the regex. The flag `g` replaces every match in the line, and a number `n` replaces only the nth match.
+
+```text
+$ printf 'Hello World\n' | sed 's/o/0/'
+Hell0 World
+$ printf 'Hello World\n' | sed 's/o/0/g'
+Hell0 W0rld
+$ printf 'Hello World\n' | sed 's/o/0/2'
+Hello W0rld
+$ printf 'kim 90\n' | sed 's/[0-9][0-9]*/[&]/'
+kim [90]
+$ sed -E 's/^([^:]*):([^:]*):([0-9]*):.*/\3 \1/' passwd | sed -n '1p;32p'
+0 root
+1000 tmskim
+$ sed -n '/^user/p' passwd | head -3
+user1:x:1001:1001::/home/user1:/bin/bash
+user2:x:1002:1002::/home/user2:/bin/bash
+user3:x:1003:1003::/home/user3:/bin/sh
+```
+
+- In the fourth command, `[0-9][0-9]*` is a run of one or more digits, and `&` refers to that part, `90`, so it becomes `[90]`.
+- The fifth command uses ERE (`-E`) to capture the first field (the name) and the third field (the UID) as groups and rearranges them as `UID name`, and the second `sed` prints only lines 1 and 32. Several commands can be joined with `;`.
+- The sixth command does the same as `grep '^user'`. Writing `/^user/p` without `-n` prints each matching line twice.
+
+`sed -i` writes the result back to the original file. GNU `sed` makes a backup with the suffix attached to `-i` (`-i.bak`) and edits without a backup if there is no suffix. The `sed -i` of the BSD family (macOS) always takes a suffix as a separate argument, so to use the same script in both environments, attach the suffix, as in `-i.bak`.
+
+### 9.6 How awk Works and the Structure of Its Programs
+
+An `awk` program is a sequence of `pattern { action }` rules. `awk` divides its input into **records** (one line by default), divides each record into **fields** (separated by spaces and tabs by default) stored in `$1`, `$2`, ..., `$NF`, and runs the action of each rule whose pattern is true [3]. If the pattern is omitted, the rule applies to every record, and if the action is omitted, `{ print }` (printing the record) applies. A `BEGIN` rule runs once before the first record is read, and an `END` rule once after the last record is processed.
+
+| Variable | Meaning |
+|:-----|:-----|
+| `$0` | The whole current record |
+| `$1`, `$2`, ... | The first, second field |
+| `NF` | Number of fields in the current record (`$NF` is the last field) |
+| `NR` | Number of records read so far (the current line number) |
+| `FS` | Field separator (set with `-F`) |
+| `OFS` | Output separator that `print` inserts between comma-separated values (a space by default) |
+
+*Table 4. Main built-in variables of awk*
+
+Summarizing the scores in `s.dat` gives the following.
+
+```text
+$ awk -F'\t' '{ sum += $4; n++ } END { printf "count=%d sum=%d avg=%.2f\n", n, sum, sum/n }' s.dat
+count=7 sum=477 avg=68.14
+$ awk -F'\t' '$4 >= 80 { print $2, $4 }' s.dat
+Hong 80
+Park 100
+$ awk -F'\t' '{ cnt[$5]++; tot[$5] += $4 } END { for (g in cnt) printf "%s %d %.1f\n", g, cnt[g], tot[g]/cnt[g] }' s.dat | sort
+F 4 55.5
+M 3 85.0
+```
+
+- In the first command, the variables `sum` and `n` start at 0 (the empty string) when first used, without any declaration. The sum of the scores is 80 + 100 + 54 + 60 + 75 + 49 + 59 = 477, and the average is 477 ÷ 7 ≈ 68.14.
+- The second command selects only lines for which the pattern `$4 >= 80` is true. `$4` is a string that looks like a number, so it is compared numerically.
+- In the third command, `cnt[$5]` is an **associative array** indexed by sex. The average of the four women is (54 + 60 + 49 + 59) ÷ 4 = 55.5, and that of the three men is (80 + 100 + 75) ÷ 3 = 85.0. The order of `for (g in cnt)` is unspecified, so `sort` is appended.
+
+`cut` only cuts fields at a single delimiter, whereas `awk` can combine conditions, computation, and formatted output. For example, `awk -F: '$3 >= 1000 && $7 ~ /bash$/ { print $1 }' /etc/passwd` prints only the names of ordinary user accounts whose UID is 1000 or more and whose login shell is bash. `~` is the regular expression match operator.
+
+> **Note:** On Ubuntu the `awk` command points to `mawk` by default, and GNU `gawk` must be installed separately. All the examples above use only the features of `awk` defined by POSIX, so they give the same results with `mawk`, `gawk`, and the `awk` of macOS.
+
+### 9.7 Character Sets of tr and Argument Construction of xargs
+
+The sets of `tr` may use ranges (`a-z`), POSIX character classes (`[:digit:]`, `[:punct:]`, `[:alpha:]`), and escapes (`\n`, `\t`). `-c` means the complement of the first set.
+
+```text
+$ printf 'Hello, World 2025\n' | tr -d '[:punct:][:digit:]'
+Hello World
+$ printf 'aaabbbccc\n' | tr -s 'ab'
+abccc
+$ printf 'Hello 123\n' | tr -c '[:alpha:]\n' '_'
+Hello____
+$ printf 'one two  three\n' | tr -s ' ' '\n'
+one
+two
+three
+```
+
+- The first command deletes punctuation and digits, leaving one space at the end.
+- `-s 'ab'` squeezes only runs of `a` and `b`, so `ccc` stays as it is.
+- `-c '[:alpha:]\n'` replaces every character that is neither a letter nor a newline (the space and the digits) with `_`. If the newline is not in the set, the newline also becomes `_`.
+- The last command turns spaces into newlines while squeezing consecutive newlines into one, printing one word per line. Connecting this output to `sort | uniq -c` counts word frequencies.
+
+`xargs` splits standard input at spaces and newlines into arguments. With `-I{}`, it treats each input line as one argument, puts it in place of `{}` in the command, and runs the command once per line.
+
+```text
+$ printf 'x\ny\n' | xargs -I{} echo file-{}.txt
+file-x.txt
+file-y.txt
+```
+
 ---
 
 <br>
@@ -924,6 +1104,23 @@ echo "a b c" | xargs -n1 echo         # One arg per command
 - Use `sed -i.bak` to create a backup file before in-place edits.
 - Use `dd status=progress` for long operations.
 - Always verify device names before running `dd`.
+
+---
+
+<br>
+
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| `sort -k 2` uses only the second field as the key. | **F.** Without POS2, the key runs from the second field to the end of the line. To use only the second field, write `-k 2,2`. |
+| `sort` always keeps the input order of lines with equal keys. | **F.** When keys are equal it compares entire lines; to keep the input order, give `-s`. |
+| `wc -l` on a two-line file whose last line has no newline gives 2. | **F.** `wc -l` counts newline characters, so it gives 1. |
+| `sed -n '/error/p' log` prints the same lines as `grep error log`. | **T.** `-n` turns off automatic printing, and `p` prints only lines matching `error`. |
+| `awk '{print $NF}'` prints the number of fields in each line. | **F.** `NF` is the number of fields, and `$NF` is the value of the last field. |
+| `tr` takes a file name as an argument and transforms that file. | **F.** `tr` reads only standard input, so it is used as `tr ... < file`. |
 
 ---
 
@@ -943,6 +1140,10 @@ echo "a b c" | xargs -n1 echo         # One arg per command
 | tr | Translates characters of standard input into other characters (squeezing with `-s`, deleting with `-d`) and prints them (e.g., `tr 'a-z' 'A-Z'`). |
 | sed | A stream editor that applies editing commands such as substitution, deletion, and printing line by line (e.g., `sed 's/old/new/g' file`). |
 | awk | A pattern processing language that splits lines into fields and applies patterns and actions (e.g., `awk '{print $1}' file`). |
+| Sort keys | `-k N` runs from field N to the end of the line and `-k N,N` is field N only; equal keys fall back to comparing whole lines, which `-s` turns off. |
+| Units of wc | A line is a newline count, a word a whitespace-separated string, `-c` counts bytes, and `-m` characters. |
+| How sed works | It puts each line into the pattern space, applies commands to lines chosen by addresses, and prints; `-n` turns off automatic printing. |
+| Structure of awk | It applies `pattern { action }` rules to each record and aggregates with `$1`, `NF`, `NR`, `BEGIN`, `END`, and associative arrays. |
 
 ---
 
@@ -994,3 +1195,40 @@ echo "a b c" | xargs -n1 echo         # One arg per command
    Without `bs`, the block size is 512 bytes, so `a` is 512 × 100 = 51200 bytes. `b` has a block size of 1024 bytes, so it is 1024 × 100 = 102400 bytes.
 
    </details>
+
+6. **Designing sort keys:** Write a command that sorts `/etc/passwd` in ascending numeric order of the primary group GID (the fourth field) and, for equal GIDs, in dictionary order of the user name (the first field).
+
+   <details>
+   <summary>Answer</summary>
+
+   It is `sort -t: -k 4,4n -k 1,1 /etc/passwd`. `-t:` sets the colon as the delimiter, the first key `-k 4,4n` compares only the fourth field numerically, and the second key `-k 1,1` compares only the first field as a string when the first keys are equal. Omitting POS2, as in `-k 4n`, makes the key run to the end of the line.
+
+   </details>
+
+7. **sed substitution:** Write a `sed` command that changes each line of a file from the form `name:score` (for example, `kim:90`) to the form `score name` (for example, `90 kim`).
+
+   <details>
+   <summary>Answer</summary>
+
+   It is `sed -E 's/^([^:]*):(.*)$/\2 \1/' file`. The first group `([^:]*)` captures the name before the colon, the second group `(.*)` captures the score after the colon, and the replacement `\2 \1` swaps the order of the two groups. In BRE, it is `sed 's/^\([^:]*\):\(.*\)$/\2 \1/' file`.
+
+   </details>
+
+8. **awk aggregation:** Write an `awk` command that finds the number of students in `s.dat` whose score (the fourth field) is 60 or more and the average score of those students, and compute the result.
+
+   <details>
+   <summary>Answer</summary>
+
+   It is `awk -F'\t' '$4 >= 60 { n++; s += $4 } END { print n, s/n }' s.dat`. The scores of 60 or more are 80, 100, 60, and 75, four students with a sum of 315, so the output is `4 78.75`.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. M. Haertel and P. Eggert, "sort(1), GNU coreutils manual page." [Online]. Available: https://man7.org/linux/man-pages/man1/sort.1.html
+2. The IEEE and The Open Group, "sed," in *The Open Group Base Specifications Issue 8, IEEE Std 1003.1-2024*. [Online]. Available: https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sed.html
+3. The IEEE and The Open Group, "awk," in *The Open Group Base Specifications Issue 8, IEEE Std 1003.1-2024*. [Online]. Available: https://pubs.opengroup.org/onlinepubs/9799919799/utilities/awk.html
