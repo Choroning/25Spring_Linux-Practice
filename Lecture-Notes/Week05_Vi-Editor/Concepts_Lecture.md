@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 3
 
@@ -12,6 +12,7 @@
 > 3. Apply vi command mode, insert mode, and ex mode
 > 4. Copy, delete, and replace text over a line range in last-line mode
 > 5. Configure vi with .vimrc settings
+> 6. Predict the results of editing commands from the rules for combining operators and motions
 
 ---
 
@@ -38,6 +39,7 @@
   - [5.2 Deleting Text](#52-deleting-text)
   - [5.3 Undo and Redo](#53-undo-and-redo)
   - [5.4 Replacing Text](#54-replacing-text)
+  - [5.5 Combining Operators and Motions](#55-combining-operators-and-motions)
 - [6. Copy, Cut, and Paste](#6-copy-cut-and-paste)
   - [6.1 Yank (Copy) and Put (Paste)](#61-yank-copy-and-put-paste)
   - [6.2 Named Buffers (Registers)](#62-named-buffers-registers)
@@ -45,11 +47,13 @@
 - [7. Search and Replace](#7-search-and-replace)
   - [7.1 Searching](#71-searching)
   - [7.2 Search and Replace (Substitution)](#72-search-and-replace-substitution)
+  - [7.3 Ranges, the Global Command, and Special Characters in Substitution](#73-ranges-the-global-command-and-special-characters-in-substitution)
 - [8. Working with Files and Shell Commands](#8-working-with-files-and-shell-commands)
   - [8.1 Reading Files and Editing Multiple Files](#81-reading-files-and-editing-multiple-files)
   - [8.2 Running Shell Commands from Vi](#82-running-shell-commands-from-vi)
   - [8.3 Other Command Keys](#83-other-command-keys)
   - [8.4 Other Useful Commands](#84-other-useful-commands)
+  - [8.5 Swap Files and Recovery, and Saving Files Without Permission](#85-swap-files-and-recovery-and-saving-files-without-permission)
 - [9. Vi Environment Settings](#9-vi-environment-settings)
   - [9.1 Set Commands](#91-set-commands)
   - [9.2 Persistent Configuration (~/.vimrc)](#92-persistent-configuration-vimrc)
@@ -58,6 +62,7 @@
   - [10.1 Productivity Tips](#101-productivity-tips)
   - [10.2 Vi vs. Nano vs. Emacs](#102-vi-vs-nano-vs-emacs)
   - [10.3 Vim Practice: Writing and Running a Program](#103-vim-practice-writing-and-running-a-program)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
 
@@ -329,6 +334,53 @@ The lowercase `w`, `e`, and `b` treat a run of letters, digits, and underscores,
 
 For example, with the cursor on the `w` of `winux`, typing `cw` or `5s`, then `editor`, then `Esc` changes `winux` to `editor`. The difference is that `cw` deletes to the end of the word while `5s` deletes exactly five characters.
 
+### 5.5 Combining Operators and Motions
+
+The commands of Sections 5.2 and 5.4 are not separate lists to memorize but are built from a single grammar. Most editing commands in command mode have the following form.
+
+```text
+[count] operator [count] motion
+```
+
+The **operator** decides what to do (`d` delete, `c` change, `y` copy), and the **motion** decides how far (`w` start of the next word, `e` end of the word, `b` back to the start of the word, `$` end of the line, `0` start of the line, `G` end of the file, `gg` start of the file). Doubling the operator (`dd`, `cc`, `yy`) targets the whole line. A count multiplies wherever it is placed, before or after, so `3dw` and `d3w` both delete three words.
+
+| Operator + motion | Target | Equivalent short command |
+|:-----|:-----|:-----|
+| `dw` | From the cursor to just before the start of the next word | |
+| `de` | From the cursor to the end of the current word | |
+| `d$` | From the cursor to the end of the line | `D` |
+| `d0` | From before the cursor to the start of the line | |
+| `dG` | From the current line to the end of the file (linewise) | |
+| `cw` | Change from the cursor to the end of the current word | |
+| `c$` | Change from the cursor to the end of the line | `C` |
+| `y$` | Copy from the cursor to the end of the line | |
+| `yy` | Copy the current line | `Y` |
+
+*Table 14. Commands that combine operators and motions*
+
+With the cursor on the `q` of the following line, the result of each command is as follows (`^` is the cursor position after the command).
+
+```text
+start:   The quick brown fox jumps
+             ^
+dw  →    The brown fox jumps
+             ^
+de  →    The  brown fox jumps
+             ^
+d2w →    The fox jumps
+             ^
+d$  →    The
+            ^
+d0  →    quick brown fox jumps
+         ^
+```
+
+*Figure 2. Results of deletion commands executed at the same position*
+
+`dw` deletes up to just before the start of the next word, so it also deletes the space after the word, while `de` deletes only up to the last character of the word, so the space remains. Despite its name, `cw` behaves like `ce` and leaves the space after the word. This is an exception defined by vi so that the space need not be retyped when one word is replaced by another.
+
+`.` repeats the last change command, including its count and motion. For example, after `cw` has changed `fox` into `cat`, moving to another word and pressing `.` changes that word into `cat` as well. Repeating the sequence of finding the next `fox` with `/fox` (`n`) and pressing `.` makes it possible to replace occurrences one at a time while checking each, without the substitution of Section 7.2.
+
 ---
 
 <br>
@@ -347,7 +399,7 @@ For example, with the cursor on the `w` of `winux`, typing `cw` or `5s`, then `e
 | `p` | Put (paste) after cursor / below current line |
 | `P` | Put (paste) before cursor / above current line |
 
-*Table 14. Copy, cut, and paste commands*
+*Table 15. Copy, cut, and paste commands*
 
 In vi, cutting is not a separate command but deletion. Text removed with `dd` or `x` is stored in a buffer, so it can be pasted back with `p` or `P`. Text copied or deleted by lines is pasted below (`p`) or above (`P`) the current line, and text copied by characters or words is pasted after (`p`) or before (`P`) the cursor.
 
@@ -373,7 +425,7 @@ After typing `:` to switch to last-line mode, you can copy, cut, and paste by gi
 | `.-3,.` | The line with the cursor and the three lines before it (four lines in total) |
 | `10,20` | From line 10 to line 20 |
 
-*Table 15. Ranges in last-line mode*
+*Table 16. Ranges in last-line mode*
 
 `.` means the line with the cursor and `$` means the last line. Ranges are usually written without spaces around the comma, as in `10,20`.
 
@@ -386,7 +438,7 @@ After typing `:` to switch to last-line mode, you can copy, cut, and paste by gi
 | `:pu` | Pastes the buffer contents after the current line. |
 | `:#pu` | Pastes the buffer contents after line # (e.g., `:4pu`). |
 
-*Table 16. Copy, cut, and paste commands in last-line mode*
+*Table 17. Copy, cut, and paste commands in last-line mode*
 
 For example, `:2,3d` cuts lines 2 and 3, and `:1,2y` copies lines 1 and 2. Typing `:2pu` next pastes the buffer contents after line 2, and `:4pu` pastes them after line 4.
 
@@ -407,7 +459,7 @@ For example, `:2,3d` cuts lines 2 and 3, and `:1,2y` copies lines 1 and 2. Typin
 | `*` | Search forward for word under cursor |
 | `#` | Search backward for word under cursor |
 
-*Table 17. Search commands*
+*Table 18. Search commands*
 
 Pressing `/` moves the cursor to the last line; after you type the search string and press `Enter`, the cursor goes to the next match. When the search reaches the end of the file, vim prints the message `search hit BOTTOM, continuing at TOP` and continues from the beginning of the file. When an upward search with `?` reaches the beginning of the file, it continues from the end.
 
@@ -424,6 +476,38 @@ Pressing `/` moves the cursor to the last line; after you type the search string
 
 The general form of the substitute command is `:{range}s/string1/string2/flags`. Without a range only the current line is affected, and without the `g` flag only the first string1 on each line is replaced. The `c` flag asks for confirmation before each replacement. For example, `:3,4s/editor/ubuntu/` replaces only the first `editor` on each of lines 3 and 4 with `ubuntu`, and `:%s/like/LIKE/g` replaces every `like` in the file with `LIKE`.
 
+### 7.3 Ranges, the Global Command, and Special Characters in Substitution
+
+A **range** in last-line mode is written with line numbers and the following symbols.
+
+| Range | Meaning |
+|:-----|:-----|
+| `.` | The current line |
+| `$` | The last line |
+| `%` | The whole file (same as `1,$`) |
+| `5,$` | From line 5 to the last line |
+| `.,+3` | From the current line to three lines below it (four lines in all) |
+| `'a,'b` | From the line with mark `a` to the line with mark `b` (marked with `ma` and `mb`) |
+
+*Table 19. Range notation in last-line mode*
+
+For example, `:5,$ s/linux/LINUX/g` replaces every `linux` with `LINUX` in each line from line 5 to the last line. Without `g`, only the first `linux` of each line changes, and with `gc`, one chooses at each replacement among `y` (replace), `n` (skip), `a` (all the rest), and `q` (quit).
+
+**The global command.** `:g/pattern/command` runs the command on every line that matches the pattern, and `:v/pattern/command` runs it on every line that does not match.
+
+| Command | Result |
+|:-----|:-----|
+| `:g/^$/d` | Deletes all empty lines |
+| `:g/^#/d` | Deletes all comment lines starting with `#` |
+| `:v/error/d` | Deletes every line not containing `error`, leaving only the lines with `error` |
+| `:g/TODO/s/old/new/g` | Replaces `old` with `new` only in lines containing `TODO` |
+
+*Table 20. Examples of the global command*
+
+**Special characters.** The search string is a regular expression (Week 4, Section 4.2), so `.`, `*`, `[`, `^`, `$`, and `/` must be preceded by `\` to be searched for literally. For strings with many `/` characters, such as paths, changing the delimiter to another character makes the command easier to read. `:s` uses the first character after `s` as the delimiter, so `:%s#/usr/local#/opt#g` is the same as `:%s/\/usr\/local/\/opt/g`. `&` in the replacement means the whole matched string, so `:%s/[0-9][0-9]*/<&>/g` wraps every number in `<...>`. In Vim, `\<` and `\>` mean the start and end of a word, so `:%s/\<is\>/IS/g` replaces only the word `is` and leaves the `is` in `this` alone.
+
+> **Caution:** The `.` in `:s/a.b/x/` is any single character, so it replaces not only `a.b` but also `acb` and `a b`. To search for the character `.` itself, write `:s/a\.b/x/`. If the result of a substitution is not what was expected, undo it at once with `u` and correct the pattern.
+
 ---
 
 <br>
@@ -439,7 +523,7 @@ The general form of the substitute command is `:{range}s/string1/string2/flags`.
 | `:e! file` | Discards the unsaved changes of the current file and switches to the given file. |
 | `:n` | Moves to the next file when several files were given at startup. |
 
-*Table 18. File-related commands*
+*Table 21. File-related commands*
 
 When vi starts with several files, as in `vi a.txt b.txt`, it edits the first file, and `:n` moves to the next one. Trying to move to another file with `:e` or `:n` without saving the current file causes an error, so save with `:w` first or add `!` to discard the changes.
 
@@ -450,7 +534,7 @@ When vi starts with several files, as in `vi a.txt b.txt`, it edits the first fi
 | `:!shell command` | Suspends vi and runs the shell command. Press `Enter` to return to vi. |
 | `:sh` | Leaves vi temporarily and starts a shell. Type `exit` to return to vi. |
 
-*Table 19. Commands that run shell commands from vi*
+*Table 22. Commands that run shell commands from vi*
 
 Use `:!` to run one command and return immediately, and `:sh` when you need to run several commands in the shell. For example, after saving the file, typing `:!pwd` shows the path of the current directory without leaving vi.
 
@@ -464,7 +548,7 @@ Use `:!` to run one command and return immediately, and `:sh` when you need to r
 | `.` (period) | Repeats the command just executed. |
 | `~` (tilde) | Changes the character at the cursor to uppercase or lowercase. |
 
-*Table 20. Other command keys*
+*Table 23. Other command keys*
 
 For example, pressing `J` on line 1 joins lines 1 and 2 into one line, and pressing `.` next performs the same join once more. With the cursor on `u`, pressing `~` changes it to `U`.
 
@@ -480,6 +564,30 @@ For example, pressing `J` on line 1 joins lines 1 and 2 into one line, and press
 :vsplit filename         # Split window vertically
 Ctrl+w w                 # Switch between split windows
 ```
+
+### 8.5 Swap Files and Recovery, and Saving Files Without Permission
+
+Vim continuously records the content being edited in a **swap file** `.filename.swp` in the same directory as the original. If the terminal is disconnected or the system hangs so that Vim cannot finish normally, the swap file remains, and the next time the same file is opened, the warning `E325: ATTENTION` appears with the message `Found a swap file by the name ".memo.txt.swp"`. The choices offered at that point are as follows.
+
+| Choice | Meaning |
+|:-----|:-----|
+| `(O)pen Read-Only` | Open the file read-only |
+| `(E)dit anyway` | Ignore the swap file and edit |
+| `(R)ecover` | Restore the unsaved content from the swap file (same as `vim -r file`) |
+| `(D)elete it` | Delete the swap file |
+| `(Q)uit`, `(A)bort` | Quit without opening |
+
+*Table 24. Actions available at the swap file warning*
+
+After restoring the content with `R`, checking it, and saving it with `:w`, the remaining swap file must be deleted manually, or the same warning appears next time. The warning also appears when the same file is already being edited in another terminal; in that case, quit with `Q` and finish editing on the other side.
+
+**Saving a file without permission.** When an ordinary user opens a root-owned file such as `/etc/hosts`, edits it, and runs `:w`, the error `E45: 'readonly' option is set` or a write permission error appears. The `!` of `:w!` only means "ignore the `readonly` flag" and cannot override file permissions (Week 7), so it is of no use to an ordinary user. The file should have been opened with `sudo vi /etc/hosts` from the start, but to keep the edits already made, save with the following command.
+
+```text
+:w !sudo tee % > /dev/null
+```
+
+`:w !command` sends the buffer's content to the standard input of the command instead of writing it to a file, and `%` is the name of the current file. `sudo tee /etc/hosts` therefore writes the buffer's content to the file with root privileges (Week 12, Section 7.2). `> /dev/null` discards what `tee` also sends to the screen. If Vim then warns that "the file has changed", choose `L` (load).
 
 ---
 
@@ -506,7 +614,7 @@ Ctrl+w w                 # Switch between split windows
 | `:set all` | Show all settings |
 | `:set syntax=on` | Enable syntax highlighting |
 
-*Table 21. vi environment setting commands*
+*Table 25. vi environment setting commands*
 
 ### 9.2 Persistent Configuration (~/.vimrc)
 
@@ -568,7 +676,7 @@ export EXINIT
 | Modal Editing | Yes | No | No |
 | Speed (experienced user) | Very Fast | Moderate | Fast |
 
-*Table 22. Comparison of Vi, Nano, and Emacs*
+*Table 26. Comparison of Vi, Nano, and Emacs*
 
 ### 10.3 Vim Practice: Writing and Running a Program
 
@@ -612,6 +720,23 @@ Both programs print the same output. The outer loop runs over the table number (
 
 <br>
 
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| `d3w` and `3dw` give the same result. | **T.** A count multiplies whether it is placed before the operator or before the motion, so both delete three words. |
+| `cw`, like `dw`, deletes the space after the word before entering insert mode. | **F.** `cw` changes only up to the end of the word, like `ce`, so the space remains. |
+| `:5,$ s/linux/LINUX/` replaces every `linux` from line 5 to the end. | **F.** Without `g`, only the first `linux` in each line is replaced. |
+| `:v/error/d` deletes all lines containing `error`. | **F.** `:v` runs the command on non-matching lines, so only the lines containing `error` remain. |
+| An ordinary user can save to a root-owned file with `:w!`. | **F.** `!` only ignores the `readonly` flag and cannot override file permissions. Use `:w !sudo tee %`. |
+| The swap file warning also appears when the same file is being edited in another terminal. | **T.** The Vim that is editing keeps the swap file, so a second Vim that opens the file finds it. |
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Summary |
@@ -627,6 +752,9 @@ Both programs print the same output. The outer loop runs over the table number (
 | Replace | `:%s/old/new/g` replaces in the whole file, and `:%s/old/new/gc` asks for confirmation. |
 | Files and Shell | `:r`, `:e`, and `:n` handle other files, and `:!` and `:sh` run shell commands. |
 | Settings | `:set nu` applies only to the current session, while `~/.vimrc` or `~/.exrc` applies permanently. |
+| Operators and motions | Commands follow the grammar `[count] operator [count] motion`, combining `d`, `c`, and `y` with `w`, `e`, `$`, `0`, and `G`, and `cw` behaves like `ce`. |
+| Ranges and the global command | Ranges are written with `.`, `$`, `%`, `5,$`, and `.,+3`; `:g/pattern/command` runs on matching lines and `:v` on non-matching lines. |
+| Swap files | Vim records the content being edited in `.name.swp`, and after an abnormal exit the content is restored with `R` or `vim -r`. |
 
 ---
 
@@ -667,5 +795,23 @@ Both programs print the same output. The outer loop runs over the table number (
    <summary>Answer</summary>
 
    Because there are unsaved changes, vim prints the error `E37: No write since last change (add ! to override)` and does not switch files. To keep the changes, save with `:w` and then type `:e exec.txt`; if the changes can be discarded, type `:e! exec.txt`.
+
+   </details>
+
+6. **Operators and motions:** The cursor is on the first `s` of the line `cp source.txt backup/source.txt`. Write the result of each of (a) `dw` (b) `d$` (c) `cw` followed by typing `target` and `Esc`.
+
+   <details>
+   <summary>Answer</summary>
+
+   (a) `dw` deletes only `source`, which consists of word characters, and stops at `.`, because `.` is not a word character and is treated as a new word; the result is `cp .txt backup/source.txt`. (b) `d$` deletes from the cursor to the end of the line, leaving `cp `. (c) `cw` also changes only up to `source`, giving `cp target.txt backup/source.txt`.
+
+   </details>
+
+7. **Substitution commands:** Write the last-line mode command for each task. (a) Replace `/usr/local/bin` with `/opt/bin` throughout the file (b) Replace every `foo` with `bar` from the current line through the five lines below it (six lines in all) (c) Delete every line starting with `#`
+
+   <details>
+   <summary>Answer</summary>
+
+   (a) Change the delimiter to `#` and write `:%s#/usr/local/bin#/opt/bin#g`. With `/` as the delimiter, it is `:%s/\/usr\/local\/bin/\/opt\/bin/g`. (b) `:.,+5s/foo/bar/g`. (c) `:g/^#/d`.
 
    </details>
