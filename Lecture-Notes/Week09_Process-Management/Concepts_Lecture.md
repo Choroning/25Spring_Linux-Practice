@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 6
 
@@ -12,6 +12,7 @@
 > 3. Distinguish foreground and background process execution
 > 4. Apply job control (bg, fg, jobs, nohup)
 > 5. Schedule tasks with at and crontab
+> 6. Explain how commands run and end in terms of fork and exec, exit statuses, and the default actions of signals
 
 ---
 
@@ -21,11 +22,13 @@
   - [1.1 The Concept of a Process](#11-the-concept-of-a-process)
   - [1.2 Process Types](#12-process-types)
   - [1.3 Process States](#13-process-states)
+  - [1.4 fork, exec, wait, and Exit Status](#14-fork-exec-wait-and-exit-status)
 - [2. Viewing Processes](#2-viewing-processes)
   - [2.1 ps: Process Status](#21-ps-process-status)
   - [2.2 pgrep: Finding Processes by Pattern](#22-pgrep-finding-processes-by-pattern)
   - [2.3 top: Real-time Process Monitor](#23-top-real-time-process-monitor)
   - [2.4 pstree: Process Tree](#24-pstree-process-tree)
+  - [2.5 Choosing ps Output Columns and Memory Metrics](#25-choosing-ps-output-columns-and-memory-metrics)
 - [3. Foreground and Background Processes](#3-foreground-and-background-processes)
   - [3.1 Running Processes](#31-running-processes)
   - [3.2 Job Control](#32-job-control)
@@ -34,20 +37,25 @@
   - [4.1 Common Signals](#41-common-signals)
   - [4.2 kill: Send Signals](#42-kill-send-signals)
   - [4.3 Process Priority](#43-process-priority)
+  - [4.4 Default Actions of Signals and Keyboard Signals](#44-default-actions-of-signals-and-keyboard-signals)
+  - [4.5 Relation Between Nice Values and Priorities](#45-relation-between-nice-values-and-priorities)
 - [5. Process Scheduling](#5-process-scheduling)
   - [5.1 Process Lifecycle](#51-process-lifecycle)
   - [5.2 /proc File System](#52-proc-file-system)
 - [6. Scheduled Tasks (cron and at)](#6-scheduled-tasks-cron-and-at)
   - [6.1 crontab: Recurring Tasks](#61-crontab-recurring-tasks)
   - [6.2 at: One-time Tasks](#62-at-one-time-tasks)
+  - [6.3 Interpreting cron Expressions and the cron Environment](#63-interpreting-cron-expressions-and-the-cron-environment)
 - [7. System Monitoring](#7-system-monitoring)
   - [7.1 Resource Monitoring Commands](#71-resource-monitoring-commands)
   - [7.2 uptime and load average](#72-uptime-and-load-average)
 - [8. Best Practices](#8-best-practices)
   - [8.1 Process Management Tips](#81-process-management-tips)
   - [8.2 Common Mistakes](#82-common-mistakes)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -95,6 +103,52 @@ Every process in Linux has a parent-child relationship. A parent process creates
 *Table 2. Process state symbols*
 
 In the STAT column of `ps aux`, more characters may follow the state symbol, as in `Ss`, `S+`, and `I<`. `s` means a session leader, `+` the foreground process group, and `<` high priority, and `I` means an idle kernel thread.
+
+### 1.4 fork, exec, wait, and Exit Status
+
+The process by which the shell runs one command consists of three system calls.
+
+1. **fork:** The shell duplicates itself to create a child process. The child inherits the parent's memory, open files, working directory, and environment variables, and receives a new PID.
+2. **exec:** The child replaces its own program with the program of the command to run (for example, `/usr/bin/ls`). The PID and the open files (including standard input and output changed by redirections) are kept.
+3. **wait:** The parent shell waits for the child to finish and collects the child's **exit status**. Only then does the kernel remove the child's entry from the process table.
+
+```mermaid
+sequenceDiagram
+    participant B as bash (PID 2001)
+    participant C as child (PID 2050)
+    B->>C: fork (a copy of bash)
+    Note over C: exec /usr/bin/ls
+    C-->>B: exit(0)
+    Note over B: wait collects exit status 0
+```
+
+*Figure 1. The order of fork, exec, and wait when the shell runs a command*
+
+If a child has finished but the parent has not done wait, the child in the meantime is the **zombie** of Section 1.2. The following command creates a zombie on purpose. The subshell in parentheses starts `sleep 1` in the background and then replaces itself with `sleep 30` through `exec sleep 30`; the `sleep` program does not wait for children, so `sleep 1`, which ends after one second, remains as a zombie.
+
+```text
+$ (sleep 1 & exec sleep 30) &
+[1] 2061
+$ sleep 2; ps -o pid,ppid,stat,cmd --ppid 2061
+    PID    PPID STAT CMD
+   2062    2061 Z    [sleep] <defunct>
+```
+
+When the parent `sleep 30` ends after 30 seconds, the zombie is adopted by process 1 (or another designated process), the new parent waits for it, and it disappears. A zombie is a process that has already ended, so it cannot be removed even with `kill -9`; the parent must be ended or made to wait.
+
+The exit status is an integer from 0 to 255; 0 means success and any other value means failure. In the shell, the exit status of the last command is stored in `$?`. When a process ends because of signal N, Bash reports its exit status as 128 + N [1].
+
+```text
+$ ls /nosuch; echo $?
+ls: cannot access '/nosuch': No such file or directory
+2
+$ sleep 100
+^C
+$ echo $?
+130
+```
+
+GNU `ls` returns 2 for serious trouble such as being unable to access a command-line argument. The status 130 of the `sleep` ended with `Ctrl+C` is 128 + 2 (SIGINT), and a process ended with `kill -9` would give 128 + 9 = 137.
 
 ---
 
@@ -249,6 +303,23 @@ pstree user1            # Show processes for specific user
 
 In the GNOME desktop environment, the graphical System Monitor tool can also show the process list and resource usage and terminate processes.
 
+### 2.5 Choosing ps Output Columns and Memory Metrics
+
+`ps -o` chooses the columns to print directly. A header can be changed by appending `=` to the column name, and `--sort` sets the column to sort by. The following example shows the three processes using the most memory (example output).
+
+```text
+$ ps -eo pid,ppid,user,ni,stat,%cpu,%mem,vsz,rss,comm --sort=-rss | head -4
+    PID    PPID USER      NI STAT %CPU %MEM    VSZ   RSS COMMAND
+   1834    1601 user1      0 Sl    2.1  8.3 4123456 334512 gnome-shell
+   2210    1834 user1      0 Sl    0.9  3.0 1201896 121348 gnome-terminal-
+    923       1 root       0 Ssl   0.0  1.1  402380 44172 snapd
+```
+
+- **VSZ (virtual size)** is the size (KiB) of the virtual memory the process has reserved in its address space, and **RSS (resident set size)** is the size (KiB) of the part of it that is currently in real memory (RAM). Pages shared by several processes, such as shared libraries, are counted in the RSS of every one of them, so the sum of the RSS of all processes exceeds the actual usage.
+- `%MEM` is the RSS divided by the total physical memory. If the total memory is 4 GiB (say 4,026,068 KiB), it is 334512 ÷ 4026068 ≈ 8.3%.
+- The `-` of `--sort=-rss` means descending order. `comm` prints only the executable name, and `cmd` (or `args`) prints the whole command line including arguments.
+- The `l` in STAT means a multithreaded process.
+
 ---
 
 <br>
@@ -394,6 +465,41 @@ sudo renice -5 -p PID            # Set higher priority
 
 The nice value is shown in the NI column of `top`. A regular user can only raise the nice value to lower the priority of the user's own processes, and only root can lower it (raise the priority).
 
+### 4.4 Default Actions of Signals and Keyboard Signals
+
+Each signal has a **default action** that applies when the process does not handle it itself. There are five: terminate (Term), terminate with a core dump (Core), ignore (Ign), stop (Stop), and continue a stopped process (Cont) [2]. A process can catch most signals to run its own handler or ignore them, but SIGKILL and SIGSTOP cannot be caught, blocked, or ignored [2]. `kill -9` therefore always ends a process, but it also removes the chance for the process to clean up, for example by deleting temporary files or writing buffers to disk. Send SIGTERM (15) first, and use SIGKILL only when the process does not end.
+
+Keystrokes in the terminal send signals to the whole foreground process group.
+
+| Key | Signal | Default action |
+|:-----|:-----|:-----|
+| `Ctrl+C` | SIGINT (2) | Terminate |
+| `Ctrl+Z` | SIGTSTP (20) | Stop |
+| `Ctrl+\` | SIGQUIT (3) | Terminate with a core dump |
+
+*Table 12. Terminal keys and signals*
+
+What `Ctrl+Z` sends is not SIGSTOP but SIGTSTP. A process can catch SIGTSTP, so programs such as `vi` tidy the screen before stopping. SIGSTOP, sent with `kill -STOP PID`, cannot be caught and stops the process at once. A stopped process proceeds again on SIGCONT, and the `bg` and `fg` of Section 3.2 also send SIGCONT internally.
+
+### 4.5 Relation Between Nice Values and Priorities
+
+The user-visible nice values range from -20 to 19, and the kernel stores the nice value of an ordinary process as a number from 0 (high) to 39 (low) [3]. The PR column of `top` shows this value, so for ordinary processes the following relation holds.
+
+```math
+\text{PR} = 20 + \text{NI}
+```
+
+| Command | NI | PR | Meaning |
+|:-----|-----:|-----:|:-----|
+| (default) | 0 | 20 | Normal |
+| `nice -n 10 cmd` | 10 | 30 | Yields more CPU to other processes |
+| `nice -n 19 cmd` | 19 | 39 | The lowest priority |
+| `sudo nice -n -20 cmd` | -20 | 0 | The highest priority |
+
+*Table 13. Nice values and the PR column of top*
+
+Omitting `-n`, as in `nice cmd`, raises the nice value by 10. A nice value sets not the "order" of priority but the share of CPU time, so even a process with nice 19 is not starved of CPU, and it can use the whole CPU when no other process wants it. A process whose PR is shown as `rt` belongs to a real-time scheduling policy to which nice values do not apply.
+
 ---
 
 <br>
@@ -416,11 +522,11 @@ stateDiagram-v2
     running --> done
 ```
 
-*Figure 1. Lifecycle of a process*
+*Figure 2. Lifecycle of a process*
 
 A process is created by its parent with `fork`, and the new process waits for a CPU in the ready state. When the kernel's scheduler assigns it a CPU, it enters the running state; if it must wait for an event such as the completion of I/O while running, it moves to the waiting (sleeping) state and returns to the ready state when the event occurs. A process that has finished running enters the terminated state and remains a zombie (`Z`) until its parent collects its exit status (Section 1.2). In the symbols of Table 2, running and ready correspond to `R`, and waiting to `S` or `D`.
 
-> **[Operating Systems]** Figure 1 is a simplified form of the process state model taught in Operating Systems. The operating system keeps ready processes in a ready queue, and the CPU scheduler picks one of them according to its scheduling policy and assigns it a CPU. The nice value of Section 4.3 is a weight that the Linux scheduler takes into account when dividing CPU time, so among processes competing for the CPU, those with smaller nice values receive more CPU time.
+> **[Operating Systems]** Figure 2 is a simplified form of the process state model taught in Operating Systems. The operating system keeps ready processes in a ready queue, and the CPU scheduler picks one of them according to its scheduling policy and assigns it a CPU. The nice value of Section 4.3 is a weight that the Linux scheduler takes into account when dividing CPU time, so among processes competing for the CPU, those with smaller nice values receive more CPU time.
 
 ### 5.2 /proc File System
 
@@ -464,7 +570,7 @@ sudo crontab -u user1 -e         # Edit another user's crontab
 └────────── Minute (0-59)
 ```
 
-*Figure 2. The six fields of a crontab entry*
+*Figure 3. The six fields of a crontab entry*
 
 A crontab file can hold several tasks, one task per line. A line consists of six fields, minute, hour, day, month, weekday, and the task, separated by whitespace. For the weekday, 0 is Sunday, 1 is Monday, and 6 is Saturday, and Linux cron also accepts 7 as Sunday. A field value of `*` means every value of that field. For example, `30 23 1 * * /usr/bin/ls -l ~user1 > ~user1/cron.out` has `*` in the month and weekday fields, so it runs the task at 23:30 on the 1st of every month.
 
@@ -533,7 +639,7 @@ Running `at` prints the message `warning: commands will be executed using /bin/s
 | `-m` | Notifies the user by mail when the job completes even if there is no output. |
 | `-f file` | Reads the commands to run from a file instead of standard input. |
 
-*Table 12. Main options of at*
+*Table 14. Main options of at*
 
 For example, you can write `at -m 0730 tomorrow`, `at 10:00 pm`, or `at 8:15 am May 30`. `atq` shows the jobs registered by the current user, and when run by root it shows the jobs of all users. Job files created by `at` are stored in the `/var/spool/cron/atjobs` directory by job number, and because only the daemon group can read this directory, viewing its contents requires `sudo`.
 
@@ -542,6 +648,32 @@ Use of the `at` command is restricted with `/etc/at.allow` and `/etc/at.deny`. `
 - If `/etc/at.allow` exists, only the users listed in it can use the `at` command, and `/etc/at.deny` is ignored. Therefore, a user listed in both files can also use `at`.
 - If `/etc/at.allow` does not exist, every user except those listed in `/etc/at.deny` can use the `at` command. If `/etc/at.deny` is an empty file, every user can use it.
 - If neither file exists, only root can use the `at` command.
+
+### 6.3 Interpreting cron Expressions and the cron Environment
+
+A cron expression defines a set of values for each field and runs the command in every minute in which all five fields match. Within a field, `,` lists values, `-` gives a range, and `/n` gives a step. The following entry is interpreted as an example.
+
+```text
+*/10 23 * * 0 /usr/bin/date >| ~/date.txt
+```
+
+| Field | Value | Meaning |
+|:-----|:-----|:-----|
+| Minute | `*/10` | Every 10 minutes from 0 to 59: 0, 10, 20, 30, 40, 50 |
+| Hour | `23` | 23:00 hour |
+| Day of month | `*` | Every day |
+| Month | `*` | Every month |
+| Day of week | `0` | Sunday |
+
+*Table 15. Field-by-field interpretation of the cron entry `*/10 23 * * 0`*
+
+The command therefore runs every Sunday at 23:00, 23:10, ..., 23:50, six times in all. `>|` is a redirection that overwrites regardless of the shell's `noclobber` setting (Week 4, Section 7.6). `*/10` is the same as `0-59/10`.
+
+**The special rule for day of month and day of week.** If neither the day-of-month field nor the day-of-week field is `*`, the command runs when **either one** matches [4]. For example, `30 4 1,15 * 5` runs at 4:30 not on "the 1st and 15th of each month that are Fridays" but on "the 1st and 15th of each month, and every Friday".
+
+**Interpretation of the command part.** cron runs the command part with `/bin/sh` (changeable with the `SHELL` variable of the crontab). A `%` in the command is changed into a newline, and the content after the first `%` is sent to the command as standard input, so to use `date +%Y-%m-%d`, write it as `date +\%Y-\%m-\%d` with `\%` [4].
+
+> **Caution:** Commands run by cron do not have the environment of a login shell. `PATH` is short, about `/usr/bin:/bin`, and `~/.bashrc` is not read, so a command that works in the terminal may fail in cron with "command not found". In a crontab, write commands and files with absolute paths, and keep output and errors in a file, as in `>> ~/cron.log 2>&1`, to find the cause of failures.
 
 ---
 
@@ -606,7 +738,24 @@ The load average is the average number of processes that are running or waiting 
 | Cron job not running | Check paths, permissions, and cron logs |
 | Forgetting `nohup` for SSH tasks | Use `nohup command &` or `screen`/`tmux` |
 
-*Table 13. Common mistakes in process management and their solutions*
+*Table 16. Common mistakes in process management and their solutions*
+
+---
+
+<br>
+
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| A zombie process can be removed with `kill -9`. | **F.** A zombie has already ended, so it disappears only when its parent waits for it or the parent ends and it is adopted by process 1. |
+| `Ctrl+Z` sends SIGSTOP to the foreground process. | **F.** It sends SIGTSTP (20), which differs from SIGSTOP in that the process can catch it. |
+| `echo $?` after a command ended with `Ctrl+C` prints 130. | **T.** The exit status of a process ended by signal N is 128 + N, and SIGINT is 2. |
+| A process with nice value 19 gets no CPU even while other processes are idle. | **F.** A nice value only sets the share of CPU time, so with no competing process it can use the whole CPU. |
+| `0 12 1 * 1` runs at noon only on the 1st of a month that is a Monday. | **F.** When both day of month and day of week are restricted, either one suffices, so it runs at noon on the 1st of every month and on every Monday. |
+| Adding up the RSS of all processes gives the amount of physical memory actually in use. | **F.** Shared pages such as shared libraries are counted several times, so the sum exceeds the real amount. |
 
 ---
 
@@ -628,6 +777,11 @@ The load average is the average number of processes that are running or waiting 
 | `crontab` | Recurring tasks are scheduled in the minute hour day month weekday format, and use is restricted with `cron.allow` and `cron.deny`. |
 | `at` | One-time tasks are scheduled, checked with `atq`, and removed with `atrm`, and use is restricted with `at.allow` and `at.deny`. |
 | `/proc` | `/proc` is a virtual file system that provides process and system information. |
+| fork, exec, wait | The shell creates a child with fork, the child runs the command with exec, and a finished child whose status the parent has not yet collected with wait is a zombie. |
+| Exit status | 0 means success and other values failure; it is stored in `$?`, and it is 128 + N for termination by signal N. |
+| Default actions of signals | They are Term, Core, Ign, Stop, and Cont, and SIGKILL and SIGSTOP cannot be caught or ignored. |
+| nice and PR | For ordinary processes the PR of top is 20 + NI, and the nice value sets the share of CPU time. |
+| cron expressions | `,`, `-`, and `/n` define sets of values, and when both day of month and day of week are restricted, either one suffices. |
 
 ---
 
@@ -670,3 +824,41 @@ The load average is the average number of processes that are running or waiting 
    The three values are the load averages over the last 1, 5, and 15 minutes. With 4 cores, 4.00 corresponds to 100% utilization. The 1-minute value 6.00 means there are on average 2 more runnable processes than cores, so some are waiting, and since the average grew from 1.00 (15 minutes) to 3.50 (5 minutes) to 6.00 (1 minute), the load has been rising quickly in recent minutes.
 
    </details>
+
+6. **cron expressions:** Write when each of the following entries runs. (a) `15,45 9-17 * * 1-5 /usr/local/bin/sync.sh` (b) `0 */6 1 * * /usr/local/bin/report.sh`
+
+   <details>
+   <summary>Answer</summary>
+
+   (a) It runs Monday through Friday, at minutes 15 and 45 of every hour from 9 to 17, so 9 × 2 = 18 times a day (9:15, 9:45, ..., 17:15, 17:45). (b) The hour field `*/6` is 0, 6, 12, and 18, the day-of-month field is 1, and the day of week is `*`, so it runs on the 1st of every month at 0:00, 6:00, 12:00, and 18:00.
+
+   </details>
+
+7. **Exit status:** Write the output of each `echo $?` when the following are run in turn. (a) `true; echo $?` (b) `grep -q root /etc/passwd; echo $?` (c) `sleep 60 & kill -9 $!; wait $!; echo $?`
+
+   <details>
+   <summary>Answer</summary>
+
+   (a) `true` always succeeds, so 0. (b) `/etc/passwd` contains `root`, so `grep -q` returns 0. (c) `$!` is the PID of the last background job. `sleep` was ended by SIGKILL (9), so the exit status returned by `wait` is 128 + 9 = 137.
+
+   </details>
+
+8. **Cause of zombies:** On a server, `ps` shows hundreds of `<defunct>` processes with the same parent PID. Explain the cause and the remedy.
+
+   <details>
+   <summary>Answer</summary>
+
+   The parent process has a defect: it creates children but does not collect their exit statuses with wait. Zombies have already ended, so sending signals to them does not remove them. When the parent process is restarted or ended, the remaining zombies are adopted by process 1 and cleaned up. The fundamental fix is to correct the parent program so that it waits.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. C. Ramey and B. Fox, "bash(1), GNU Bash 5.3 manual page." [Online]. Available: https://man7.org/linux/man-pages/man1/bash.1.html
+2. M. Kerrisk et al., "signal(7), Linux manual page," *The Linux man-pages project*. [Online]. Available: https://man7.org/linux/man-pages/man7/signal.7.html
+3. M. Kerrisk et al., "proc_pid_stat(5), Linux manual page," *The Linux man-pages project*. [Online]. Available: https://man7.org/linux/man-pages/man5/proc_pid_stat.5.html
+4. "crontab(5), Ubuntu noble manual page," *cron*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/crontab.5.html
