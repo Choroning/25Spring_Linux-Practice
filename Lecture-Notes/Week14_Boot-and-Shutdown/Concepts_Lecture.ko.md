@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 8
 
@@ -30,6 +30,7 @@
 - [2. BIOS/UEFI와 부트로더](#2-biosuefi와-부트로더)
   - [2.1 BIOS vs. UEFI](#21-bios-vs-uefi)
   - [2.2 부팅 디스크 구조 (MBR)](#22-부팅-디스크-구조-mbr)
+  - [2.3 GPT와 UEFI 부팅의 구조](#23-gpt와-uefi-부팅의-구조)
 - [3. GRUB 부트로더](#3-grub-부트로더)
   - [3.1 GRUB 개요](#31-grub-개요)
   - [3.2 GRUB2 설정](#32-grub2-설정)
@@ -41,6 +42,7 @@
   - [4.3 systemctl: 서비스 관리](#43-systemctl-서비스-관리)
   - [4.4 서비스 보기](#44-서비스-보기)
   - [4.5 journalctl: 시스템 로그](#45-journalctl-시스템-로그)
+  - [4.6 유닛 파일의 구조와 enable의 동작](#46-유닛-파일의-구조와-enable의-동작)
 - [5. 런레벨과 타겟](#5-런레벨과-타겟)
   - [5.1 SysV 런레벨 vs. systemd 타겟](#51-sysv-런레벨-vs-systemd-타겟)
   - [5.2 타겟 관리](#52-타겟-관리)
@@ -58,8 +60,10 @@
   - [8.1 복구 단계 (Ubuntu/GRUB2)](#81-복구-단계-ubuntugrub2)
   - [8.2 복구 모드로 부팅하기](#82-복구-모드로-부팅하기)
 - [9. 모범 사례](#9-모범-사례)
+- [개념 적용](#개념-적용)
 - [요약](#요약)
 - [점검 문제](#점검-문제)
+- [참고 문헌](#참고-문헌)
 
 ---
 
@@ -192,6 +196,42 @@ lrwxrwxrwx 1 root root 20 11월 21 11:10 /sbin/init -> /lib/systemd/systemd
 *그림 2. MBR 방식 부팅 디스크의 구조와 MBR의 구성*
 
 MBR은 디스크의 첫 섹터 512바이트(446 + 64 + 2)를 차지한다. 앞의 446바이트에는 부트로더의 첫 단계 코드가 들어 있고, 64바이트의 파티션 테이블은 16바이트 항목 4개로 이루어져 주 파티션을 최대 4개까지 기록한다. 마지막 2바이트는 이 섹터가 유효한 부트 섹터임을 나타내는 부트 시그니처(magic number) `0x55AA`이다.
+
+### 2.3 GPT와 UEFI 부팅의 구조
+
+**GPT(GUID Partition Table)** 는 UEFI 규격의 일부로 정의된 파티션 테이블이다. 디스크의 앞부분과 끝부분에 같은 정보를 두 벌 기록한다.
+
+```text
+LBA 0      LBA 1        LBA 2 ~ 33           ...            끝 - 33 ~ 끝 - 1    끝
++--------+------------+------------------+---------------+------------------+------------+
+| 보호용 | GPT 헤더   | 파티션 항목      | 파티션들      | 파티션 항목      | GPT 헤더   |
+| MBR    | (주)       | 128개 × 128바이트 |               | (백업)           | (백업)     |
++--------+------------+------------------+---------------+------------------+------------+
+```
+
+*그림 3. 512바이트 섹터 디스크에서 GPT의 배치*
+
+- **보호용 MBR(protective MBR)** 은 첫 섹터에 디스크 전체를 차지하는 파티션 하나를 적어 두어, GPT를 모르는 옛 도구가 디스크를 빈 디스크로 오해하고 덮어쓰는 일을 막는다.
+- 파티션 항목은 보통 128개를 둘 수 있으므로 MBR처럼 주 파티션 4개의 제한이 없고 확장 파티션도 필요하지 않다.
+- 헤더와 항목 표의 백업이 디스크 끝에 있으므로 앞부분이 손상되어도 파티션 정보를 되살릴 수 있다.
+
+표 1의 최대 부팅 디스크 크기는 섹터 번호의 비트 수로 계산된다. 섹터 크기가 512바이트일 때 MBR은 32비트, GPT는 64비트 섹터 번호를 쓰므로 다음과 같다.
+
+```math
+2^{32} \times 512\ \text{B} = 2\ \text{TiB}, \qquad 2^{64} \times 512\ \text{B} \approx 9.4 \times 10^{21}\ \text{B} = 9.4\ \text{ZB}
+```
+
+UEFI는 MBR의 446바이트 코드를 실행하지 않고, **EFI 시스템 파티션(ESP)** 이라는 FAT 파일 시스템 파티션에서 부트로더 프로그램 파일을 찾아 실행한다. Ubuntu는 ESP를 `/boot/efi`에 마운트하며, UEFI가 실행하는 파일은 `/boot/efi/EFI/ubuntu/` 아래에 있다. Secure Boot를 켠 PC에서는 Microsoft가 서명한 작은 부트로더 `shimx64.efi`가 먼저 실행되어 Ubuntu가 서명한 `grubx64.efi`(GRUB)의 서명을 검사한 뒤 넘겨준다. 그래서 BIOS 방식에서는 MBR의 코드가, UEFI 방식에서는 ESP의 파일이 GRUB의 첫 단계 역할을 한다.
+
+```text
+$ lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS /dev/sda
+NAME     SIZE FSTYPE MOUNTPOINTS
+sda       20G
+├─sda1     1G vfat   /boot/efi
+└─sda2    19G ext4   /
+```
+
+UEFI 방식으로 설치한 Ubuntu 24.04 가상 머신의 예이다. 펌웨어 방식은 `ls /sys/firmware/efi`로 확인할 수 있으며, 이 디렉터리가 있으면 UEFI로 부팅한 것이다.
 
 ---
 
@@ -415,6 +455,42 @@ journalctl -p err                    # 에러 수준 로그만
 ```
 
 `-u`는 유닛 이름으로 로그를 거르고, `-p err`는 우선순위가 err 이상(err, crit, alert, emerg)인 로그만 보여 준다. 일반 사용자는 자신의 로그만 볼 수 있으므로, 시스템 전체의 로그를 보려면 `sudo`를 붙이거나 `adm` 또는 `systemd-journal` 그룹에 속해야 한다.
+
+### 4.6 유닛 파일의 구조와 enable의 동작
+
+유닛은 텍스트로 된 **유닛 파일**로 정의된다. 다음은 부팅할 때 디스크 사용량을 기록하는 간단한 서비스 유닛 `/etc/systemd/system/diskreport.service`의 예이다.
+
+```ini
+[Unit]
+Description=Record disk usage at boot
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/diskreport.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- `[Unit]` 절은 유닛의 설명과 다른 유닛과의 관계를 적는다. `After=`는 시작 순서만 정한다. 어떤 유닛이 반드시 함께 시작되어야 한다는 의존 관계는 `Wants=`(약한 의존)나 `Requires=`(강한 의존)로 따로 적는다.
+- `[Service]` 절은 실행할 명령을 적는다. `Type=oneshot`은 명령이 한 번 실행되고 끝나는 서비스라는 뜻이고, 계속 실행되는 데몬이면 기본값인 `Type=simple`을 쓰며 `Restart=on-failure`로 비정상 종료 때 다시 시작하게 할 수 있다.
+- `[Install]` 절은 평소 동작에는 쓰이지 않고, `systemctl enable`을 실행할 때만 쓰인다 [1].
+
+`systemctl enable diskreport`는 `[Install]`의 `WantedBy=multi-user.target`에 따라 `/etc/systemd/system/multi-user.target.wants/diskreport.service`라는 심볼릭 링크를 만든다. 어떤 유닛의 `이름.wants/` 디렉터리에 링크된 유닛은 그 유닛의 `Wants=` 의존으로 더해지므로 [1], 다음 부팅부터 `multi-user.target`에 이를 때 이 서비스가 함께 시작된다. `enable`은 링크만 만들 뿐 지금 서비스를 시작하지는 않으므로 [2], 바로 시작하려면 `systemctl start`를 따로 실행하거나 `systemctl enable --now`를 쓴다.
+
+```text
+$ sudo systemctl enable diskreport
+Created symlink /etc/systemd/system/multi-user.target.wants/diskreport.service → /etc/systemd/system/diskreport.service.
+$ systemctl is-enabled diskreport
+enabled
+$ systemctl is-active diskreport
+inactive
+```
+
+유닛 파일은 여러 디렉터리에서 찾으며, 관리자가 만든 `/etc/systemd/system`의 파일이 패키지가 설치한 `/usr/lib/systemd/system`의 같은 이름 파일보다 우선한다 [1]. 그래서 패키지의 유닛 설정을 바꾸려면 원본을 고치지 않고 `/etc/systemd/system`에 덮어쓸 파일을 둔다. 유닛 파일을 새로 만들거나 고친 뒤에는 `sudo systemctl daemon-reload`를 실행해야 systemd가 바뀐 내용을 읽는다.
+
+> **주의:** `systemctl stop`으로 멈춘 서비스는 `enable` 상태이면 다음 부팅 때 다시 시작된다. 부팅할 때 시작되지 않게 하려면 `disable`을, 다른 서비스의 의존 관계로도 시작되지 않게 완전히 막으려면 `mask`를 쓴다. `stop`은 지금의 상태를, `enable`과 `disable`은 부팅 때의 동작을 바꾼다.
 
 ---
 
@@ -732,6 +808,22 @@ linux  /boot/vmlinuz-5.13.0-22-generic root=UUID=265c8913-ee1e-4034-885f-207969b
 
 <br>
 
+## 개념 적용
+
+**T/F 점검:**
+
+| 문장 | 판단과 근거 |
+|:-----|:-----|
+| UEFI는 디스크 첫 섹터의 446바이트 부트 코드를 실행하여 GRUB를 시작한다. | **F.** UEFI는 EFI 시스템 파티션의 부트로더 파일(`shimx64.efi`, `grubx64.efi`)을 실행한다. |
+| GPT 디스크에는 주 파티션을 4개까지만 만들 수 있다. | **F.** 4개 제한은 MBR의 64바이트 파티션 테이블 때문이며, GPT는 보통 128개의 항목을 둔다. |
+| `systemctl enable sshd`를 실행하면 sshd가 즉시 시작된다. | **F.** `enable`은 부팅 때 시작되도록 심볼릭 링크만 만들며, 즉시 시작하려면 `start`나 `enable --now`가 필요하다. |
+| `After=network.target`을 적으면 그 유닛이 시작될 때 네트워크도 함께 시작된다. | **F.** `After=`는 순서만 정하며, 함께 시작하게 하려면 `Wants=`나 `Requires=`가 필요하다. |
+| `/etc/systemd/system`의 유닛 파일은 `/usr/lib/systemd/system`의 같은 이름 파일보다 우선한다. | **T.** 관리자가 둔 파일이 패키지가 설치한 파일을 덮어쓴다. |
+
+---
+
+<br>
+
 ## 요약
 
 | 개념 | 핵심 요약 |
@@ -746,6 +838,9 @@ linux  /boot/vmlinuz-5.13.0-22-generic root=UUID=265c8913-ee1e-4034-885f-207969b
 | 종료 | `shutdown -h now`, `poweroff`, `reboot`, `init 0`/`init 6`으로 종료하거나 재시작하며, `halt`, `poweroff`, `reboot`는 `systemctl`의 심볼릭 링크이다. |
 | 데몬 | 백그라운드에서 서비스를 제공하는 프로세스로, 독자형으로 동작하거나 슈퍼데몬(inetd, xinetd)을 통해 실행된다. |
 | 비밀번호 복구 | GRUB 항목의 `linux` 행에 `init=/bin/bash`를 넣어 root 셸로 부팅한 뒤 `passwd root`로 비밀번호를 바꾼다. |
+| GPT | 보호용 MBR, 주 헤더와 항목 표, 디스크 끝의 백업으로 이루어지며, 64비트 섹터 번호로 2 TiB 제한이 없다. |
+| ESP와 Secure Boot | UEFI는 `/boot/efi`의 부트로더 파일을 실행하며, Secure Boot에서는 서명된 `shimx64.efi`가 GRUB를 검사해 넘긴다. |
+| 유닛 파일 | `[Unit]`, `[Service]`, `[Install]` 절로 이루어지며, `enable`은 `[Install]`에 따라 `.wants/` 링크를 만들 뿐 시작하지 않는다. |
 
 ---
 
@@ -797,3 +892,30 @@ linux  /boot/vmlinuz-5.13.0-22-generic root=UUID=265c8913-ee1e-4034-885f-207969b
    독자형 데몬은 항상 실행되어 있으므로 요청에 바로 응답하지만, 요청이 없어도 메모리 같은 자원을 차지한다. 슈퍼데몬을 통한 방식은 요청이 올 때 슈퍼데몬이 해당 데몬을 실행하므로 평소에는 자원을 쓰지 않지만, 요청마다 데몬을 시작하는 만큼 응답이 늦어진다. 그래서 요청이 잦은 서비스는 독자형으로, 드물게 쓰는 서비스는 슈퍼데몬이나 systemd의 소켓 활성화로 운영한다.
 
    </details>
+
+6. **유닛의 상태:** 서비스 `report`의 상태가 `enabled`이고 `inactive`이다. 지금 실행 중인지, 다음 부팅 때 시작되는지 판단하고, 부팅 때 시작되지 않게 하면서 지금 바로 멈추는 명령을 쓰라.
+
+   <details>
+   <summary>정답</summary>
+
+   `inactive`이므로 지금은 실행 중이 아니다. `enabled`이므로 `[Install]`에 적힌 타겟에 링크가 있어 다음 부팅 때 시작된다. 부팅 때 시작되지 않게 하면서 지금 멈추려면 `sudo systemctl disable --now report`를 쓴다. 지금 실행 중이 아니므로 `sudo systemctl disable report`만 써도 결과는 같다.
+
+   </details>
+
+7. **디스크 크기의 한계:** 섹터 크기가 4096바이트인 디스크에서 MBR로 다룰 수 있는 최대 크기를 구하라.
+
+   <details>
+   <summary>정답</summary>
+
+   MBR의 섹터 번호는 32비트이므로 최대 2^32개의 섹터를 가리킨다. 2^32 × 4096 B = 2^32 × 2^12 B = 2^44 B = 16 TiB이다. 512바이트 섹터의 2 TiB보다 8배 크다.
+
+   </details>
+
+---
+
+<br>
+
+## 참고 문헌
+
+1. systemd project, "systemd.unit, Unit configuration," *freedesktop.org*. [Online]. Available: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
+2. systemd project, "systemctl, Control the systemd system and service manager," *freedesktop.org*. [Online]. Available: https://www.freedesktop.org/software/systemd/man/latest/systemctl.html

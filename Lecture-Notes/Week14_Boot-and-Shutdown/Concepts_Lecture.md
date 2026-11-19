@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 8
 
@@ -30,6 +30,7 @@
 - [2. BIOS/UEFI and Bootloader](#2-biosuefi-and-bootloader)
   - [2.1 BIOS vs. UEFI](#21-bios-vs-uefi)
   - [2.2 Boot Disk Structure (MBR)](#22-boot-disk-structure-mbr)
+  - [2.3 Structure of GPT and UEFI Booting](#23-structure-of-gpt-and-uefi-booting)
 - [3. GRUB Bootloader](#3-grub-bootloader)
   - [3.1 GRUB Overview](#31-grub-overview)
   - [3.2 GRUB2 Configuration](#32-grub2-configuration)
@@ -41,6 +42,7 @@
   - [4.3 systemctl: Service Management](#43-systemctl-service-management)
   - [4.4 Viewing Services](#44-viewing-services)
   - [4.5 journalctl: System Logs](#45-journalctl-system-logs)
+  - [4.6 Structure of Unit Files and What enable Does](#46-structure-of-unit-files-and-what-enable-does)
 - [5. Runlevels and Targets](#5-runlevels-and-targets)
   - [5.1 SysV Runlevels vs. systemd Targets](#51-sysv-runlevels-vs-systemd-targets)
   - [5.2 Managing Targets](#52-managing-targets)
@@ -58,8 +60,10 @@
   - [8.1 Recovery Steps (Ubuntu/GRUB2)](#81-recovery-steps-ubuntugrub2)
   - [8.2 Booting into Recovery Mode](#82-booting-into-recovery-mode)
 - [9. Best Practices](#9-best-practices)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -192,6 +196,42 @@ The partition table in the table is the format each firmware is usually paired w
 *Figure 2. Structure of an MBR boot disk and layout of the MBR*
 
 The MBR occupies the first 512-byte sector of the disk (446 + 64 + 2). The first 446 bytes hold the first-stage code of the bootloader, and the 64-byte partition table consists of four 16-byte entries, recording at most four primary partitions. The last 2 bytes are the boot signature (magic number) `0x55AA`, which marks the sector as a valid boot sector.
+
+### 2.3 Structure of GPT and UEFI Booting
+
+**GPT (GUID Partition Table)** is the partition table defined as part of the UEFI specification. It records the same information twice, at the beginning and at the end of the disk.
+
+```text
+LBA 0      LBA 1        LBA 2 ~ 33           ...            end - 33 ~ end - 1  end
++--------+------------+------------------+---------------+------------------+------------+
+| Prot.  | GPT header | Partition entries| Partitions    | Partition entries| GPT header |
+| MBR    | (primary)  | 128 × 128 bytes  |               | (backup)         | (backup)   |
++--------+------------+------------------+---------------+------------------+------------+
+```
+
+*Figure 3. Layout of GPT on a disk with 512-byte sectors*
+
+- The **protective MBR** records, in the first sector, a single partition that covers the whole disk, so that old tools that do not understand GPT do not mistake the disk for an empty one and overwrite it.
+- Usually 128 partition entries can be stored, so there is no limit of four primary partitions as in MBR, and no extended partition is needed.
+- The backup of the header and the entry table is at the end of the disk, so the partition information can be restored even if the beginning is damaged.
+
+The maximum boot disk size in Table 1 is computed from the number of bits of the sector number. With 512-byte sectors, MBR uses 32-bit and GPT 64-bit sector numbers, which gives the following.
+
+```math
+2^{32} \times 512\ \text{B} = 2\ \text{TiB}, \qquad 2^{64} \times 512\ \text{B} \approx 9.4 \times 10^{21}\ \text{B} = 9.4\ \text{ZB}
+```
+
+UEFI does not execute the 446 bytes of code in the MBR; it finds and runs a boot loader program file in a FAT file system partition called the **EFI system partition (ESP)**. Ubuntu mounts the ESP at `/boot/efi`, and the files that UEFI runs are under `/boot/efi/EFI/ubuntu/`. On a PC with Secure Boot enabled, a small boot loader `shimx64.efi` signed by Microsoft runs first, checks the signature of `grubx64.efi` (GRUB) signed by Ubuntu, and hands over to it. In the BIOS method the code in the MBR, and in the UEFI method a file on the ESP, therefore plays the role of the first stage of GRUB.
+
+```text
+$ lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS /dev/sda
+NAME     SIZE FSTYPE MOUNTPOINTS
+sda       20G
+├─sda1     1G vfat   /boot/efi
+└─sda2    19G ext4   /
+```
+
+This is an example from an Ubuntu 24.04 virtual machine installed in UEFI mode. The firmware method can be checked with `ls /sys/firmware/efi`; if this directory exists, the system booted with UEFI.
 
 ---
 
@@ -415,6 +455,42 @@ journalctl -p err                    # Only error-level logs
 ```
 
 `-u` filters logs by unit name, and `-p err` shows only logs whose priority is err or higher (err, crit, alert, emerg). An ordinary user can see only their own logs, so viewing the logs of the whole system requires `sudo` or membership in the `adm` or `systemd-journal` group.
+
+### 4.6 Structure of Unit Files and What enable Does
+
+A unit is defined by a text **unit file**. The following is an example of a simple service unit `/etc/systemd/system/diskreport.service` that records disk usage at boot.
+
+```ini
+[Unit]
+Description=Record disk usage at boot
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/diskreport.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- The `[Unit]` section gives the unit's description and its relations to other units. `After=` sets only the start order. A dependency that some unit must be started together is written separately with `Wants=` (weak dependency) or `Requires=` (strong dependency).
+- The `[Service]` section gives the command to run. `Type=oneshot` means a service whose command runs once and ends; a daemon that keeps running uses the default `Type=simple`, and `Restart=on-failure` can make it restart after an abnormal exit.
+- The `[Install]` section is not used in normal operation; it is used only when `systemctl enable` is run [1].
+
+According to `WantedBy=multi-user.target` in `[Install]`, `systemctl enable diskreport` creates the symbolic link `/etc/systemd/system/multi-user.target.wants/diskreport.service`. A unit linked from the `name.wants/` directory of some unit is added as a `Wants=` dependency of that unit [1], so from the next boot on, this service starts together when `multi-user.target` is reached. `enable` only creates links and does not start the service now [2], so to start it immediately, run `systemctl start` separately or use `systemctl enable --now`.
+
+```text
+$ sudo systemctl enable diskreport
+Created symlink /etc/systemd/system/multi-user.target.wants/diskreport.service → /etc/systemd/system/diskreport.service.
+$ systemctl is-enabled diskreport
+enabled
+$ systemctl is-active diskreport
+inactive
+```
+
+Unit files are looked up in several directories, and a file in `/etc/systemd/system`, created by the administrator, takes precedence over a file of the same name in `/usr/lib/systemd/system`, installed by a package [1]. To change the unit settings of a package, therefore, do not edit the original but place an overriding file in `/etc/systemd/system`. After creating or editing a unit file, `sudo systemctl daemon-reload` must be run for systemd to read the change.
+
+> **Caution:** A service stopped with `systemctl stop` starts again at the next boot if it is enabled. To keep it from starting at boot, use `disable`, and to block it completely so that it cannot start even as a dependency of another service, use `mask`. `stop` changes the current state, and `enable` and `disable` change the behavior at boot.
 
 ---
 
@@ -732,6 +808,22 @@ As `filesystem state: read-only` in the title of the recovery menu indicates, re
 
 <br>
 
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| UEFI starts GRUB by executing the 446-byte boot code in the first sector of the disk. | **F.** UEFI runs boot loader files (`shimx64.efi`, `grubx64.efi`) on the EFI system partition. |
+| Only up to four primary partitions can be created on a GPT disk. | **F.** The limit of four comes from the 64-byte partition table of MBR; GPT usually provides 128 entries. |
+| Running `systemctl enable sshd` starts sshd immediately. | **F.** `enable` only creates symbolic links for starting at boot; to start immediately, `start` or `enable --now` is needed. |
+| Writing `After=network.target` makes the network start together when the unit starts. | **F.** `After=` sets only the order; `Wants=` or `Requires=` is needed to start it together. |
+| A unit file in `/etc/systemd/system` takes precedence over a file of the same name in `/usr/lib/systemd/system`. | **T.** A file placed by the administrator overrides the file installed by a package. |
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Summary |
@@ -746,6 +838,9 @@ As `filesystem state: read-only` in the title of the recovery menu indicates, re
 | Shutdown | `shutdown -h now`, `poweroff`, `reboot`, and `init 0`/`init 6` shut down or restart the system, and `halt`, `poweroff`, and `reboot` are symbolic links to `systemctl`. |
 | Daemons | Processes that provide services in the background, running stand-alone or started through a super daemon (inetd, xinetd). |
 | Password recovery | Adding `init=/bin/bash` to the `linux` line of a GRUB entry boots into a root shell, where `passwd root` changes the password. |
+| GPT | It consists of a protective MBR, a primary header and entry table, and backups at the end of the disk, and its 64-bit sector numbers remove the 2 TiB limit. |
+| ESP and Secure Boot | UEFI runs boot loader files on `/boot/efi`, and under Secure Boot the signed `shimx64.efi` checks GRUB and hands over to it. |
+| Unit files | They consist of `[Unit]`, `[Service]`, and `[Install]` sections, and `enable` only creates `.wants/` links according to `[Install]` without starting the unit. |
 
 ---
 
@@ -797,3 +892,30 @@ As `filesystem state: read-only` in the title of the recovery menu indicates, re
    A stand-alone daemon is always running, so it responds to requests immediately but occupies resources such as memory even when there are no requests. With the super daemon, the daemon is run when a request arrives, so it uses no resources normally, but the response is slower by the time needed to start the daemon for each request. So frequently requested services run stand-alone, and rarely used services run through a super daemon or systemd socket activation.
 
    </details>
+
+6. **State of a unit:** The service `report` is `enabled` and `inactive`. Decide whether it is running now and whether it starts at the next boot, and write the command that keeps it from starting at boot while stopping it right away.
+
+   <details>
+   <summary>Answer</summary>
+
+   It is `inactive`, so it is not running now. It is `enabled`, so a link exists under the target given in `[Install]`, and it starts at the next boot. To keep it from starting at boot while stopping it now, use `sudo systemctl disable --now report`. Since it is not running now, `sudo systemctl disable report` alone gives the same result.
+
+   </details>
+
+7. **Limit of disk size:** Find the maximum size that MBR can handle on a disk with a sector size of 4096 bytes.
+
+   <details>
+   <summary>Answer</summary>
+
+   MBR sector numbers are 32 bits, so they can refer to at most 2^32 sectors. 2^32 × 4096 B = 2^32 × 2^12 B = 2^44 B = 16 TiB, eight times the 2 TiB of 512-byte sectors.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. systemd project, "systemd.unit, Unit configuration," *freedesktop.org*. [Online]. Available: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
+2. systemd project, "systemctl, Control the systemd system and service manager," *freedesktop.org*. [Online]. Available: https://www.freedesktop.org/software/systemd/man/latest/systemctl.html
