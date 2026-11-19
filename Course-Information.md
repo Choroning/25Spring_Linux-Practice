@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 
 ## Table of Contents
 
@@ -170,6 +170,8 @@
   - `ch11 배시쉘 프로그래밍` (Bash Shell Programming): [`Week13`](Lecture-Notes/Week13_Bash-Shell-Programming/)
   - `ch08 리눅스의 부팅과 종료` (Linux Booting and Shutdown): [`Week14`](Lecture-Notes/Week14_Boot-and-Shutdown/)
   - `ch11 리눅스 유틸리티 이용하기` (Using Linux Utilities): [`Week15`](Lecture-Notes/Week15_Linux-Utilities/)
+- [`Ch09`](Lecture-Notes/Ch09_Software-Management/) covers Software Management (textbook Chapter 9) of week 10 in the orientation slides and learning file archive and compression commands of week 10 in the syllabus; the course did not teach these topics, so it is a supplementary unit.
+- [`Ch11`](Lecture-Notes/Ch11_Network-Configuration/) and [`Ch12`](Lecture-Notes/Ch12_Remote-Access-and-FTP/) cover Network Configuration (textbook Chapter 11) of week 12 and Remote Access and FTP (textbook Chapter 12) of week 13 in the orientation slides, and learning Internet and communication commands of week 11 in the syllabus; the course did not teach these topics, so they are supplementary units.
 - `(팁) 우분투 원격접속` (Tip: Remote Access to Ubuntu) describes how to find the IP address on Ubuntu with `ifconfig` or `ip addr` and connect from the macOS terminal with `ssh username@IP`, and its content is described under the lab environment in [Section 2](#2-schedule-and-class-format).
 - `실습숙제.배시쉘 프로그래밍` is the brief for Homework 14 (bash shell programming). Homework 14 asks for a bash shell script `user.sh`, run from a root shell as `./user.sh user.txt`, that creates accounts with the user names listed in `user.txt` (for example, `user01`, `user02`, `tmskim`, `u01`, `u02`) and, in each user's home directory, the folder `username.d1` with the empty files `1`, `2`, `3`, `4`, `5` and the folder `username.d2` with the empty files `a`, `b`, `c`, `d`, `e` (for example, `user01.d1` and `user01.d2`); the source code and the execution results are submitted as a ppt. The lab scripts based on the example script bundle of week 13 (`ex.sh`) and the lab file bundle of week 15 (`lab.util`) are in `Lab13` and `Lab15` of the [`Coursework` index](Coursework/README.md).
 
@@ -186,6 +188,7 @@
 | Lecture Slides | Lecture PPT slides provided by the instructor (00.강의소개, ch01-ch08, ch10, ch11) and lab materials (ch03 실습vi, the week 13 lab homework, the week 13 example scripts `ex.sh`, the week 15 lab files `lab.util`) |
 | Lecture Videos | Online lecture videos provided by the instructor. There is one video for each lecture PPT deck except 00.강의소개 (Course Introduction) and ch07 Disk Management: RAID, 12 in total, and week 2 also has two lab videos (Linux installation and basic usage). |
 | Reference Site | The official Ubuntu site (<https://ubuntu.com/>) |
+| Supplementary-Unit Reference | Ubuntu 24.04 manual pages (<https://manpages.ubuntu.com/manpages/noble/>), Netplan documentation (<https://netplan.readthedocs.io/en/stable/>), systemd manual (<https://www.freedesktop.org/software/systemd/man/latest/>), RFC 959 (FTP), RFC 4251 (SSH Protocol Architecture) |
 
 - The syllabus designates Lecture PPT as the main material, and the orientation slides introduce the textbook and reference above. The ISBN of the textbook is 9791156646075, and that of the reference is 9791156644705.
 - The numbers and titles of decks ch01-ch08 and ch10 match the textbook chapters listed in the schedule of the orientation slides, while the two ch11 decks (Bash Shell Programming and Using Linux Utilities) cover content different from Chapter 11 of the textbook (network configuration).

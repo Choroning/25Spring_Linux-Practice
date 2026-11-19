@@ -23,6 +23,7 @@
 ## 📝 레포지토리 소개
 
 - `Lecture-Notes/`에는 주차별 강의 노트(`Week01`\~`Week15`)가 있고, 대부분의 주차에 복습 문제를 모은 연습 문제와 풀이가 함께 있습니다.
+- `Lecture-Notes/`의 `Ch09`, `Ch11`, `Ch12`는 강의계획서와 OT 자료에 계획된 교재 9장(소프트웨어 관리), 11장(네트워크 설정), 12장(원격 접속과 FTP)의 주제이지만 수업에서 진행하지 않아 보충한 단원입니다.
 - `Coursework/`에는 13주차와 15주차의 Bash 실습 스크립트(`Lab13`, `Lab15`)와 텀 프로젝트 2개가 있습니다.
 - 모든 문서는 영어(`.md`)와 한국어(`.ko.md`) 파일이 짝을 이룹니다.
 
@@ -62,7 +63,7 @@ Linux 시스템의 기본 사용법과 명령어, 셸 프로그래밍을 이론�
 
 ```plaintext
 25Spring_Linux-Practice
-├── Lecture-Notes               주차별 강의 노트, 연습 문제, 풀이
+├── Lecture-Notes               주차별 강의 노트, 보충 단원, 연습 문제, 풀이
 ├── Coursework                  Bash 실습 스크립트와 텀 프로젝트
 ├── Course-Information.ko.md    수업 운영 정보
 ├── Course-Information.md

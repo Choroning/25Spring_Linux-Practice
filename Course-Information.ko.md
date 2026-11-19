@@ -2,7 +2,7 @@
 
 [레포지토리 안내](README.ko.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **최종 수정일:** 2026-11-18
+> **최종 수정일:** 2026-11-19
 
 ## 목차
 
@@ -170,6 +170,8 @@
   - `ch11 배시쉘 프로그래밍`: [`Week13`](Lecture-Notes/Week13_Bash-Shell-Programming/)
   - `ch08 리눅스의 부팅과 종료`: [`Week14`](Lecture-Notes/Week14_Boot-and-Shutdown/)
   - `ch11 리눅스 유틸리티 이용하기`: [`Week15`](Lecture-Notes/Week15_Linux-Utilities/)
+- [`Ch09`](Lecture-Notes/Ch09_Software-Management/)는 OT 자료 10주차의 소프트웨어 관리(교재 9장)와 강의계획서 10주차의 파일 아카이브와 압축 명령 익히기에 해당하는 주제이지만 수업에서 진행하지 않아 보충한 단원입니다.
+- [`Ch11`](Lecture-Notes/Ch11_Network-Configuration/)과 [`Ch12`](Lecture-Notes/Ch12_Remote-Access-and-FTP/)는 OT 자료 12주차의 네트워크 설정(교재 11장)과 13주차의 원격 접속과 FTP(교재 12장), 강의계획서 11주차의 인터넷과 통신 명령 익히기에 해당하는 주제이지만 수업에서 진행하지 않아 보충한 단원입니다.
 - `(팁) 우분투 원격접속`은 Ubuntu에서 `ifconfig`나 `ip addr`로 IP 주소를 확인하고 macOS 터미널에서 `ssh 사용자명@IP`로 접속하는 절차를 적은 자료로, 그 내용은 [2절](#2-수업-일정-및-형식)의 실습 환경에 적었습니다.
 - `실습숙제.배시쉘 프로그래밍`은 숙제14(bash shell 프로그래밍)의 과제 설명 자료입니다. 숙제14는 root 셸에서 `./user.sh user.txt`로 실행하는 bash 셸 스크립트 `user.sh`를 만들어, `user.txt`에 적힌 사용자 이름(예: `user01`, `user02`, `tmskim`, `u01`, `u02`)으로 계정을 만들고 각 사용자의 홈 디렉터리에 폴더 `사용자이름.d1`과 그 안의 빈 파일 `1`, `2`, `3`, `4`, `5`, 폴더 `사용자이름.d2`와 그 안의 빈 파일 `a`, `b`, `c`, `d`, `e`를 만드는 과제이며(예: `user01.d1`, `user01.d2`), 소스 코드와 실행 내용을 ppt로 만들어 제출합니다. 13주차의 예제 스크립트 묶음(`ex.sh`)과 15주차의 실습 파일 묶음(`lab.util`)을 정리한 실습 스크립트는 [`Coursework` 색인](Coursework/README.ko.md)의 `Lab13`, `Lab15`에 있습니다.
 
@@ -186,6 +188,7 @@
 | 강의자료 | 교수자가 제공한 강의 PPT 슬라이드(00.강의소개, ch01~ch08, ch10, ch11)와 실습 자료(ch03 실습vi, 13주차 실습 숙제, 13주차 예제 스크립트 `ex.sh`, 15주차 실습 파일 `lab.util`) |
 | 강의 영상 | 교수자가 제공한 온라인 강의 영상. 00.강의소개와 ch07 디스크 관리 RAID를 뺀 강의 PPT 슬라이드마다 한 편씩 모두 12편이 있고, 2주차에는 실습 영상 2편(리눅스 설치, 기본 사용법)이 있습니다. |
 | 참고 사이트 | Ubuntu 공식 사이트(<https://ubuntu.com/>) |
+| 보충 단원 참고 자료 | Ubuntu 24.04 매뉴얼 페이지(<https://manpages.ubuntu.com/manpages/noble/>), Netplan 문서(<https://netplan.readthedocs.io/en/stable/>), systemd 매뉴얼(<https://www.freedesktop.org/software/systemd/man/latest/>), RFC 959(FTP), RFC 4251(SSH 프로토콜 구조) |
 
 - 강의계획서는 주교재로 Lecture PPT를 지정했고, OT 자료는 위의 교재와 참고 도서를 안내했습니다. 교재의 ISBN은 9791156646075, 참고 도서의 ISBN은 9791156644705입니다.
 - 강의자료 ch01~ch08과 ch10의 번호와 제목은 OT 자료의 강의 일정에 적힌 교재의 장과 같고, ch11의 두 강의자료(배시쉘 프로그래밍, 리눅스 유틸리티 이용하기)는 교재 11장(네트워크 설정)과 다른 내용입니다.

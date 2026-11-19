@@ -23,6 +23,7 @@ This repository archives lecture notes and coursework for the Linux Practice cou
 ## 📝 About This Repository
 
 - `Lecture-Notes/` holds a lecture note for each week (`Week01`-`Week15`), and most weeks also hold exercises of review questions with their solutions.
+- `Ch09`, `Ch11`, and `Ch12` in `Lecture-Notes/` are supplementary units on the topics of textbook Chapters 9 (Software Management), 11 (Network Configuration), and 12 (Remote Access and FTP), which were planned in the syllabus and the OT material but were not taught in class.
 - `Coursework/` holds the Bash lab scripts of Weeks 13 and 15 (`Lab13`, `Lab15`) and two term projects.
 - Every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
 
@@ -62,7 +63,7 @@ A major elective course on the basic use of Linux systems, their commands, and s
 
 ```plaintext
 25Spring_Linux-Practice
-├── Lecture-Notes               Lecture notes, exercises, and solutions by week
+├── Lecture-Notes               Lecture notes by week, supplementary units, exercises, and solutions
 ├── Coursework                  Bash lab scripts and term projects
 ├── Course-Information.ko.md    Course operations
 ├── Course-Information.md
