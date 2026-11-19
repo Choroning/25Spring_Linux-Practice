@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 1, 4
 
@@ -29,11 +29,13 @@
   - [2.3 Login Shells and Subshells](#23-login-shells-and-subshells)
   - [2.4 Shell Builtins](#24-shell-builtins)
   - [2.5 Output Commands](#25-output-commands)
+  - [2.6 Order of Command Lookup and type](#26-order-of-command-lookup-and-type)
 - [3. Shell Metacharacters](#3-shell-metacharacters)
   - [3.1 Special Characters](#31-special-characters)
   - [3.2 Command Execution Control](#32-command-execution-control)
 - [4. Quoting Rules](#4-quoting-rules)
   - [4.1 Types of Quoting](#41-types-of-quoting)
+  - [4.2 Order of Shell Expansions](#42-order-of-shell-expansions)
 - [5. Input/Output Redirection](#5-inputoutput-redirection)
   - [5.1 Standard Input/Output Devices](#51-standard-inputoutput-devices)
   - [5.2 Output Redirection](#52-output-redirection)
@@ -43,6 +45,7 @@
   - [6.1 Shell Variables and Environment Variables](#61-shell-variables-and-environment-variables)
   - [6.2 Common Environment Variables](#62-common-environment-variables)
   - [6.3 Working with Variables](#63-working-with-variables)
+  - [6.4 Inheritance of Environment Variables and source](#64-inheritance-of-environment-variables-and-source)
 - [7. Aliases](#7-aliases)
   - [7.1 Creating and Managing Aliases](#71-creating-and-managing-aliases)
   - [7.2 Useful Aliases](#72-useful-aliases)
@@ -62,8 +65,10 @@
 - [12. Best Practices](#12-best-practices)
   - [12.1 Shell Efficiency](#121-shell-efficiency)
   - [12.2 Security Considerations](#122-security-considerations)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -255,6 +260,33 @@ $ printf "%d + %d = %d\n" 10 10 20
 
 `printf` does not print a newline unless the format string contains `\n`, so running `printf linux` puts the next prompt right after the output.
 
+### 2.6 Order of Command Lookup and type
+
+The shell looks up the first word of a command line in the following order and runs the first thing it finds [1].
+
+1. **Alias:** A name defined with `alias` (Section 7)
+2. **Keyword:** A word that forms the shell syntax, such as `if`, `for`, and `while` (Week 13)
+3. **Function:** A function defined in the shell (Week 13)
+4. **Builtin:** A command of the shell itself, such as `cd`, `echo`, and `type` (Section 2.4)
+5. **Executable file:** The first file found by searching the directories of the environment variable `PATH` from left to right
+
+`type` tells what a name is interpreted as according to this order, and `type -a` shows all the candidates that can be found, in order. Ubuntu's default `~/.bashrc` defines an alias that adds a color option to `ls`, so the following appears.
+
+```text
+$ type ls
+ls is aliased to `ls --color=auto'
+$ type -a echo
+echo is a shell builtin
+echo is /usr/bin/echo
+echo is /bin/echo
+$ type if
+if is a shell keyword
+```
+
+For `echo` the builtin is used first, so `/usr/bin/echo` is not run. The same file appears twice because `/bin` is a symbolic link to `/usr/bin` (Week 3, Section 2.1) and `PATH` contains both directories. The shell remembers (hashes) the location of an executable found in `PATH` and does not search for it again next time; `hash` shows the list and `hash -r` clears it.
+
+The current directory `.` is usually not in `PATH`, so a script in the current directory is run with a path, as in `./myscript.sh`, not as `myscript.sh`. If a command name contains `/`, the shell does not search `PATH` but runs the file at that path directly. Section 12.2 warns against putting `.` at the front of `PATH` because, if another user places a malicious program named `ls` in a shared directory, it runs the moment `ls` is typed in that directory.
+
 ---
 
 <br>
@@ -356,6 +388,51 @@ echo "Files: $(ls)"     # Output: Files: file1 file2 ...
 
 Inside double quotes, `$`, `` ` ``, and `\` keep their special meanings, so in ``echo "Today is `date`"`` the backtick part is replaced by the output of the `date` command, and `echo "\$SHELL"` prints the string `$SHELL`, the same result as `echo '$SHELL'`. Backticks can also be used in file names, so ``ls /usr/bin/`uname -m` `` uses the output of `uname -m` as a directory name. Removing the function of `*` with `\`, as in `ls -l t\*`, finds only a file named exactly `t*`.
 
+### 4.2 Order of Shell Expansions
+
+After splitting a command line into words, the shell expands it in the following order, removes the remaining quotes at the end, and then runs the command [1].
+
+| Order | Expansion | Example |
+|-----:|:-----|:-----|
+| 1 | Brace expansion | `{a,b}` → `a b` |
+| 2 | Tilde expansion | `~` → `/home/user1` |
+| 3 | Variable expansion, command substitution, arithmetic expansion | `$USER`, `$(date)`, `$((3+4*2))` |
+| 4 | Word splitting | Expanded results outside quotes are split at spaces, tabs, and newlines |
+| 5 | Pathname expansion (globbing) | `*.txt` → `a.txt b.txt` (Week 4, Section 6) |
+| 6 | Quote removal | The remaining `'`, `"`, and `\` are removed |
+
+*Table 6. Order of shell expansions*
+
+With `HOME=/home/user1`, `USER=user1`, and the files `report_user1.txt` and `report_user1.log` in the current directory, the expansions proceed as follows.
+
+```text
+$ echo ~/{a,b}_$USER
+/home/user1/a_user1 /home/user1/b_user1
+$ echo report_$USER*
+report_user1.log report_user1.txt
+$ echo $((3+4*2))
+11
+```
+
+The first command becomes `~/a_$USER ~/b_$USER` by brace expansion, and then the tilde and the variable are expanded in turn. The second command becomes `report_user1*` by variable expansion and then two file names by globbing. The arithmetic expansion of the third command performs the multiplication first, giving 3 + 8 = 11.
+
+Word splitting and globbing apply only to **results of expansion outside quotes**. Using a variable without quotes can therefore change its value.
+
+```text
+$ v="a   b"
+$ echo $v
+a b
+$ echo "$v"
+a   b
+$ f="*.txt"
+$ echo $f
+report_user1.txt
+$ echo "$f"
+*.txt
+```
+
+`$v` becomes two arguments `a` and `b` by word splitting, so the three spaces are printed as one, while `"$v"` is passed unchanged as one argument. The expanded `*.txt` of `$f` is globbed again into a file name. Whenever a variable may contain spaces or `*`, it must always be enclosed in double quotes, as in `"$variable"`; in particular, using a variable holding a file name as in `rm $file` can delete other files if the name contains a space.
+
 ---
 
 <br>
@@ -372,7 +449,7 @@ In Linux, a command has three standard input/output devices when it runs. Each d
 | Standard output (stdout) | 1 | Monitor | `>`, `>>`, `1>`, `1>>` |
 | Standard error (stderr) | 2 | Monitor | `2>` |
 
-*Table 6. Standard input/output devices and redirection symbols*
+*Table 7. Standard input/output devices and redirection symbols*
 
 ```mermaid
 flowchart LR
@@ -456,7 +533,7 @@ Shell and environment variable names are conventionally written in uppercase (e.
 | `HISTSIZE` | Number of commands in history | `1000` |
 | `HISTFILE` | History file location | `~/.bash_history` |
 
-*Table 7. Common environment variables*
+*Table 8. Common environment variables*
 
 > **Note:** `SHELL` holds the path of the login shell, not of a subshell that is running (Section 2.2).
 
@@ -495,9 +572,31 @@ export PATH=$PATH:/opt/myapp/bin
 | Check a value | `set`, `env`, `echo $name` | `echo $NAME` |
 | Unset a variable | `unset name` | `unset NAME` |
 
-*Table 8. Defining, checking, and unsetting variables*
+*Table 9. Defining, checking, and unsetting variables*
 
 For example, a shell variable defined with `SOME=test` appears in `set | grep SOME` but is not found by `env | grep SOME`. After `export SOME`, `env` also finds `SOME=test`, and after `export -n SOME`, it disappears from `env` again. `export -n` does not delete the variable, so `echo $SOME` still prints `test`. A variable removed with `unset` is not printed even by `echo`.
+
+### 6.4 Inheritance of Environment Variables and source
+
+Environment variables are passed only from parent to child. A child process receives a copy of the parent's environment when it is forked (Week 9, Section 1.4), so values the child changes do not return to the parent.
+
+```text
+$ export COLOR=blue
+$ bash -c 'echo $COLOR; COLOR=red; echo $COLOR'
+blue
+red
+$ echo $COLOR
+blue
+$ COLOR=green bash -c 'echo $COLOR'
+green
+$ echo $COLOR
+blue
+```
+
+- The child Bash prints the inherited `blue` and changes its own copy to `red`, but the parent's `COLOR` remains `blue`.
+- The form `variable=value command` puts the variable only into the environment of that one command. The shell's variable is not changed.
+
+Therefore, if a script that sets variables is run as `./setenv.sh`, the variables change only in the child shell that ran the script, and that shell then ends. To change the variables of the current shell, use `source setenv.sh` (or `. setenv.sh`), which reads and runs the script in the current shell instead of running it as a child process. Applying changes to the startup files of Section 10 immediately with `source ~/.bashrc` follows the same principle, which is also why `cd` must be a builtin, as noted in Week 3, Section 5.8.
 
 ---
 
@@ -600,7 +699,7 @@ The following shortcuts move the cursor or delete what has been typed.
 | `Ctrl + C` | Cancel the command being typed |
 | `Ctrl + D` | Signal the end of input (EOF); on an empty command line, exit the shell (log out) |
 
-*Table 9. Command-line editing shortcuts*
+*Table 10. Command-line editing shortcuts*
 
 ---
 
@@ -633,7 +732,7 @@ The prompt string is stored in the environment variable `PS1`, and changing the 
 | `\[` | Start of a string that is not printed |
 | `\]` | End of a string that is not printed |
 
-*Table 10. Escape characters used in PS1*
+*Table 11. Escape characters used in PS1*
 
 ```bash
 # Custom prompt examples
@@ -664,7 +763,7 @@ The form of a color prompt is `PS1='\[\e[x;y;nm\]prompt\[\e[0m\]'`.
 | Cyan | 36 | 46 |
 | White | 37 | 47 |
 
-*Table 11. Color numbers for the prompt*
+*Table 12. Color numbers for the prompt*
 
 | Number | Function |
 |--------|----------|
@@ -677,7 +776,7 @@ The form of a color prompt is `PS1='\[\e[x;y;nm\]prompt\[\e[0m\]'`.
 | 38 | Underline enabled |
 | 39 | Underline disabled |
 
-*Table 12. Special function numbers for the prompt*
+*Table 13. Special function numbers for the prompt*
 
 ```bash
 PS1='\[\e[34m\]Linux $\[\e[0m\] '             # Blue prompt
@@ -707,7 +806,7 @@ Shell configuration files are divided into **system configuration files**, which
 | `~/.bashrc` | Every interactive shell | User-specific |
 | `~/.bash_logout` | On logout | User-specific |
 
-*Table 13. When and for whom bash startup files are read*
+*Table 14. When and for whom bash startup files are read*
 
 | File | Main Contents |
 |------|---------------|
@@ -719,7 +818,7 @@ Shell configuration files are divided into **system configuration files**, which
 | `~/.bash_logout` | Sets commands to run at logout. |
 | `~/.bash_aliases` | Stores user-defined aliases in a separate file (read by `~/.bashrc`). |
 
-*Table 14. Main contents of system and user configuration files*
+*Table 15. Main contents of system and user configuration files*
 
 ### 10.2 Loading Order (Login Shell)
 
@@ -805,6 +904,22 @@ renice -n 5 -p PID              # Change priority of running process
 
 <br>
 
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| If an alias and an executable file have the same name, the executable file runs first. | **F.** The shell looks up aliases, keywords, functions, builtins, and executables in `PATH`, in that order. |
+| `v="a   b"; echo $v` prints the three spaces as they are. | **F.** The result of variable expansion outside quotes undergoes word splitting, so `a b` is printed. |
+| Globbing happens before variable expansion. | **F.** Pathname expansion happens after variable expansion and word splitting, so a `*` stored in a variable is also expanded. |
+| A variable changed with `export` in a child process is reflected in the parent shell. | **F.** The environment is copied at fork time and passed only from parent to child. |
+| `./setenv.sh` and `source setenv.sh` have the same effect on the current shell's variables. | **F.** The former runs in a child shell and cannot change the current shell; only `source` runs in the current shell. |
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Summary |
@@ -824,6 +939,9 @@ renice -n 5 -p PID              # Change priority of running process
 | Prompt | Putting escape characters such as `\u`, `\h`, `\w` and color codes `\[\e[...m\]` in `PS1` changes the prompt. |
 | Initialization Files | `/etc/profile` and `/etc/bash.bashrc` apply system-wide, while `~/.profile` and `~/.bashrc` apply per user. |
 | Job Control | Jobs are controlled with `&` (background), `fg`/`bg`, and `Ctrl+Z` (suspend). |
+| Order of command lookup | Aliases, keywords, functions, builtins, and executables in `PATH` are searched in that order, which `type -a` shows. |
+| Order of shell expansions | Brace, tilde, variable with command substitution and arithmetic, word splitting, globbing, and quote removal, in that order. |
+| Inheritance of the environment | Environment variables are copied only from parent to child, and to change the current shell a script is run with `source`. |
 
 ---
 
@@ -884,3 +1002,29 @@ renice -n 5 -p PID              # Change priority of running process
    `cd` is not a separate executable file but a command built into the shell. `type` distinguishes shell builtins, aliases, and external commands, whereas `which` searches only for executable files in the directories of PATH. Since there is no executable named `cd`, `which cd` prints nothing and fails.
 
    </details>
+
+6. **Results of expansion:** `USER=user1`, and the current directory contains only `a.txt` and `b.txt`. Write the output of each command. (a) `echo {1..3}_$USER` (b) `echo '$USER' "$USER" \$USER` (c) `x="*"; echo "$x" $x`
+
+   <details>
+   <summary>Answer</summary>
+
+   (a) Brace expansion gives `1_$USER 2_$USER 3_$USER`, and then the variable is expanded, giving `1_user1 2_user1 3_user1`. (b) Nothing is expanded inside single quotes, the variable is expanded inside double quotes, and `\$` is the character `$`, so the output is `$USER user1 $USER`. (c) `"$x"` stays `*`, and the unquoted `$x` is globbed, giving `* a.txt b.txt`.
+
+   </details>
+
+7. **Finding commands:** The output of `type -a pwd` is `pwd is a shell builtin`, `pwd is /usr/bin/pwd`, and `pwd is /bin/pwd`. What runs when `pwd` is typed, and how is `/usr/bin/pwd` run?
+
+   <details>
+   <summary>Answer</summary>
+
+   The builtin is found before executable files, so Bash's builtin `pwd` runs. To use the executable, run it with its path, as in `/usr/bin/pwd`. If a name contains `/`, the shell runs that file directly without looking up aliases, builtins, or `PATH`.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. C. Ramey and B. Fox, "bash(1), GNU Bash 5.3 manual page." [Online]. Available: https://man7.org/linux/man-pages/man1/bash.1.html
