@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-26
+> **최종 수정일:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -27,11 +27,13 @@
   - [2.3 /etc/group](#23-etcgroup)
   - [2.4 /etc/gshadow](#24-etcgshadow)
   - [2.5 /etc/login.defs](#25-etclogindefs)
+  - [2.6 한 계정의 정보를 파일에서 읽기](#26-한-계정의-정보를-파일에서-읽기)
 - [3. 사용자 관리](#3-사용자-관리)
   - [3.1 useradd: 사용자 생성](#31-useradd-사용자-생성)
   - [3.2 adduser: 대화형 사용자 생성 (Debian/Ubuntu)](#32-adduser-대화형-사용자-생성-debianubuntu)
   - [3.3 usermod: 사용자 수정](#33-usermod-사용자-수정)
   - [3.4 userdel: 사용자 삭제](#34-userdel-사용자-삭제)
+  - [3.5 useradd와 adduser의 기본값, 보조 그룹 변경의 함정](#35-useradd와-adduser의-기본값-보조-그룹-변경의-함정)
 - [4. 그룹 관리](#4-그룹-관리)
   - [4.1 그룹 명령 요약](#41-그룹-명령-요약)
   - [4.2 groupadd, addgroup, groupmod, groupdel](#42-groupadd-addgroup-groupmod-groupdel)
@@ -39,6 +41,7 @@
 - [5. 비밀번호 관리](#5-비밀번호-관리)
   - [5.1 비밀번호 설정](#51-비밀번호-설정)
   - [5.2 비밀번호 만료 관리](#52-비밀번호-만료-관리)
+  - [5.3 암호 상태와 계정 잠금](#53-암호-상태와-계정-잠금)
 - [6. 사용자 정보 확인](#6-사용자-정보-확인)
   - [6.1 UID와 EUID](#61-uid와-euid)
   - [6.2 로그인 정보 확인: who, w, last](#62-로그인-정보-확인-who-w-last)
@@ -46,13 +49,17 @@
   - [6.4 파일 소유자 변경: chown, chgrp](#64-파일-소유자-변경-chown-chgrp)
 - [7. sudo 설정](#7-sudo-설정)
   - [7.1 /etc/sudoers](#71-etcsudoers)
+  - [7.2 sudo의 동작과 흔한 실수](#72-sudo의-동작과-흔한-실수)
 - [8. 디스크 쿼터](#8-디스크-쿼터)
   - [8.1 쿼터의 개념](#81-쿼터의-개념)
   - [8.2 쿼터 설정 준비](#82-쿼터-설정-준비)
   - [8.3 쿼터 명령](#83-쿼터-명령)
+  - [8.4 소프트 리미트와 유예 기간의 진행](#84-소프트-리미트와-유예-기간의-진행)
 - [9. 모범 사례](#9-모범-사례)
+- [개념 적용](#개념-적용)
 - [요약](#요약)
 - [점검 문제](#점검-문제)
+- [참고 문헌](#참고-문헌)
 
 ---
 
@@ -196,6 +203,39 @@ sambashare:!::user1
 
 표의 기본값은 Ubuntu 21.10 기준이며, 배포판과 버전에 따라 다르다(예: 최근 Ubuntu는 ENCRYPT_METHOD로 YESCRYPT를 쓴다).
 
+### 2.6 한 계정의 정보를 파일에서 읽기
+
+한 사용자의 정보는 네 파일에 나뉘어 있으며, 이름과 번호로 서로 이어진다. 실습 시스템의 `/etc/passwd`에 있는 user55의 줄을 예로 든다.
+
+```text
+user55:x:1005:1005:myung-sup kim,7-305,xxx,xxx:/home/user55:/bin/bash
+```
+
+| 필드 | 값 | 뜻 |
+|:-----|:-----|:-----|
+| 1 | `user55` | 로그인 ID |
+| 2 | `x` | 암호는 `/etc/shadow`에 있음 |
+| 3 | `1005` | UID. 1000 이상이므로 일반 사용자 |
+| 4 | `1005` | 기본 그룹의 GID. `/etc/group`에서 GID가 1005인 그룹을 찾음 |
+| 5 | `myung-sup kim,7-305,xxx,xxx` | GECOS. `adduser`가 묻는 실명, 방 번호, 직장 전화, 집 전화를 쉼표로 이은 값 |
+| 6 | `/home/user55` | 홈 디렉터리. 로그인할 때 `HOME` 환경 변수가 됨 |
+| 7 | `/bin/bash` | 로그인 셸. 로그인할 때 `SHELL` 환경 변수가 됨 |
+
+*표 3. /etc/passwd의 한 줄을 필드별로 해석한 결과*
+
+로그인 셸 필드가 비어 있으면 `/bin/sh`로 간주한다 [1]. `/etc/shadow`의 날짜 필드는 1970년 1월 1일부터 센 날수이므로 GNU `date`로 날짜로 바꾸어 읽는다.
+
+```text
+$ date -d '1970-01-01 +20168 days' +%F
+2025-03-21
+$ echo $(( $(TZ=UTC date -d 2025-03-21 +%s) / 86400 ))
+20168
+```
+
+첫 명령은 날수를 날짜로, 둘째 명령은 날짜를 날수로 바꾼다. `date +%s`는 1970-01-01 00:00 UTC부터 지난 초를 출력하므로 86400(하루의 초)으로 나누면 날수가 된다. 둘째 명령의 `TZ=UTC`는 날짜를 UTC 자정으로 해석하게 한다. 이것을 빼면 시간대가 UTC보다 9시간 앞선 한국에서는 한국 자정이 UTC로 전날 15시이므로 결과가 하루 모자란 20167이 된다.
+
+계정 정보를 확인할 때는 파일을 직접 열기보다 `getent`를 쓰는 것이 낫다. `getent passwd user55`는 `/etc/passwd`뿐 아니라 시스템이 쓰도록 설정된 모든 계정 저장소(LDAP 같은 네트워크 디렉터리 포함)에서 찾은 결과를 같은 형식으로 출력한다. `getent group sudo`는 그룹의 구성원을 보여 준다. 네 파일의 짝이 맞는지(예: `/etc/passwd`에는 있는데 `/etc/shadow`에는 없는 계정)는 `sudo pwck -r`과 `sudo grpck -r`로 검사한다.
+
 ---
 
 <br>
@@ -230,7 +270,7 @@ sudo useradd -m -c "John Doe" -s /bin/bash -G sudo john
 | `-k 디렉터리` | 홈 디렉터리에 복사할 초기 파일이 있는 디렉터리를 지정한다(기본 `/etc/skel`) |
 | `-b 디렉터리` | 홈 디렉터리를 만들 기본 위치를 지정한다(기본 `/home`) |
 
-*표 3. useradd의 주요 옵션*
+*표 4. useradd의 주요 옵션*
 
 옵션 없이 `useradd`를 실행하면 홈 디렉터리가 만들어지지 않고 기본 셸은 본 셸(`/bin/sh`)로 지정된다(Ubuntu 기준). 계정을 만든 뒤에는 `passwd`로 암호도 만들어야 로그인할 수 있으며, 홈 디렉터리가 없으므로 로그인하면 `/` 디렉터리에서 시작한다.
 
@@ -346,6 +386,32 @@ sudo find / -user username            # 삭제 전: 사용자 소유 파일 찾�
 sudo find / -nouser                   # 삭제 후: 소유자가 없는 파일 찾기
 ```
 
+### 3.5 useradd와 adduser의 기본값, 보조 그룹 변경의 함정
+
+같은 이름의 계정을 두 명령으로 만들어도 결과가 다르다. `useradd`는 `-m`을 주지 않으면 홈 디렉터리를 만들지 않고(`/etc/login.defs`의 `CREATE_HOME`이 켜져 있지 않은 경우), `-s`를 주지 않으면 `/etc/default/useradd`의 `SHELL` 값을 쓰며 그 값도 없으면 셸 필드를 비워 둔다 [2]. 비어 있는 셸 필드는 `/bin/sh`로 해석된다(2.6절). 반면 `adduser`는 홈 디렉터리를 만들어 `/etc/skel`의 파일을 복사하고, 같은 이름의 개인 그룹을 만들며, `/etc/adduser.conf`의 `DSHELL`(`/bin/bash`)을 셸로 정하고, 암호까지 묻는다.
+
+| 항목 | `useradd user6` | `useradd -m -s /bin/bash user6` | `adduser user6` |
+|:-----|:-----|:-----|:-----|
+| 홈 디렉터리 | 만들지 않음 | 만들고 `/etc/skel` 복사 | 만들고 `/etc/skel` 복사 |
+| 로그인 셸 | `/etc/default/useradd`의 값 또는 빈 값 | `/bin/bash` | `/bin/bash` |
+| 암호 | 없음 (잠긴 상태) | 없음 (잠긴 상태) | 대화형으로 설정 |
+
+*표 5. useradd와 adduser로 만든 계정의 차이*
+
+그래서 `useradd`만으로 만든 계정은 홈 디렉터리가 없어 로그인 뒤 작업 디렉터리가 `/`가 되거나, 셸이 `sh`라서 Bash의 명령 편집과 히스토리를 쓸 수 없다. 실습 시스템의 `/etc/passwd`에서 user3만 `/bin/sh`인 것도 셸을 지정하지 않고 만들었기 때문이다.
+
+**보조 그룹 변경의 함정.** `usermod -G 그룹목록`은 보조 그룹을 그 목록으로 **바꾼다.** 기존 보조 그룹을 유지하면서 하나를 더하려면 반드시 `-a`(append)를 함께 써야 한다.
+
+```text
+$ id user1
+uid=1001(user1) gid=1001(user1) groups=1001(user1),27(sudo),1100(team)
+$ sudo usermod -G docker user1
+$ id user1
+uid=1001(user1) gid=1001(user1) groups=1001(user1),998(docker)
+```
+
+`-a` 없이 실행하여 user1이 `sudo`와 `team` 그룹에서 빠졌다. user1이 관리자였다면 이 명령으로 `sudo`를 쓸 수 없게 된다. 올바른 명령은 `sudo usermod -aG docker user1`이다. 또한 그룹 구성의 변경은 그 사용자가 **새로 로그인한 뒤**의 프로세스에만 적용된다. 이미 로그인한 셸의 `id`(인자 없이 실행)는 옛 그룹 목록을 보여 주므로, 다시 로그인하거나 `newgrp docker`로 새 그룹을 적용한 셸을 띄워야 한다.
+
 ---
 
 <br>
@@ -447,7 +513,7 @@ sudo chage -E 2025-12-31 username  # 계정 만료일
 | INACTIVE | `useradd -f 일수`, `usermod -f 일수` | `chage -I` (대문자 i) |
 | EXPIRE | `useradd -e 날짜`, `usermod -e 날짜` (YYYY-MM-DD) | `chage -E` |
 
-*표 4. 패스워드 에이징 항목별 설정 명령*
+*표 6. 패스워드 에이징 항목별 설정 명령*
 
 다음은 `chage`로 user44의 패스워드 에이징을 한 번에 설정하고 확인한 예이다.
 
@@ -466,6 +532,24 @@ $ sudo chage -l user44
 ```
 
 최종 변경일 18995는 2022-01-03이다. 암호는 그로부터 MAX 100일 뒤인 2022-04-13에 만료되고, 만료 뒤 INACTIVE 10일 동안인 2022-04-23까지는 로그인하여 암호를 바꿀 수 있다. 계정 만료일 19326은 2022-11-30이다.
+
+### 5.3 암호 상태와 계정 잠금
+
+`passwd -S`는 계정의 암호 상태를 일곱 필드로 출력한다. 첫째는 로그인 ID, 둘째는 암호 상태(`L`은 잠긴 암호, `NP`는 암호 없음, `P`는 쓸 수 있는 암호), 셋째는 마지막 변경일, 나머지 넷은 MIN, MAX, WARNING, INACTIVE이다 [3].
+
+```text
+$ sudo passwd -S user1 | cut -d' ' -f1,2,4-
+user1 P 0 99999 7 -1
+$ sudo usermod -L user1
+$ sudo passwd -S user1 | cut -d' ' -f1,2,4-
+user1 L 0 99999 7 -1
+$ sudo grep '^user1:' /etc/shadow | cut -c1-12
+user1:!$6$NU
+```
+
+`cut`으로 셋째 필드(마지막 변경일)는 빼고 보였다. `usermod -L`과 `passwd -l`은 해시 앞에 `!`를 붙여 어떤 암호와도 맞지 않게 만들고, `usermod -U`와 `passwd -u`는 그 `!`를 떼어 원래 암호를 되살린다 [3]. INACTIVE의 `-1`은 비활성화 기간을 정하지 않았다는 뜻이다.
+
+> **주의:** 암호를 잠가도 계정 자체가 막히는 것은 아니다. SSH 공개 키 인증처럼 암호를 쓰지 않는 방법으로는 여전히 로그인할 수 있다 [3]. 계정을 완전히 막으려면 `sudo usermod --expiredate 1 user1`(또는 `chage -E 0`)로 계정 만료일을 지난 날짜로 정한다. 9절에서 사용하지 않는 계정을 막는 데 쓴 `usermod -L`도 암호만 잠근다는 점에 유의해야 한다.
 
 ---
 
@@ -563,6 +647,23 @@ username ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/systemctl
 
 `visudo`는 저장하기 전에 문법을 검사하므로, 잘못된 설정 때문에 `sudo`를 아예 쓸 수 없게 되는 사고를 막는다.
 
+### 7.2 sudo의 동작과 흔한 실수
+
+Ubuntu의 `/etc/sudoers`에는 `%sudo ALL=(ALL:ALL) ALL` 줄이 들어 있으므로, `sudo` 그룹의 구성원은 모든 명령을 root 권한으로 실행할 수 있다. 설치할 때 만든 첫 사용자가 이 그룹에 들어간다. 사용자를 관리자로 만들려면 `/etc/sudoers`를 고치지 않고 `sudo usermod -aG sudo 사용자`로 그룹에 넣는다. 개별 규칙은 `/etc/sudoers.d/` 아래에 따로 파일을 만들어 넣고 `sudo visudo -f /etc/sudoers.d/파일`로 편집하면 본 파일이 갱신될 때 충돌하지 않는다.
+
+`sudo`는 암호를 한 번 확인하면 그 터미널에서 일정 시간 동안 다시 묻지 않으며, 기본값은 15분이다 [4]. `sudo -l`은 지금 사용자가 실행할 수 있는 명령의 목록을, `sudo -k`는 이 시간 기록을 지워 다음 `sudo`에서 다시 암호를 묻게 한다. `sudo -i`는 root의 홈 디렉터리로 옮겨 root의 로그인 셸을 띄우고, `sudo -s`는 현재 디렉터리에 머문 채 root 권한의 셸을 띄운다.
+
+**리다이렉션은 sudo의 권한을 받지 않는다.** 다음 명령은 실패한다.
+
+```text
+$ sudo echo '192.168.0.10 server1' >> /etc/hosts
+bash: /etc/hosts: Permission denied
+$ echo '192.168.0.10 server1' | sudo tee -a /etc/hosts
+192.168.0.10 server1
+```
+
+첫 명령에서 `sudo`가 root 권한으로 실행하는 것은 `echo`뿐이고, `>> /etc/hosts`는 `sudo`를 실행하기 전에 일반 사용자의 셸이 처리한다(4주차 7.6절). 일반 사용자는 `/etc/hosts`에 쓸 수 없으므로 셸이 파일을 열지 못한다. 둘째 명령처럼 파일에 쓰는 일 자체를 `sudo tee`에게 맡기거나, `sudo sh -c '... >> /etc/hosts'`처럼 리다이렉션까지 root의 셸에서 처리하게 해야 한다.
+
 ---
 
 <br>
@@ -610,7 +711,7 @@ mount | grep home2                # 쿼터 속성 확인
 | `quota [사용자]` | 사용자의 쿼터 정보를 출력한다 | `-u` 사용자, `-g` 그룹 |
 | `repquota [옵션] [파일 시스템]` | 파일 시스템의 쿼터 정보를 요약하여 출력한다 | `-a`, `-u`, `-g` |
 
-*표 5. 디스크 쿼터 관련 명령*
+*표 7. 디스크 쿼터 관련 명령*
 
 ```bash
 sudo quotacheck -ugvm /home2          # 쿼터 데이터베이스 생성
@@ -642,6 +743,39 @@ cp: './services'에 쓰는 도중 오류 발생: 디스크 할당량이 초과�
 
 그룹 쿼터는 `/etc/fstab`에 `grpquota`를 추가하여 다시 마운트하고 마운트 옵션을 확인한 뒤, `quotacheck`로 그룹 쿼터 데이터베이스를 만들고 `quotaon -g`로 활성화한다. 그다음 `edquota -g 그룹명`으로 설정하고 `quota -g 그룹명`으로 확인한다.
 
+### 8.4 소프트 리미트와 유예 기간의 진행
+
+`quota`와 `edquota`가 보여 주는 블록 수는 1 KiB 단위이다 [5]. 8.3절의 qtest1(소프트 리미트 20, 하드 리미트 22)이 사용량을 늘려 가면 다음과 같이 진행된다.
+
+| 사용량 | 상태 | 쓰기 |
+|:-----|:-----|:-----|
+| 16 KiB | 소프트 리미트 이하 | 허용 |
+| 21 KiB | 소프트 리미트 초과, 유예 기간 시작 | 허용, 유예 기간 동안 경고 |
+| 22 KiB에 이르는 쓰기 | 하드 리미트 | 넘는 부분 거부 |
+| 21 KiB인 채로 유예 기간 경과 | 유예 기간 만료 | 소프트 리미트 아래로 줄이기 전까지 새 쓰기 거부 |
+
+*표 8. 사용량에 따른 쿼터 상태의 변화*
+
+소프트 리미트를 넘으면 `quota`는 사용량 옆에 `*`를 붙이고 남은 유예 기간을 보여 준다(출력 예).
+
+```text
+$ quota
+Disk quotas for user qtest1 (uid 2102):
+     Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+      /dev/sdd2     21*      20      22   6days       5       0       0
+```
+
+유예 기간은 파일 시스템마다 `sudo edquota -t`로 정한다. 편집기를 쓰지 않고 스크립트에서 쿼터를 정할 때는 `setquota`를 쓴다 [6]. 인자는 이름, 블록 소프트, 블록 하드, inode 소프트, inode 하드, 파일 시스템의 순서이다.
+
+```text
+$ sudo setquota -u qtest2 20 22 0 0 /home2
+$ sudo setquota -t 86400 86400 /home2
+```
+
+첫 명령은 qtest2에게 8.3절의 qtest1과 같은 제한을 주고, 둘째 명령은 블록과 inode의 유예 기간을 각각 86400초(1일)로 정한다.
+
+> **주의:** 쿼터는 그 파일 시스템 안의 소유 파일만 센다. qtest1이 `/home2`의 쿼터를 넘었어도 다른 파일 시스템(예: `/tmp`가 있는 루트 파일 시스템)에는 그 제한이 적용되지 않는다. 또 파일의 소유자로 세므로, 다른 사용자의 디렉터리에 만든 파일도 만든 사람의 사용량에 들어간다.
+
 ---
 
 <br>
@@ -654,6 +788,23 @@ cp: './services'에 쓰는 도중 오류 발생: 디스크 할당량이 초과�
 - 사용하지 않는 계정은 비활성화한다(`usermod -L`).
 - 사용자 계정을 정기적으로 감사한다.
 - 서비스 계정에는 `nologin` 셸을 사용한다.
+
+---
+
+<br>
+
+## 개념 적용
+
+**T/F 점검:**
+
+| 문장 | 판단과 근거 |
+|:-----|:-----|
+| `useradd user6`은 Ubuntu에서 `/home/user6` 디렉터리를 만든다. | **F.** `-m`을 주지 않고 `CREATE_HOME`이 켜져 있지 않으면 홈 디렉터리를 만들지 않는다. |
+| `usermod -G docker user1`은 user1의 기존 보조 그룹에 `docker`를 더한다. | **F.** `-a` 없는 `-G`는 보조 그룹을 그 목록으로 바꾸므로 기존 보조 그룹이 빠진다. |
+| `passwd -l`로 암호를 잠근 계정은 SSH 공개 키로도 로그인할 수 없다. | **F.** 해시 앞에 `!`를 붙여 암호만 막으므로 공개 키 인증은 여전히 가능하다. |
+| `sudo echo x >> /etc/hosts`는 root 권한으로 파일에 덧붙인다. | **F.** 리다이렉션은 `sudo`를 실행하기 전에 일반 사용자의 셸이 처리하므로 권한 오류가 난다. |
+| `/etc/shadow`의 최종 변경일 20168은 2025년 3월 21일이다. | **T.** 1970-01-01에 20168일을 더한 날짜이다. |
+| 쿼터의 소프트 리미트를 넘는 순간 쓰기가 거부된다. | **F.** 유예 기간 동안은 하드 리미트까지 쓸 수 있으며, 유예 기간이 끝나야 거부된다. |
 
 ---
 
@@ -677,6 +828,10 @@ cp: './services'에 쓰는 도중 오류 발생: 디스크 할당량이 초과�
 | UID/EUID | 로그인한 계정의 UID와 현재 명령을 수행하는 주체의 UID이며, `who am i`와 `whoami`로 확인한다. |
 | `sudo`/`visudo` | 다른 사용자의 권한으로 명령을 실행하는 권한 상승을 설정한다. |
 | 디스크 쿼터 | 사용자나 그룹별로 블록 수와 파일 수를 하드 리미트와 소프트 리미트로 제한한다. |
+| useradd와 adduser | `useradd`는 `-m`, `-s` 없이 홈 디렉터리와 셸을 정하지 않고, `adduser`는 홈 디렉터리, 개인 그룹, Bash 셸, 암호를 함께 설정한다. |
+| 보조 그룹 변경 | `usermod -aG`로 더하며, `-a` 없는 `-G`는 목록을 바꾸고, 변경은 다시 로그인한 뒤에 적용된다. |
+| 암호 잠금 | `passwd -l`은 해시 앞에 `!`를 붙여 암호만 막으며, 계정을 막으려면 만료일을 지난 날짜로 정한다. |
+| sudo와 리다이렉션 | `sudo`는 명령만 root로 실행하므로 root 소유 파일에 쓰려면 `sudo tee`나 `sudo sh -c`를 쓴다. |
 
 ---
 
@@ -728,3 +883,43 @@ cp: './services'에 쓰는 도중 오류 발생: 디스크 할당량이 초과�
    `/etc/passwd`에는 홈 디렉터리가 `/home/user9`로 기록되지만 디렉터리는 만들어지지 않는다. 로그인 셸은 `/bin/sh`이고, 기본 그룹은 새로 만들어진 user9 그룹이다(`GROUP=100`은 적용되지 않는다). 암호가 설정되지 않아 암호 필드가 `!`이므로 `passwd user9`로 암호를 정하기 전에는 암호로 로그인할 수 없다. 홈 디렉터리와 bash 셸을 갖춘 계정은 `sudo useradd -m -s /bin/bash user9`로 만들고 `sudo passwd user9`로 암호를 정한다.
 
    </details>
+
+6. **계정 파일 해석:** `/etc/shadow`에 `user7:!$6$abc$xyz:20168:1:60:7:5:20454:`가 있다. 이 계정의 암호 상태, 암호 만료일, 로그인할 수 없게 되는 날, 계정 만료일을 구하라.
+
+   <details>
+   <summary>정답</summary>
+
+   해시 앞에 `!`가 있으므로 암호가 잠겨 있다(`passwd -S`에서 `L`). 최종 변경일 20168은 2025-03-21이고 MAX가 60이므로 암호는 2025-05-20에 만료된다. INACTIVE가 5이므로 그 뒤 5일 동안인 2025-05-25까지는 로그인하여 암호를 바꿀 수 있고, 그 뒤에는 로그인할 수 없다. 계정 만료일 20454는 1970-01-01부터 20454일 뒤인 2026-01-01이다.
+
+   </details>
+
+7. **보조 그룹 복구:** 관리자 user1이 `sudo usermod -G docker user1`을 실행하여 `sudo` 그룹에서 빠졌다. 이 상태에서 무엇을 할 수 없게 되었는지와, 다시 관리자 권한을 얻는 방법을 설명하라.
+
+   <details>
+   <summary>정답</summary>
+
+   user1은 `sudo` 그룹이 아니므로 새로 로그인한 뒤에는 `sudo`로 명령을 실행할 수 없다. 다른 관리자 계정이 있으면 그 계정으로 `sudo usermod -aG sudo user1`을 실행한다. 관리자 계정이 하나뿐이면 14주차의 복구 모드처럼 root 셸을 얻는 방법으로 부팅하여 같은 명령을 실행해야 한다. 다만 user1이 아직 로그인해 있는 셸은 옛 그룹 목록을 가지므로, 로그아웃하기 전이라면 그 셸에서 `sudo usermod -aG sudo,docker user1`로 바로 고칠 수 있다.
+
+   </details>
+
+8. **sudo와 리다이렉션:** `sudo cat /root/secret.txt > ~/copy.txt`는 성공하는가? `copy.txt`의 소유자는 누구인가?
+
+   <details>
+   <summary>정답</summary>
+
+   성공한다. `cat`은 `sudo`로 root 권한을 받아 `/root/secret.txt`를 읽고, `> ~/copy.txt`는 일반 사용자의 셸이 자신의 홈 디렉터리에 파일을 열어 처리하므로 권한 문제가 없다. 파일을 연 것은 사용자의 셸이므로 `copy.txt`의 소유자는 그 일반 사용자이다.
+
+   </details>
+
+---
+
+<br>
+
+## 참고 문헌
+
+1. "passwd(5), Ubuntu noble manual page," *shadow-utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/passwd.5.html
+2. "useradd(8), Ubuntu noble manual page," *shadow-utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/useradd.8.html
+3. "passwd(1), Ubuntu noble manual page," *shadow-utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/passwd.1.html
+4. "sudoers(5), Ubuntu noble manual page," *Sudo*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/sudoers.5.html
+5. "quota(1), Ubuntu noble manual page," *quota-tools*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/quota.1.html
+6. "setquota(8), Ubuntu noble manual page," *quota-tools*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/setquota.8.html

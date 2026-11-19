@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-26
+> **Last Updated:** 2026-11-19
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -27,11 +27,13 @@
   - [2.3 /etc/group](#23-etcgroup)
   - [2.4 /etc/gshadow](#24-etcgshadow)
   - [2.5 /etc/login.defs](#25-etclogindefs)
+  - [2.6 Reading One Account's Information from the Files](#26-reading-one-accounts-information-from-the-files)
 - [3. Managing Users](#3-managing-users)
   - [3.1 useradd: Create Users](#31-useradd-create-users)
   - [3.2 adduser: Interactive User Creation (Debian/Ubuntu)](#32-adduser-interactive-user-creation-debianubuntu)
   - [3.3 usermod: Modify Users](#33-usermod-modify-users)
   - [3.4 userdel: Delete Users](#34-userdel-delete-users)
+  - [3.5 Defaults of useradd and adduser, and the Pitfalls of Changing Supplementary Groups](#35-defaults-of-useradd-and-adduser-and-the-pitfalls-of-changing-supplementary-groups)
 - [4. Managing Groups](#4-managing-groups)
   - [4.1 Summary of Group Commands](#41-summary-of-group-commands)
   - [4.2 groupadd, addgroup, groupmod, groupdel](#42-groupadd-addgroup-groupmod-groupdel)
@@ -39,6 +41,7 @@
 - [5. Password Management](#5-password-management)
   - [5.1 Setting Passwords](#51-setting-passwords)
   - [5.2 Password Aging](#52-password-aging)
+  - [5.3 Password Status and Account Locking](#53-password-status-and-account-locking)
 - [6. Checking User Information](#6-checking-user-information)
   - [6.1 UID and EUID](#61-uid-and-euid)
   - [6.2 Login Information: who, w, last](#62-login-information-who-w-last)
@@ -46,13 +49,17 @@
   - [6.4 Changing File Ownership: chown, chgrp](#64-changing-file-ownership-chown-chgrp)
 - [7. sudo Configuration](#7-sudo-configuration)
   - [7.1 /etc/sudoers](#71-etcsudoers)
+  - [7.2 How sudo Works and Common Mistakes](#72-how-sudo-works-and-common-mistakes)
 - [8. Disk Quotas](#8-disk-quotas)
   - [8.1 The Concept of Quotas](#81-the-concept-of-quotas)
   - [8.2 Preparing Quotas](#82-preparing-quotas)
   - [8.3 Quota Commands](#83-quota-commands)
+  - [8.4 Soft Limits and the Course of the Grace Period](#84-soft-limits-and-the-course-of-the-grace-period)
 - [9. Best Practices](#9-best-practices)
+- [Concept Applications](#concept-applications)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -196,6 +203,39 @@ sambashare:!::user1
 
 The defaults in the table are those of Ubuntu 21.10 and differ by distribution and version (for example, recent Ubuntu uses YESCRYPT as ENCRYPT_METHOD).
 
+### 2.6 Reading One Account's Information from the Files
+
+The information of one user is divided among four files, which are linked by names and numbers. As an example, take the line of user55 in `/etc/passwd` of the lab system.
+
+```text
+user55:x:1005:1005:myung-sup kim,7-305,xxx,xxx:/home/user55:/bin/bash
+```
+
+| Field | Value | Meaning |
+|:-----|:-----|:-----|
+| 1 | `user55` | Login ID |
+| 2 | `x` | The password is in `/etc/shadow` |
+| 3 | `1005` | UID. It is 1000 or more, so this is an ordinary user |
+| 4 | `1005` | GID of the primary group. The group with GID 1005 is looked up in `/etc/group` |
+| 5 | `myung-sup kim,7-305,xxx,xxx` | GECOS. The full name, room number, work phone, and home phone asked by `adduser`, joined by commas |
+| 6 | `/home/user55` | Home directory. It becomes the `HOME` environment variable at login |
+| 7 | `/bin/bash` | Login shell. It becomes the `SHELL` environment variable at login |
+
+*Table 3. One line of /etc/passwd interpreted field by field*
+
+If the login shell field is empty, `/bin/sh` is assumed [1]. The date fields of `/etc/shadow` count days from January 1, 1970, so they are read by converting them into dates with GNU `date`.
+
+```text
+$ date -d '1970-01-01 +20168 days' +%F
+2025-03-21
+$ echo $(( $(TZ=UTC date -d 2025-03-21 +%s) / 86400 ))
+20168
+```
+
+The first command converts a day count into a date, and the second converts a date into a day count. `date +%s` prints the seconds elapsed since 1970-01-01 00:00 UTC, so dividing by 86400 (the seconds in a day) gives the day count. The `TZ=UTC` of the second command makes the date be interpreted as midnight UTC. Without it, in Korea, whose time zone is nine hours ahead of UTC, Korean midnight is 15:00 UTC of the previous day, so the result is 20167, one day short.
+
+To check account information, `getent` is better than opening the files directly. `getent passwd user55` prints, in the same format, the result found in every account database the system is configured to use (including network directories such as LDAP), not just in `/etc/passwd`. `getent group sudo` shows the members of a group. Whether the four files match (for example, an account that is in `/etc/passwd` but not in `/etc/shadow`) is checked with `sudo pwck -r` and `sudo grpck -r`.
+
 ---
 
 <br>
@@ -230,7 +270,7 @@ The form of `useradd` is `useradd [options] [login ID]`, and its main options ar
 | `-k directory` | Set the directory holding the initial files copied to the home directory (default `/etc/skel`) |
 | `-b directory` | Set the base location where home directories are created (default `/home`) |
 
-*Table 3. Main options of useradd*
+*Table 4. Main options of useradd*
 
 Running `useradd` without options creates no home directory and sets the default shell to the Bourne shell (`/bin/sh`) (on Ubuntu). After creating the account, a password must also be set with `passwd` before the user can log in, and because there is no home directory, a login starts in the `/` directory.
 
@@ -346,6 +386,32 @@ sudo find / -user username            # Before deletion: find files owned by the
 sudo find / -nouser                   # After deletion: find files without an owner
 ```
 
+### 3.5 Defaults of useradd and adduser, and the Pitfalls of Changing Supplementary Groups
+
+Creating an account of the same name with the two commands gives different results. Without `-m`, `useradd` does not create the home directory (unless `CREATE_HOME` in `/etc/login.defs` is enabled), and without `-s`, it uses the `SHELL` value of `/etc/default/useradd` and, if that is also unset, leaves the shell field empty [2]. An empty shell field is interpreted as `/bin/sh` (Section 2.6). `adduser`, on the other hand, creates the home directory and copies the files of `/etc/skel`, creates a private group of the same name, sets the shell to `DSHELL` (`/bin/bash`) of `/etc/adduser.conf`, and even asks for a password.
+
+| Item | `useradd user6` | `useradd -m -s /bin/bash user6` | `adduser user6` |
+|:-----|:-----|:-----|:-----|
+| Home directory | Not created | Created, `/etc/skel` copied | Created, `/etc/skel` copied |
+| Login shell | The value of `/etc/default/useradd` or empty | `/bin/bash` | `/bin/bash` |
+| Password | None (locked) | None (locked) | Set interactively |
+
+*Table 5. Differences between accounts created with useradd and adduser*
+
+An account created with `useradd` alone therefore has no home directory, so the working directory after login becomes `/`, or its shell is `sh`, so Bash's command-line editing and history are unavailable. In `/etc/passwd` of the lab system, only user3 has `/bin/sh` because it was created without specifying a shell.
+
+**The pitfall of changing supplementary groups.** `usermod -G grouplist` **replaces** the supplementary groups with that list. To add one group while keeping the existing supplementary groups, `-a` (append) must be used together with it.
+
+```text
+$ id user1
+uid=1001(user1) gid=1001(user1) groups=1001(user1),27(sudo),1100(team)
+$ sudo usermod -G docker user1
+$ id user1
+uid=1001(user1) gid=1001(user1) groups=1001(user1),998(docker)
+```
+
+Run without `-a`, the command removed user1 from the groups `sudo` and `team`. If user1 was an administrator, this command makes `sudo` unusable for user1. The correct command is `sudo usermod -aG docker user1`. Moreover, a change in group membership applies only to processes started **after the user logs in again**. In a shell that was already logged in, `id` (run without arguments) shows the old group list, so the user must log in again or start a shell with the new group applied by `newgrp docker`.
+
 ---
 
 <br>
@@ -447,7 +513,7 @@ sudo chage -E 2025-12-31 username  # Account expiration date
 | INACTIVE | `useradd -f days`, `usermod -f days` | `chage -I` (uppercase i) |
 | EXPIRE | `useradd -e date`, `usermod -e date` (YYYY-MM-DD) | `chage -E` |
 
-*Table 4. Commands that set each password aging item*
+*Table 6. Commands that set each password aging item*
 
 The following example sets the password aging of user44 at once with `chage` and checks it.
 
@@ -466,6 +532,24 @@ Number of days of warning before password expires       : 5
 ```
 
 The last change, day 18995, is 2022-01-03. The password expires MAX 100 days later, on 2022-04-13, and for INACTIVE 10 days after expiration, until 2022-04-23, the user can still log in and change it. The account expiration date, day 19326, is 2022-11-30.
+
+### 5.3 Password Status and Account Locking
+
+`passwd -S` prints the password status of an account in seven fields. The first is the login ID, the second the password status (`L` for a locked password, `NP` for no password, `P` for a usable password), the third the date of the last change, and the remaining four MIN, MAX, WARNING, and INACTIVE [3].
+
+```text
+$ sudo passwd -S user1 | cut -d' ' -f1,2,4-
+user1 P 0 99999 7 -1
+$ sudo usermod -L user1
+$ sudo passwd -S user1 | cut -d' ' -f1,2,4-
+user1 L 0 99999 7 -1
+$ sudo grep '^user1:' /etc/shadow | cut -c1-12
+user1:!$6$NU
+```
+
+The third field (the date of the last change) was left out with `cut`. `usermod -L` and `passwd -l` prefix the hash with `!` so that it matches no password, and `usermod -U` and `passwd -u` remove the `!` and restore the original password [3]. The `-1` of INACTIVE means that no inactivity period is set.
+
+> **Caution:** Locking the password does not block the account itself. The user can still log in by methods that do not use the password, such as SSH public key authentication [3]. To block the account completely, set the account expiration date to a past date with `sudo usermod --expiredate 1 user1` (or `chage -E 0`). Note that `usermod -L`, used in Section 9 to disable unused accounts, also locks only the password.
 
 ---
 
@@ -563,6 +647,23 @@ username ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/systemctl
 
 `visudo` checks the syntax before saving, which prevents accidents in which a wrong setting makes `sudo` unusable altogether.
 
+### 7.2 How sudo Works and Common Mistakes
+
+Ubuntu's `/etc/sudoers` contains the line `%sudo ALL=(ALL:ALL) ALL`, so members of the group `sudo` can run every command with root privileges. The first user created during installation is placed in this group. To make a user an administrator, do not edit `/etc/sudoers` but add the user to the group with `sudo usermod -aG sudo user`. Individual rules are placed in separate files under `/etc/sudoers.d/` and edited with `sudo visudo -f /etc/sudoers.d/file`, which avoids conflicts when the main file is updated.
+
+Once `sudo` has verified the password, it does not ask again on that terminal for a certain time, 15 minutes by default [4]. `sudo -l` lists the commands the current user may run, and `sudo -k` clears this time record so that the next `sudo` asks for the password again. `sudo -i` moves to root's home directory and starts a login shell of root, while `sudo -s` starts a shell with root privileges in the current directory.
+
+**Redirections do not receive the privileges of sudo.** The following command fails.
+
+```text
+$ sudo echo '192.168.0.10 server1' >> /etc/hosts
+bash: /etc/hosts: Permission denied
+$ echo '192.168.0.10 server1' | sudo tee -a /etc/hosts
+192.168.0.10 server1
+```
+
+In the first command, `sudo` runs only `echo` with root privileges, and `>> /etc/hosts` is processed by the ordinary user's shell before `sudo` runs (Week 4, Section 7.6). An ordinary user cannot write to `/etc/hosts`, so the shell cannot open the file. As in the second command, the writing itself must be left to `sudo tee`, or the redirection must also be processed in root's shell, as in `sudo sh -c '... >> /etc/hosts'`.
+
 ---
 
 <br>
@@ -610,7 +711,7 @@ The database that manages disk quotas consists of the user quota database file `
 | `quota [user]` | Prints a user's quota information | `-u` user, `-g` group |
 | `repquota [options] [file_system]` | Prints a summary of the file system's quota information | `-a`, `-u`, `-g` |
 
-*Table 5. Disk quota commands*
+*Table 7. Disk quota commands*
 
 ```bash
 sudo quotacheck -ugvm /home2          # Create the quota database
@@ -642,6 +743,39 @@ cp: error writing './services': Disk quota exceeded
 
 For group quotas, add `grpquota` to `/etc/fstab`, remount, and check the mount options; then create the group quota database with `quotacheck` and enable it with `quotaon -g`. After that, set the quota with `edquota -g group` and check it with `quota -g group`.
 
+### 8.4 Soft Limits and the Course of the Grace Period
+
+The block counts shown by `quota` and `edquota` are in units of 1 KiB [5]. As qtest1 of Section 8.3 (soft limit 20, hard limit 22) increases its usage, the state progresses as follows.
+
+| Usage | State | Writes |
+|:-----|:-----|:-----|
+| 16 KiB | At or below the soft limit | Allowed |
+| 21 KiB | Over the soft limit, grace period starts | Allowed, with warnings during the grace period |
+| A write reaching 22 KiB | Hard limit | The excess is refused |
+| Grace period elapses at 21 KiB | Grace period expired | New writes refused until usage is reduced below the soft limit |
+
+*Table 8. Change of quota state with usage*
+
+When usage exceeds the soft limit, `quota` appends `*` to the usage and shows the remaining grace period (example output).
+
+```text
+$ quota
+Disk quotas for user qtest1 (uid 2102):
+     Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+      /dev/sdd2     21*      20      22   6days       5       0       0
+```
+
+The grace period is set per file system with `sudo edquota -t`. To set quotas from a script without an editor, use `setquota` [6]. Its arguments are, in order, the name, the block soft limit, the block hard limit, the inode soft limit, the inode hard limit, and the file system.
+
+```text
+$ sudo setquota -u qtest2 20 22 0 0 /home2
+$ sudo setquota -t 86400 86400 /home2
+```
+
+The first command gives qtest2 the same limits as qtest1 in Section 8.3, and the second sets the grace periods for blocks and inodes to 86400 seconds (one day) each.
+
+> **Caution:** A quota counts only the files owned within that file system. Even if qtest1 exceeds its quota on `/home2`, the limit does not apply on other file systems (for example, the root file system containing `/tmp`). Also, usage is counted by file owner, so a file created in another user's directory counts toward the usage of the user who created it.
+
 ---
 
 <br>
@@ -654,6 +788,23 @@ For group quotas, add `grpquota` to `/etc/fstab`, remount, and check the mount o
 - Disable unused accounts (`usermod -L`).
 - Audit user accounts regularly.
 - Use the `nologin` shell for service accounts.
+
+---
+
+<br>
+
+## Concept Applications
+
+**True/False Check:**
+
+| Statement | Judgment and Reason |
+|:-----|:-----|
+| `useradd user6` creates the directory `/home/user6` on Ubuntu. | **F.** Without `-m`, and unless `CREATE_HOME` is enabled, it does not create the home directory. |
+| `usermod -G docker user1` adds `docker` to user1's existing supplementary groups. | **F.** `-G` without `-a` replaces the supplementary groups with the list, so the existing ones are removed. |
+| An account whose password was locked with `passwd -l` cannot log in even with an SSH public key. | **F.** It blocks only the password by prefixing the hash with `!`, so public key authentication is still possible. |
+| `sudo echo x >> /etc/hosts` appends to the file with root privileges. | **F.** The redirection is processed by the ordinary user's shell before `sudo` runs, so a permission error occurs. |
+| The last change date 20168 in `/etc/shadow` is March 21, 2025. | **T.** It is the date obtained by adding 20168 days to 1970-01-01. |
+| Writes are refused the moment usage exceeds the soft limit of a quota. | **F.** During the grace period, writing is possible up to the hard limit, and refusal comes only after the grace period ends. |
 
 ---
 
@@ -677,6 +828,10 @@ For group quotas, add `grpquota` to `/etc/fstab`, remount, and check the mount o
 | UID/EUID | They are the UID of the logged-in account and the UID of the subject executing the current command, checked with `who am i` and `whoami`. |
 | `sudo`/`visudo` | They configure privilege escalation that runs commands with another user's privileges. |
 | Disk Quotas | They limit the number of blocks and files per user or group with hard and soft limits. |
+| useradd and adduser | `useradd` without `-m` and `-s` sets no home directory or shell, while `adduser` sets up the home directory, a private group, the Bash shell, and a password together. |
+| Changing supplementary groups | Groups are added with `usermod -aG`; `-G` without `-a` replaces the list, and changes apply after logging in again. |
+| Password locking | `passwd -l` blocks only the password by prefixing the hash with `!`; to block the account, set the expiration date to a past date. |
+| sudo and redirection | `sudo` runs only the command as root, so writing to a root-owned file needs `sudo tee` or `sudo sh -c`. |
 
 ---
 
@@ -728,3 +883,43 @@ For group quotas, add `grpquota` to `/etc/fstab`, remount, and check the mount o
    `/etc/passwd` records the home directory as `/home/user9`, but the directory is not created. The login shell is `/bin/sh`, and the default group is the newly created user9 group (`GROUP=100` does not apply). No password is set, so the password field is `!`, and password login is impossible until a password is set with `passwd user9`. An account with a home directory and the bash shell is created with `sudo useradd -m -s /bin/bash user9`, followed by `sudo passwd user9` to set the password.
 
    </details>
+
+6. **Interpreting account files:** `/etc/shadow` contains `user7:!$6$abc$xyz:20168:1:60:7:5:20454:`. Find the password status of this account, the date the password expires, the day after which login becomes impossible, and the account expiration date.
+
+   <details>
+   <summary>Answer</summary>
+
+   The hash is prefixed with `!`, so the password is locked (`L` in `passwd -S`). The last change date 20168 is 2025-03-21 and MAX is 60, so the password expires on 2025-05-20. INACTIVE is 5, so for 5 days after that, until 2025-05-25, the user can log in and change the password, and after that login is impossible. The account expiration date 20454 is 20454 days after 1970-01-01, that is, 2026-01-01.
+
+   </details>
+
+7. **Restoring supplementary groups:** The administrator user1 ran `sudo usermod -G docker user1` and was removed from the group `sudo`. Explain what user1 can no longer do and how to regain administrator privileges.
+
+   <details>
+   <summary>Answer</summary>
+
+   user1 is no longer in the group `sudo`, so after logging in again user1 cannot run commands with `sudo`. If another administrator account exists, run `sudo usermod -aG sudo user1` from that account. If it was the only administrator account, the system must be booted in a way that gives a root shell, like the recovery mode of Week 14, and the same command run there. However, a shell in which user1 is still logged in keeps the old group list, so before logging out, the problem can be fixed at once from that shell with `sudo usermod -aG sudo,docker user1`.
+
+   </details>
+
+8. **sudo and redirection:** Does `sudo cat /root/secret.txt > ~/copy.txt` succeed? Who owns `copy.txt`?
+
+   <details>
+   <summary>Answer</summary>
+
+   It succeeds. `cat` receives root privileges through `sudo` and reads `/root/secret.txt`, and `> ~/copy.txt` is handled by the ordinary user's shell, which opens a file in the user's own home directory, so there is no permission problem. It is the user's shell that opened the file, so the owner of `copy.txt` is that ordinary user.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. "passwd(5), Ubuntu noble manual page," *shadow-utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/passwd.5.html
+2. "useradd(8), Ubuntu noble manual page," *shadow-utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/useradd.8.html
+3. "passwd(1), Ubuntu noble manual page," *shadow-utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/passwd.1.html
+4. "sudoers(5), Ubuntu noble manual page," *Sudo*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/sudoers.5.html
+5. "quota(1), Ubuntu noble manual page," *quota-tools*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/quota.1.html
+6. "setquota(8), Ubuntu noble manual page," *quota-tools*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/setquota.8.html
