@@ -825,7 +825,7 @@ The load average is the average number of processes that are running or waiting 
 
    </details>
 
-6. **cron expressions:** Write when each of the following entries runs. (a) `15,45 9-17 * * 1-5 /usr/local/bin/sync.sh` (b) `0 */6 1 * * /usr/local/bin/report.sh`
+5. **cron expressions:** Write when each of the following entries runs. (a) `15,45 9-17 * * 1-5 /usr/local/bin/sync.sh` (b) `0 */6 1 * * /usr/local/bin/report.sh`
 
    <details>
    <summary>Answer</summary>
@@ -834,16 +834,7 @@ The load average is the average number of processes that are running or waiting 
 
    </details>
 
-7. **Exit status:** Write the output of each `echo $?` when the following are run in turn. (a) `true; echo $?` (b) `grep -q root /etc/passwd; echo $?` (c) `sleep 60 & kill -9 $!; wait $!; echo $?`
-
-   <details>
-   <summary>Answer</summary>
-
-   (a) `true` always succeeds, so 0. (b) `/etc/passwd` contains `root`, so `grep -q` returns 0. (c) `$!` is the PID of the last background job. `sleep` was ended by SIGKILL (9), so the exit status returned by `wait` is 128 + 9 = 137.
-
-   </details>
-
-8. **Cause of zombies:** On a server, `ps` shows hundreds of `<defunct>` processes with the same parent PID. Explain the cause and the remedy.
+6. **Cause of zombies:** On a server, `ps` shows hundreds of `<defunct>` processes with the same parent PID. Explain the cause and the remedy.
 
    <details>
    <summary>Answer</summary>

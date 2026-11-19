@@ -1590,15 +1590,6 @@ Without `set -u`, line 5 prints `value: ` and moves on, so a typo in a variable 
 
    </details>
 
-7. **Returning values from functions:** Write a function `add` that returns the sum of two numbers, and receive it with `sum=$(add 200 300)` so that `500` is printed. Also explain why the sum should not be returned with `return`.
-
-   <details>
-   <summary>Answer</summary>
-
-   Define `add() { echo $(( $1 + $2 )); }` and run `sum=$(add 200 300); echo "$sum"`, which prints `500`. `return` can return only an exit status from 0 to 255, so 500 would become 244, its remainder modulo 256.
-
-   </details>
-
 ---
 
 <br>

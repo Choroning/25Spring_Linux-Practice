@@ -1003,7 +1003,7 @@ renice -n 5 -p PID              # 실행 중인 프로세스의 우선순위 변
 
    </details>
 
-6. **확장의 결과:** `USER=user1`이고 현재 디렉터리에 `a.txt`, `b.txt`만 있다. 다음 명령의 출력을 쓰라. (가) `echo {1..3}_$USER` (나) `echo '$USER' "$USER" \$USER` (다) `x="*"; echo "$x" $x`
+7. **확장의 결과:** `USER=user1`이고 현재 디렉터리에 `a.txt`, `b.txt`만 있다. 다음 명령의 출력을 쓰라. (가) `echo {1..3}_$USER` (나) `echo '$USER' "$USER" \$USER` (다) `x="*"; echo "$x" $x`
 
    <details>
    <summary>정답</summary>
@@ -1012,7 +1012,7 @@ renice -n 5 -p PID              # 실행 중인 프로세스의 우선순위 변
 
    </details>
 
-7. **명령 찾기:** `type -a pwd`의 출력이 `pwd is a shell builtin`, `pwd is /usr/bin/pwd`, `pwd is /bin/pwd`이다. `pwd`를 입력하면 무엇이 실행되며, `/usr/bin/pwd`를 실행하려면 어떻게 하는가?
+8. **명령 찾기:** `type -a pwd`의 출력이 `pwd is a shell builtin`, `pwd is /usr/bin/pwd`, `pwd is /bin/pwd`이다. `pwd`를 입력하면 무엇이 실행되며, `/usr/bin/pwd`를 실행하려면 어떻게 하는가?
 
    <details>
    <summary>정답</summary>

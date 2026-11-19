@@ -158,17 +158,17 @@ Description: secure shell (SSH) server, for secure access from remote machines
 
 > **용어 정의:** **가상 패키지(virtual package)** 는 그 이름의 `.deb` 파일은 없고, 같은 기능을 하는 여러 패키지가 `Provides`로 함께 내세우는 이름이다. `sendmail`과 `exim`이 모두 `mail-transport-agent`를 제공하듯이, 다른 패키지는 이 이름에 의존하여 구현 가운데 어느 것이 설치되어 있어도 동작할 수 있다 [1].
 
-`Breaks`와 `Conflicts`의 값에서는 쉼표를 "또는"으로 읽는다. 나열한 패키지 가운데 어느 하나라도 설치되어 있으면 관계가 성립하기 때문이다 [1]. 두 필드는 막는 정도가 다르다. `Conflicts`는 두 패키지가 동시에 설치되는 것을 막지만, `Breaks`는 두 패키지가 함께 풀려 있는 것은 허용하고, 나열된 패키지(깨지는 쪽)가 새 판으로 갱신되기 전까지 그 패키지의 설정만 막는다 [1]. 버전 조건에 `<`나 `>`를 한 글자로 쓰는 것은 뜻이 헷갈려 쓰지 않게 된 옛 문법이다 [4].
+`Breaks`와 `Conflicts`의 값에서는 쉼표를 "또는"으로 읽는다. 나열한 패키지 가운데 어느 하나라도 설치되어 있으면 관계가 성립하기 때문이다 [1]. 두 필드는 막는 정도가 다르다. `Conflicts`는 두 패키지가 동시에 설치되는 것을 막지만, `Breaks`는 두 패키지가 함께 풀려 있는 것은 허용하고, 나열된 패키지(깨지는 쪽)가 새 판으로 갱신되기 전까지 그 패키지의 설정만 막는다 [1].
 
 ### 1.5 버전 번호의 구조와 비교
 
-패키지의 버전은 `[에포크:]원저작자버전[-수정번호]`의 세 부분으로 이루어진다 [5]. 1.3절의 파일 이름에는 뒤의 두 부분만 보였지만, 비교에는 세 부분이 모두 쓰인다.
+패키지의 버전은 `[에포크:]원저작자버전[-수정번호]`의 세 부분으로 이루어진다 [4]. 1.3절의 파일 이름에는 뒤의 두 부분만 보였지만, 비교에는 세 부분이 모두 쓰인다.
 
 - **에포크(epoch)** 는 작은 정수이며, 생략하면 0으로 본다. 원저작자가 번호 체계를 바꾸어 새 판의 번호가 옛 판보다 작아 보이게 되었을 때 그 문제를 넘기려고 붙인다. 1.4절의 `openssh-server`는 판이 `1:9.6p1-3ubuntu13`으로 에포크가 1이지만, `Filename`의 파일 이름 `openssh-server_9.6p1-3ubuntu13_amd64.deb`에는 에포크가 나타나지 않는다.
 - 원저작자 버전은 반드시 있어야 하며, 숫자로 시작하는 것이 관례이다.
 - 수정 번호는 문자열의 **마지막** `-` 뒤의 부분이다. 그래서 원저작자 버전 안에도 `-`가 들어갈 수 있다. 수정 번호가 없는 판은 수정 번호가 있는 판보다 앞선다.
 
-두 판은 에포크를 수로 먼저 비교하고, 같으면 원저작자 버전을, 그것도 같으면 수정 번호를 같은 방법으로 비교한다. 그 방법은 문자열의 왼쪽부터 다음 두 단계를 번갈아 되풀이하는 것이다 [5].
+두 판은 에포크를 수로 먼저 비교하고, 같으면 원저작자 버전을, 그것도 같으면 수정 번호를 같은 방법으로 비교한다. 그 방법은 문자열의 왼쪽부터 다음 두 단계를 번갈아 되풀이하는 것이다 [4].
 
 1. 맨 앞의 숫자가 아닌 문자들을 떼어 사전 순서로 비교한다. 이때 글자는 글자가 아닌 문자보다 앞서고, `~`는 모든 것보다, 부분의 끝보다도 앞선다. 따라서 `~~`, `~~a`, `~`, 빈 부분, `a`의 순서가 된다.
 2. 이어지는 숫자들을 떼어 수로 비교한다. 숫자가 없으면 0으로 본다.
@@ -199,7 +199,7 @@ Description: secure shell (SSH) server, for secure access from remote machines
 
 *표 4. 버전 비교의 예*
 
-다섯째 줄의 규칙 때문에 Ubuntu가 Debian의 패키지에 패치를 더한 판(`-1ubuntu1`)은 바탕이 된 Debian 판(`-1`)보다 새로운 판으로 취급된다. Ubuntu에서는 `dpkg --compare-versions 1.0~rc1-1 lt 1.0-1`처럼 두 판을 직접 비교할 수 있으며, 조건이 성립하면 종료 상태 0을 돌려준다 [4].
+다섯째 줄의 규칙 때문에 Ubuntu가 Debian의 패키지에 패치를 더한 판(`-1ubuntu1`)은 바탕이 된 Debian 판(`-1`)보다 새로운 판으로 취급된다. Ubuntu에서는 `dpkg --compare-versions 1.0~rc1-1 lt 1.0-1`처럼 두 판을 직접 비교할 수 있으며, 조건이 성립하면 종료 상태 0을 돌려준다 [5].
 
 > **주의:** 버전은 문자열로 비교하지 않는다. 사전 순서로는 `1.2.10`이 `1.2.9`보다 앞에 오지만 패키지 관리자는 반대로 판정한다. 또 `apt install 패키지=버전`으로 판을 지정할 때는 `openssh-server=1:9.6p1-3ubuntu13.20`처럼 에포크까지 포함한 전체 문자열을 쓴다.
 
@@ -253,7 +253,7 @@ $ zstd -dc data.tar.zst | tar -tf - | grep -E 'sbin/sshd$|sshd_config'
 
 `data.tar`의 이름은 `./usr/sbin/sshd`처럼 `./`로 시작하므로, `dpkg`는 이를 루트 디렉터리 아래에 풀어 `/usr/sbin/sshd`를 만든다. 이 패키지의 `conffiles`에 `/etc/ssh/sshd_config`가 없다는 점에 주의할 필요가 있다. 그 파일은 `data.tar`에 들어 있지 않고, `postinst`가 `/usr/share/openssh/sshd_config`를 복사하여 만든 뒤 `ucf`라는 별도의 도구로 관리한다. 같은 `postinst`가 호스트 키가 없으면 `ssh-keygen`으로 만든다(12장 2.2절). 즉 `/etc` 아래의 파일이라도 패키지의 파일 목록에 없고 스크립트가 만드는 파일이 있다.
 
-`dpkg -i`가 패키지를 설치하는 단계는 다음과 같으며, 관리자 스크립트가 실행되는 시점을 보여 준다 [4].
+`dpkg -i`가 패키지를 설치하는 단계는 다음과 같으며, 관리자 스크립트가 실행되는 시점을 보여 준다 [5].
 
 1. 새 패키지의 제어 영역을 꺼낸다.
 2. 같은 패키지의 옛 판이 설치되어 있으면 옛 판의 `prerm`을 실행한다.
@@ -283,7 +283,7 @@ $ zstd -dc data.tar.zst | tar -tf - | grep -E 'sbin/sshd$|sshd_config'
 
 ### 2.2 dpkg로 설치된 패키지 조사하기
 
-`dpkg`의 주요 옵션은 다음과 같다 [4].
+`dpkg`의 주요 옵션은 다음과 같다 [5].
 
 | 옵션 | 기능 |
 |:-----|:-----|
@@ -447,7 +447,7 @@ Ubuntu는 `.deb` 말고도 Canonical이 만든 **스냅(snap)** 패키지를 함
 
 *표 13. dpkg 데이터베이스의 주요 파일*
 
-`dpkg -l`의 줄 앞에는 최대 세 글자가 붙는다. 첫 글자는 원하는 상태(`u` 모름, `i` 설치, `h` 보류, `r` 삭제, `p` 완전 삭제), 둘째 글자는 실제 상태(`n` 설치 안 됨, `c` 설정 파일만, `H` 설치 중단, `U` 풀림, `F` 설정 중단, `W` 트리거 대기, `t` 트리거 보류, `i` 설치됨), 셋째 글자는 오류 표시(비어 있음, `R` 다시 설치 필요)이다. 상태나 오류의 글자가 대문자이면 심각한 문제가 있을 가능성이 크다는 뜻이다 [15]. 출력은 다음과 같다(출력 예, Ubuntu 24.04).
+`dpkg -l`의 줄 앞에는 최대 세 글자가 붙는다. 첫 글자는 원하는 상태(`i` 설치, `r` 삭제, `h` 보류 등), 둘째 글자는 실제 상태(`i` 설치됨, `c` 설정 파일만 남음, `U` 풀림 등), 셋째 글자는 오류 표시이며, 상태나 오류의 글자가 대문자이면 심각한 문제가 있을 가능성이 크다는 뜻이다 [15]. 흔히 보는 `ii`는 정상적으로 설치된 패키지, `rc`는 삭제했지만 설정 파일이 남은 패키지이다. 출력은 다음과 같다(출력 예, Ubuntu 24.04).
 
 ```text
 $ dpkg -l openssh-server tree
@@ -460,7 +460,7 @@ ii  openssh-server 1:9.6p1-3ubuntu13.20 amd64        secure shell (SSH) server, 
 rc  tree           2.1.1-2ubuntu3       amd64        displays an indented directory tree, in color
 ```
 
-실제 상태는 설치 단계(1.6절)를 따라 바뀐다. 각 상태의 뜻은 `dpkg`의 정의를 따른다 [4].
+실제 상태는 설치 단계(1.6절)를 따라 바뀐다. 각 상태의 뜻은 `dpkg`의 정의를 따른다 [5].
 
 ```mermaid
 stateDiagram-v2
@@ -482,7 +482,7 @@ stateDiagram-v2
 
 *그림 3. 패키지의 실제 상태가 바뀌는 과정 (트리거 상태 생략)*
 
-설치가 중간에 끊기면 패키지는 `half-installed`, `unpacked`, `half-configured` 가운데 하나에 머문다. 예를 들어 `postinst`가 실패하면 파일은 모두 풀렸지만 설정이 끝나지 않은 `half-configured`가 된다. 이 상태가 남아 있으면 `apt`가 표 11의 `E: dpkg was interrupted`를 내며 새 작업을 거부할 수 있으므로, 먼저 `sudo dpkg --configure -a`로 풀려 있지만 설정되지 않은 모든 패키지의 설정을 마친다 [4]. `sudo dpkg --audit`는 이런 불완전한 패키지를 찾아 보여 준다 [4].
+설치가 중간에 끊기면 패키지는 `half-installed`, `unpacked`, `half-configured` 가운데 하나에 머문다. 예를 들어 `postinst`가 실패하면 파일은 모두 풀렸지만 설정이 끝나지 않은 `half-configured`가 된다. 이 상태가 남아 있으면 `apt`가 표 11의 `E: dpkg was interrupted`를 내며 새 작업을 거부할 수 있으므로, 먼저 `sudo dpkg --configure -a`로 풀려 있지만 설정되지 않은 모든 패키지의 설정을 마친다 [5]. `sudo dpkg --audit`는 이런 불완전한 패키지를 찾아 보여 준다 [5].
 
 `dpkg -S`는 설치된 패키지의 `.list` 파일만 찾는다. 그래서 1.6절의 `/etc/ssh/sshd_config`나 호스트 키처럼 관리자 스크립트가 설치 중에 만든 파일은 찾지 못하고 [14], 아직 설치하지 않은 패키지의 파일도 찾지 못한다. 설치하지 않은 패키지까지 찾으려면 저장소의 파일 목록 색인(`Contents`)을 쓰는 `apt-file`을 쓴다 [16]. 다음은 그 예이다(출력 예).
 
@@ -545,7 +545,7 @@ zlib1g-dev: /usr/include/zlib.h
 
 *표 16. 기본 우선순위*
 
-`noble-backports`와 `noble-proposed`의 `InRelease`에는 실제로 `NotAutomatic: yes`와 `ButAutomaticUpgrades: yes`가 들어 있다 [2]. 그래서 이 갈래의 판은 처음에는 저절로 설치되지 않고, `-t`로 고른 뒤에는 같은 갈래의 새 판으로 자동 갱신된다. `noble-proposed`의 우선순위가 100인 것은 LTS로는 Ubuntu 24.04에서 처음 바뀐 기본값이며, 그전의 LTS에서는 500이었다 [8]. 후보 판은 `apt-cache policy`로 확인한다(출력 예).
+`noble-backports`와 `noble-proposed`의 `InRelease`에는 실제로 `NotAutomatic: yes`와 `ButAutomaticUpgrades: yes`가 들어 있다 [2]. 그래서 이 갈래의 판은 처음에는 저절로 설치되지 않고, `-t`로 고른 뒤에는 같은 갈래의 새 판으로 자동 갱신된다. 후보 판은 `apt-cache policy`로 확인한다(출력 예).
 
 ```text
 $ apt-cache policy openssh-server
@@ -571,16 +571,7 @@ Pin: origin repo.example.com
 Pin-Priority: 100
 ```
 
-| 우선순위 P | 뜻 |
-|:-----|:-----|
-| P >= 1000 | 판을 내리는 일이 되더라도 이 판을 설치 |
-| 990 <= P < 1000 | 대상 배포판이 아니어도 설치, 설치된 판이 더 새로우면 제외 |
-| 500 <= P < 990 | 대상 배포판의 판이 있거나 설치된 판이 더 새로우면 제외 |
-| 100 <= P < 500 | 다른 배포판의 판이 있거나 설치된 판이 더 새로우면 제외 |
-| 0 < P < 100 | 설치된 판이 없을 때만 설치 |
-| P < 0 | 설치하지 않음 |
-
-*표 17. 우선순위 값의 뜻*
+우선순위 값의 범위에는 정해진 뜻이 있다. 1000 이상인 판은 판을 내리는 일이 되더라도 설치되고, 0보다 크고 100보다 작은 판은 설치된 판이 없을 때만 설치되며, 0보다 작은 판은 설치되지 않는다 [17].
 
 판을 고르는 대신 지금의 판에 묶어 두려면 **보류(hold)** 를 쓴다. `sudo apt-mark hold 패키지`로 보류한 패키지는 직접 요청하지 않는 한 설치, 갱신, 삭제가 자동으로 이루어지지 않으며, `apt-mark showhold`로 목록을 보고 `apt-mark unhold`로 푼다 [19]. 보류는 `dpkg`의 원하는 상태 `h`(2.8절)로 기록된다.
 
@@ -699,25 +690,13 @@ sudo make install                          # /usr/local 아래에 설치
 | 출처 검증 | 저장소의 서명으로 검증 | 내려받은 파일을 직접 검증 |
 | 장점 | 관리가 쉬움 | 최신 판, 원하는 빌드 옵션 |
 
-*표 18. 패키지 설치와 소스 설치의 비교*
+*표 17. 패키지 설치와 소스 설치의 비교*
 
 소스에서 설치한 프로그램은 보안 수정이 나와도 자동으로 갱신되지 않고, 어떤 파일을 설치했는지 기록이 없어 깔끔하게 지우기도 어렵다. 그래서 저장소에 있는 프로그램은 패키지로 설치하고, 소스 설치는 반드시 필요한 경우에만 `/usr/local`이나 홈 디렉터리 같은 분리된 위치에만 한다.
 
 ### 3.3 설치 위치와 DESTDIR, 직접 만든 패키지
 
-`./configure`의 `--prefix`는 설치할 모든 경로의 기준이며, 파일의 종류마다 그 아래의 하위 디렉터리가 정해진다. GNU의 `configure` 스크립트가 쓰는 기본 배치는 다음과 같고, 각 항목은 `--bindir=DIR`처럼 따로 바꿀 수 있다.
-
-| 변수 | 기본값 | 들어가는 파일 |
-|:-----|:-----|:-----|
-| `prefix` | `/usr/local` | 아래 경로들의 기준 |
-| `bindir` | `PREFIX/bin` | 사용자가 실행하는 프로그램 |
-| `sbindir` | `PREFIX/sbin` | 관리자용 프로그램 |
-| `libdir` | `PREFIX/lib` | 라이브러리 |
-| `includedir` | `PREFIX/include` | C 헤더 파일 |
-| `datarootdir` | `PREFIX/share` | 아키텍처와 무관한 자료 (`man` 페이지는 `share/man`) |
-| `sysconfdir` | `PREFIX/etc` | 설정 파일 |
-
-*표 19. configure의 설치 경로 변수와 기본값*
+`./configure`의 `--prefix`는 설치할 모든 경로의 기준이며, 파일의 종류마다 그 아래의 하위 디렉터리가 정해진다. GNU의 `configure` 스크립트는 기본값 `/usr/local` 아래의 `bin`에 실행 파일을, `lib`에 라이브러리를, `etc`에 설정 파일을 두는 식으로 경로를 정하며, 각 경로는 `--bindir=DIR`, `--sysconfdir=DIR`처럼 따로 바꿀 수 있다.
 
 따라서 `--prefix=/usr/local`로 빌드한 프로그램은 설정 파일을 `/etc`가 아니라 `/usr/local/etc`에서 찾는다. 시스템의 `/etc`를 쓰게 하려면 `--sysconfdir=/etc`를 함께 준다.
 
@@ -821,7 +800,7 @@ flowchart LR
 | `-C 디렉터리` | 그 디렉터리로 옮겨 가서 작업 (주로 풀 위치 지정) |
 | `--exclude=패턴` | 패턴에 맞는 파일을 뺀다 |
 
-*표 20. tar의 주요 옵션*
+*표 18. tar의 주요 옵션*
 
 ```text
 $ tar -czf proj.tar.gz proj
@@ -852,7 +831,7 @@ README  src
 | `xz` | `xz 파일` | `unxz 파일.xz`, `xz -d` | `.xz` | 대체로 가장 작게, 압축이 가장 느림 |
 | `zip` | `zip 결과.zip 파일...` | `unzip 결과.zip` | `.zip` | 여러 파일을 묶어 압축, 원본 유지 |
 
-*표 21. 압축 명령의 비교*
+*표 19. 압축 명령의 비교*
 
 `gzip`, `bzip2`, `xz`는 파일 하나를 압축하고, 압축이 끝나면 **원본을 지우고** `.gz` 같은 확장자가 붙은 파일로 바꾼다 [26]. 원본을 남기려면 `-k`(keep)를 주고, 표준 출력으로 내보내려면 `-c`를 준다. `-1`부터 `-9`까지의 숫자는 압축 수준으로, 클수록 작게 압축하지만 느려진다. 압축된 텍스트 파일은 풀지 않고 `zcat`, `zless`, `zgrep`(xz는 `xzcat`, `xzgrep`)으로 읽을 수 있다.
 
@@ -885,7 +864,7 @@ $ gunzip manual.txt.gz
 | `zstd -3` (기본) | 263,891 | 24.4% | 8 ms | 6 ms |
 | `zstd -19` | 214,262 | 19.8% | 210 ms | 6 ms |
 
-*표 22. 1,079,464바이트 텍스트 파일의 압축 결과*
+*표 20. 1,079,464바이트 텍스트 파일의 압축 결과*
 
 이 결과에서 다음을 읽을 수 있다.
 
@@ -955,7 +934,7 @@ $ ssh lab 'find /tmp/restore | sort'
 | 남에게서 받은 아카이브를 `sudo`로 풂 | 아카이브에 적힌 소유자가 그대로 적용됨 | 일반 사용자로 풀거나 `--no-same-owner`를 줌 |
 | 기존 파일이 있는 디렉터리에 풂 | 묻지 않고 덮어씀 | `-k`(`--keep-old-files`)로 기존 파일을 남김 [25] |
 
-*표 23. tar의 흔한 실수*
+*표 21. tar의 흔한 실수*
 
 ### 4.6 압축의 원리
 
@@ -976,7 +955,7 @@ $ ssh lab 'find /tmp/restore | sort'
 
 > **[알고리즘]** 알고리즘에서 배우는 탐욕 알고리즘으로 보면, 허프만 부호는 빈도가 가장 낮은 두 마디를 되풀이하여 합치는 탐욕적 선택으로 만들어지며, 기호의 빈도가 주어졌을 때 접두어 부호 가운데 평균 길이가 가장 짧은 부호를 낸다.
 
-**bzip2와 xz.** bzip2는 블록마다 Burrows-Wheeler 변환으로 같은 문자가 모이도록 바꾼 뒤 허프만 부호로 줄인다 [29]. xz는 LZMA2 방식을 쓰며, 되풀이를 찾는 범위인 사전(dictionary)이 기본 수준 `-6`에서 8 MiB이다 [30]. deflate의 32 KiB보다 훨씬 멀리 떨어진 되풀이까지 찾으므로 더 작게 압축하지만, 찾는 데 시간이 더 든다(표 22).
+**bzip2와 xz.** bzip2는 블록마다 Burrows-Wheeler 변환으로 같은 문자가 모이도록 바꾼 뒤 허프만 부호로 줄인다 [29]. xz는 LZMA2 방식을 쓰며, 되풀이를 찾는 범위인 사전(dictionary)이 기본 수준 `-6`에서 8 MiB이다 [30]. deflate의 32 KiB보다 훨씬 멀리 떨어진 되풀이까지 찾으므로 더 작게 압축하지만, 찾는 데 시간이 더 든다(표 20).
 
 **자료에 따른 차이.** 압축률은 방식보다 자료에 더 크게 좌우된다. 같은 1,000,000바이트라도 내용에 따라 결과가 다음과 같이 달라진다.
 
@@ -985,13 +964,13 @@ $ ssh lab 'find /tmp/restore | sort'
 | 무작위 바이트 | 1,000,337 | 1,004,607 | 1,000,116 |
 | `abcdefgh`를 125,000번 되풀이한 텍스트 | 1,504 | 119 | 292 |
 
-*표 24. 자료의 성질에 따른 압축 결과 (바이트)*
+*표 22. 자료의 성질에 따른 압축 결과 (바이트)*
 
 - 무작위 자료에는 되풀이도 치우친 빈도도 없으므로 어느 방식으로도 줄지 않고, 압축 형식의 머리와 블록 정보만큼 조금 커진다. deflate는 줄지 않는 블록을 압축하지 않은 채 담으므로 늘어나는 양이 블록마다 몇 바이트에 그친다 [28].
 - 되풀이가 많은 자료는 원래 크기의 0.2%보다도 작아진다. 같은 8바이트가 계속 되풀이되므로 LZ77의 (길이, 거리) 쌍 몇 개로 표현되기 때문이다.
 - 이미 압축된 파일(JPEG, MP4, `.deb`, `.zip`)은 무작위 자료와 성질이 비슷하므로 다시 압축해도 줄지 않는다(4.4절).
 
-**무결성 검사.** gzip 파일의 끝에는 원본의 CRC-32와 원본 크기를 2의 32제곱으로 나눈 나머지가 들어 있다 [31]. `gzip -t 파일.gz`는 파일을 풀어 보며 이 값을 검사하여 손상 여부를 확인한다 [26].
+**무결성 검사.** `gzip -t 파일.gz`는 파일을 풀어 보며 손상 여부를 검사한다 [26].
 
 ---
 
@@ -1009,13 +988,13 @@ $ ssh lab 'find /tmp/restore | sort'
 | `apt upgrade`는 갱신에 필요하면 설치된 패키지를 지운다. | **F.** 기존 패키지를 지우지 않으며, 지워야 하는 갱신은 `full-upgrade`가 한다. |
 | `gzip file`을 실행한 뒤에도 `file`은 그대로 남는다. | **F.** 원본을 지우고 `file.gz`로 바꾸므로, 원본을 남기려면 `-k`를 준다. |
 | `tar -cfz a.tar.gz dir`은 gzip으로 압축된 아카이브를 만든다. | **F.** `-f` 바로 뒤의 `z`가 파일 이름으로 해석되므로 `-czf a.tar.gz dir`로 써야 한다. |
-| 압축 수준을 `-6`에서 `-9`로 올리면 크기가 `-1`에서 `-6`으로 올릴 때만큼 줄어든다. | **F.** 표 22처럼 높은 수준에서는 크기가 조금만 줄고 시간이 크게 는다. |
+| 압축 수준을 `-6`에서 `-9`로 올리면 크기가 `-1`에서 `-6`으로 올릴 때만큼 줄어든다. | **F.** 표 20처럼 높은 수준에서는 크기가 조금만 줄고 시간이 크게 는다. |
 | `1.2.10-1`은 사전 순서로 `1.2.9-1`보다 앞서므로 더 오래된 판으로 취급된다. | **F.** 숫자 부분은 수로 비교하므로 10이 9보다 크고, `1.2.10-1`이 더 새로운 판이다. |
 | `Depends: a \| b, c`는 "a, 또는 b와 c"를 뜻한다. | **F.** `\|`가 쉼표보다 강하게 묶으므로 "(a 또는 b) 그리고 c"이다. |
 | `noble`에서 설치한 패키지의 새 판이 `noble-backports`에 나오면 `apt upgrade`가 그 판으로 갱신한다. | **F.** backports의 판은 우선순위가 100이고 `noble`의 설치된 판은 500이므로 후보가 되지 않는다. `-t noble-backports`로 직접 골라야 한다. |
 | Ubuntu 24.04에서 외부 저장소의 키는 `apt-key`로 추가하는 것이 권장된다. | **F.** 키 파일을 따로 두고 `Signed-By`로 그 저장소에만 쓰게 하는 방식이 권장된다. |
 | `make install DESTDIR=/tmp/stage`로 모은 프로그램은 `/tmp/stage/usr/local`에서 실행되도록 빌드된다. | **F.** `DESTDIR`은 복사할 때만 붙는 경로이며, 프로그램은 여전히 `/usr/local`에 설치되는 것으로 빌드된다. |
-| 무작위 자료도 `xz`처럼 압축률이 높은 방식을 쓰면 크기가 줄어든다. | **F.** 되풀이가 없는 자료는 어떤 방식으로도 줄지 않고, 표 24처럼 머리 정보만큼 조금 커진다. |
+| 무작위 자료도 `xz`처럼 압축률이 높은 방식을 쓰면 크기가 줄어든다. | **F.** 되풀이가 없는 자료는 어떤 방식으로도 줄지 않고, 표 22처럼 머리 정보만큼 조금 커진다. |
 
 ---
 
@@ -1097,7 +1076,7 @@ $ ssh lab 'find /tmp/restore | sort'
 
    </details>
 
-6. **압축률 계산:** 표 22에서 `xz -6`은 원본의 몇 바이트를 줄였으며, `gzip -6`과 비교하여 압축한 크기가 몇 퍼센트 더 작은가?
+6. **압축률 계산:** 표 20에서 `xz -6`은 원본의 몇 바이트를 줄였으며, `gzip -6`과 비교하여 압축한 크기가 몇 퍼센트 더 작은가?
 
    <details>
    <summary>정답</summary>
@@ -1106,7 +1085,7 @@ $ ssh lab 'find /tmp/restore | sort'
 
    </details>
 
-7. **압축 방식 선택:** 매시간 만드는 데이터베이스 백업과, 한 번 만들어 수천 명이 내려받을 소스 코드 배포 파일에 각각 어떤 압축 방식이 알맞은지 표 22를 근거로 설명하라.
+7. **압축 방식 선택:** 매시간 만드는 데이터베이스 백업과, 한 번 만들어 수천 명이 내려받을 소스 코드 배포 파일에 각각 어떤 압축 방식이 알맞은지 표 20을 근거로 설명하라.
 
    <details>
    <summary>정답</summary>
@@ -1151,8 +1130,8 @@ $ ssh lab 'find /tmp/restore | sort'
 1. "deb-control(5), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/deb-control.5.html
 2. Canonical, "Ubuntu archive index files, dists/noble, noble-updates, and noble-backports," [Online]. Available: http://archive.ubuntu.com/ubuntu/dists/
 3. "apt-get(8), Ubuntu noble manual page," *APT*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/apt-get.8.html
-4. "dpkg(1), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/dpkg.1.html
-5. "deb-version(7), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man7/deb-version.7.html
+4. "deb-version(7), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man7/deb-version.7.html
+5. "dpkg(1), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/dpkg.1.html
 6. "deb(5), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/deb.5.html
 7. "apt(8), Ubuntu noble manual page," *APT*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/apt.8.html
 8. Canonical, "Ubuntu 24.04 LTS (Noble Numbat) release notes," [Online]. Available: https://documentation.ubuntu.com/release-notes/24.04/
@@ -1178,4 +1157,3 @@ $ ssh lab 'find /tmp/restore | sort'
 28. P. Deutsch, "DEFLATE Compressed Data Format Specification version 1.3," RFC 1951, May 1996. [Online]. Available: https://www.rfc-editor.org/rfc/rfc1951
 29. "bzip2(1), Ubuntu noble manual page," *bzip2*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/bzip2.1.html
 30. "xz(1), Ubuntu noble manual page," *XZ Utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/xz.1.html
-31. P. Deutsch, "GZIP file format specification version 4.3," RFC 1952, May 1996. [Online]. Available: https://www.rfc-editor.org/rfc/rfc1952

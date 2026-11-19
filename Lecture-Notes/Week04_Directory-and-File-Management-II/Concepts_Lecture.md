@@ -985,23 +985,14 @@ trash-put file.txt               # Move to trash instead of delete
 
    </details>
 
-9. **The three forms of -perm:** There are four files with permissions `755`, `644`, `600`, and `777`. Select the files that match `-perm 644`, `-perm -644`, and `-perm /022`, respectively.
+9. **Order of redirections:** For a nonexistent file `nosuch`, `ls nosuch 2>&1 > out.txt` and `ls nosuch > out.txt 2>&1` were each run. Where does the error message appear?
 
    <details>
    <summary>Answer</summary>
 
-   `-perm 644` requires an exact match, so only `644`. `-perm -644` requires all bits of 644 (`rw-r--r--`) to be set: `755` (`rwxr-xr-x`) qualifies because its owner `w` is set, `644` and `777` also qualify, and `600` does not because its group `r` is off. `-perm /022` requires at least one of group write and others write to be set, so only `777`.
+   Redirections are applied from left to right. In the first command, when `2>&1` is applied, descriptor 1 still refers to the screen, so standard error is set to the screen, and only afterwards is descriptor 1 changed to `out.txt`. The error message therefore appears on the screen and `out.txt` is empty. The second command changes descriptor 1 to `out.txt` and then makes descriptor 2 the same as 1, so the error message is written to `out.txt`.
 
    </details>
-
-10. **Order of redirections:** For a nonexistent file `nosuch`, `ls nosuch 2>&1 > out.txt` and `ls nosuch > out.txt 2>&1` were each run. Where does the error message appear?
-
-    <details>
-    <summary>Answer</summary>
-
-    Redirections are applied from left to right. In the first command, when `2>&1` is applied, descriptor 1 still refers to the screen, so standard error is set to the screen, and only afterwards is descriptor 1 changed to `out.txt`. The error message therefore appears on the screen and `out.txt` is empty. The second command changes descriptor 1 to `out.txt` and then makes descriptor 2 the same as 1, so the error message is written to `out.txt`.
-
-    </details>
 
 ---
 

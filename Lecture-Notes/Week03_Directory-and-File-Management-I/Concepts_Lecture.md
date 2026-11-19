@@ -809,23 +809,14 @@ The command prints from the fifth line among the first seven, so lines 5-7 appea
 
    </details>
 
-9. **Special names:** The current directory contains a file named `-r` and a directory named `docs`. Explain what can happen if the user runs `rm *`, and write a command that safely removes only the file `-r`.
+9. **Extracting a line range:** Write a command with `head` and `tail` that prints only lines 12 through 15 of the file `data.txt`.
 
    <details>
    <summary>Answer</summary>
 
-   The argument list produced by the shell's expansion of `*` contains `-r`, and GNU `rm` interprets arguments that start with `-` as options regardless of their position, so the command acts like `rm -r docs`. `-r` is therefore interpreted not as a file name but as the recursive deletion option, and the directory `docs` is deleted with its contents. To remove only the file whose name starts with `-`, use `rm -- -r` or `rm ./-r`.
+   It is `head -n 15 data.txt | tail -n +12`. `head -n 15` passes the first 15 lines, and `tail -n +12` prints from the 12th of them to the end, so the four lines 12-15 appear.
 
    </details>
-
-10. **Extracting a line range:** Write a command with `head` and `tail` that prints only lines 12 through 15 of the file `data.txt`.
-
-    <details>
-    <summary>Answer</summary>
-
-    It is `head -n 15 data.txt | tail -n +12`. `head -n 15` passes the first 15 lines, and `tail -n +12` prints from the 12th of them to the end, so the four lines 12-15 appear.
-
-    </details>
 
 ---
 

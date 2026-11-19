@@ -798,16 +798,7 @@ Both programs print the same output. The outer loop runs over the table number (
 
    </details>
 
-6. **Operators and motions:** The cursor is on the first `s` of the line `cp source.txt backup/source.txt`. Write the result of each of (a) `dw` (b) `d$` (c) `cw` followed by typing `target` and `Esc`.
-
-   <details>
-   <summary>Answer</summary>
-
-   (a) `dw` deletes only `source`, which consists of word characters, and stops at `.`, because `.` is not a word character and is treated as a new word; the result is `cp .txt backup/source.txt`. (b) `d$` deletes from the cursor to the end of the line, leaving `cp `. (c) `cw` also changes only up to `source`, giving `cp target.txt backup/source.txt`.
-
-   </details>
-
-7. **Substitution commands:** Write the last-line mode command for each task. (a) Replace `/usr/local/bin` with `/opt/bin` throughout the file (b) Replace every `foo` with `bar` from the current line through the five lines below it (six lines in all) (c) Delete every line starting with `#`
+5. **Substitution commands:** Write the last-line mode command for each task. (a) Replace `/usr/local/bin` with `/opt/bin` throughout the file (b) Replace every `foo` with `bar` from the current line through the five lines below it (six lines in all) (c) Delete every line starting with `#`
 
    <details>
    <summary>Answer</summary>

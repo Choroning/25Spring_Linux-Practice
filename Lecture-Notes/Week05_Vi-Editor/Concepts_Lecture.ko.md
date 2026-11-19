@@ -798,16 +798,7 @@ for i in range(1, 10):
 
    </details>
 
-6. **연산자와 이동:** 줄 `cp source.txt backup/source.txt`의 첫 `s`에 커서가 있다. (가) `dw` (나) `d$` (다) `cw` 다음 `target` 입력 후 `Esc`의 결과를 각각 쓰라.
-
-   <details>
-   <summary>정답</summary>
-
-   (가) `dw`는 단어 문자로 된 `source`만 지우고 `.`에서 멈춘다. `.`은 단어 문자가 아니어서 새 단어로 보기 때문이며, 결과는 `cp .txt backup/source.txt`이다. (나) `d$`는 커서부터 줄 끝까지 지우므로 `cp `가 남는다. (다) `cw`도 `source`까지만 바꾸므로 `cp target.txt backup/source.txt`가 된다.
-
-   </details>
-
-7. **치환 명령:** 다음 각 작업을 하는 마지막 줄 모드 명령을 쓰라. (가) 파일 전체에서 `/usr/local/bin`을 `/opt/bin`으로 바꾸기 (나) 현재 줄부터 아래 다섯 줄까지(모두 여섯 줄) `foo`를 `bar`로 모두 바꾸기 (다) `#`으로 시작하는 줄 모두 지우기
+5. **치환 명령:** 다음 각 작업을 하는 마지막 줄 모드 명령을 쓰라. (가) 파일 전체에서 `/usr/local/bin`을 `/opt/bin`으로 바꾸기 (나) 현재 줄부터 아래 다섯 줄까지(모두 여섯 줄) `foo`를 `bar`로 모두 바꾸기 (다) `#`으로 시작하는 줄 모두 지우기
 
    <details>
    <summary>정답</summary>

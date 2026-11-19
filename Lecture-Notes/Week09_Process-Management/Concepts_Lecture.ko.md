@@ -825,7 +825,7 @@ $ uptime
 
    </details>
 
-6. **cron 표현식:** 다음 두 항목이 실행되는 시각을 각각 쓰라. (가) `15,45 9-17 * * 1-5 /usr/local/bin/sync.sh` (나) `0 */6 1 * * /usr/local/bin/report.sh`
+5. **cron 표현식:** 다음 두 항목이 실행되는 시각을 각각 쓰라. (가) `15,45 9-17 * * 1-5 /usr/local/bin/sync.sh` (나) `0 */6 1 * * /usr/local/bin/report.sh`
 
    <details>
    <summary>정답</summary>
@@ -834,16 +834,7 @@ $ uptime
 
    </details>
 
-7. **종료 상태:** 다음 명령을 차례로 실행했을 때 각 `echo $?`의 출력을 쓰라. (가) `true; echo $?` (나) `grep -q root /etc/passwd; echo $?` (다) `sleep 60 & kill -9 $!; wait $!; echo $?`
-
-   <details>
-   <summary>정답</summary>
-
-   (가) `true`는 언제나 성공하므로 0이다. (나) `/etc/passwd`에 `root`가 있으므로 `grep -q`는 0을 돌려준다. (다) `$!`는 마지막 백그라운드 작업의 PID이다. `sleep`이 SIGKILL(9)로 끝났으므로 `wait`가 돌려주는 종료 상태는 128 + 9 = 137이다.
-
-   </details>
-
-8. **좀비의 원인:** 서버에서 `ps`로 보니 부모 PID가 같은 `<defunct>` 프로세스가 수백 개 쌓여 있다. 원인과 해결 방법을 설명하라.
+6. **좀비의 원인:** 서버에서 `ps`로 보니 부모 PID가 같은 `<defunct>` 프로세스가 수백 개 쌓여 있다. 원인과 해결 방법을 설명하라.
 
    <details>
    <summary>정답</summary>

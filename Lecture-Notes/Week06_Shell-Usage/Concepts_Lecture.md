@@ -1003,7 +1003,7 @@ renice -n 5 -p PID              # Change priority of running process
 
    </details>
 
-6. **Results of expansion:** `USER=user1`, and the current directory contains only `a.txt` and `b.txt`. Write the output of each command. (a) `echo {1..3}_$USER` (b) `echo '$USER' "$USER" \$USER` (c) `x="*"; echo "$x" $x`
+7. **Results of expansion:** `USER=user1`, and the current directory contains only `a.txt` and `b.txt`. Write the output of each command. (a) `echo {1..3}_$USER` (b) `echo '$USER' "$USER" \$USER` (c) `x="*"; echo "$x" $x`
 
    <details>
    <summary>Answer</summary>
@@ -1012,7 +1012,7 @@ renice -n 5 -p PID              # Change priority of running process
 
    </details>
 
-7. **Finding commands:** The output of `type -a pwd` is `pwd is a shell builtin`, `pwd is /usr/bin/pwd`, and `pwd is /bin/pwd`. What runs when `pwd` is typed, and how is `/usr/bin/pwd` run?
+8. **Finding commands:** The output of `type -a pwd` is `pwd is a shell builtin`, `pwd is /usr/bin/pwd`, and `pwd is /bin/pwd`. What runs when `pwd` is typed, and how is `/usr/bin/pwd` run?
 
    <details>
    <summary>Answer</summary>

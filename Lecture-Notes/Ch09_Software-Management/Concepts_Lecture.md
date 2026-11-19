@@ -158,17 +158,17 @@ The value of a field such as `Depends` is a list of groups separated by commas, 
 
 > **Definition:** A **virtual package** is a name for which no `.deb` file exists and which several packages with the same function jointly declare with `Provides`. Just as `sendmail` and `exim` both provide `mail-transport-agent`, other packages can depend on this name and work whichever implementation is installed [1].
 
-In the values of `Breaks` and `Conflicts`, a comma is read as "or", because the relation holds if any one of the listed packages is installed [1]. The two fields differ in how much they block. `Conflicts` prevents the two packages from being installed at the same time, whereas `Breaks` allows both to be unpacked and only blocks the configuration of the listed (broken) package until it is upgraded to a new version [1]. Writing `<` or `>` as a single character in a version condition is an old syntax that fell out of use because its meaning is confusing [4].
+In the values of `Breaks` and `Conflicts`, a comma is read as "or", because the relation holds if any one of the listed packages is installed [1]. The two fields differ in how much they block. `Conflicts` prevents the two packages from being installed at the same time, whereas `Breaks` allows both to be unpacked and only blocks the configuration of the listed (broken) package until it is upgraded to a new version [1].
 
 ### 1.5 Structure and Comparison of Version Numbers
 
-A package version consists of three parts, `[epoch:]upstream-version[-revision]` [5]. Only the last two parts appeared in the file name of Section 1.3, but all three are used in comparison.
+A package version consists of three parts, `[epoch:]upstream-version[-revision]` [4]. Only the last two parts appeared in the file name of Section 1.3, but all three are used in comparison.
 
 - The **epoch** is a small integer, taken as 0 when omitted. It is added to get past the problem when the upstream author changes the numbering scheme so that a new version's number looks smaller than an old one. The `openssh-server` of Section 1.4 has version `1:9.6p1-3ubuntu13` with epoch 1, but the epoch does not appear in the file name `openssh-server_9.6p1-3ubuntu13_amd64.deb` of `Filename`.
 - The upstream version is mandatory and conventionally starts with a digit.
 - The revision is the part after the **last** `-` in the string, so the upstream version may itself contain `-`. A version without a revision precedes a version with one.
 
-Two versions are compared by first comparing the epochs as numbers, then, if equal, the upstream versions, and, if those are also equal, the revisions, both by the same method. The method repeats the following two steps alternately from the left of the strings [5].
+Two versions are compared by first comparing the epochs as numbers, then, if equal, the upstream versions, and, if those are also equal, the revisions, both by the same method. The method repeats the following two steps alternately from the left of the strings [4].
 
 1. Take the leading characters that are not digits and compare them in lexical order. Here letters precede non-letters, and `~` precedes everything, even the end of the part. The order is therefore `~~`, `~~a`, `~`, the empty part, `a`.
 2. Take the digits that follow and compare them as numbers. No digits count as 0.
@@ -199,7 +199,7 @@ Comparing `1:9.6p1-3ubuntu13.20` with `1:9.6p1-3ubuntu13` proceeds as follows.
 
 *Table 4. Examples of version comparison*
 
-Because of the rule in the fifth row, a version in which Ubuntu added patches to a Debian package (`-1ubuntu1`) is treated as newer than the Debian version it is based on (`-1`). On Ubuntu two versions can be compared directly, as in `dpkg --compare-versions 1.0~rc1-1 lt 1.0-1`, which returns exit status 0 when the condition holds [4].
+Because of the rule in the fifth row, a version in which Ubuntu added patches to a Debian package (`-1ubuntu1`) is treated as newer than the Debian version it is based on (`-1`). On Ubuntu two versions can be compared directly, as in `dpkg --compare-versions 1.0~rc1-1 lt 1.0-1`, which returns exit status 0 when the condition holds [5].
 
 > **Caution:** Versions are not compared as strings. In lexical order `1.2.10` comes before `1.2.9`, but the package manager judges the opposite. Also, when choosing a version with `apt install package=version`, write the full string including the epoch, as in `openssh-server=1:9.6p1-3ubuntu13.20`.
 
@@ -253,7 +253,7 @@ $ zstd -dc data.tar.zst | tar -tf - | grep -E 'sbin/sshd$|sshd_config'
 
 The names in `data.tar` start with `./`, as in `./usr/sbin/sshd`, so `dpkg` unpacks them under the root directory and creates `/usr/sbin/sshd`. Note that `/etc/ssh/sshd_config` is not in this package's `conffiles`. That file is not contained in `data.tar`; `postinst` creates it by copying `/usr/share/openssh/sshd_config` and then manages it with a separate tool, `ucf`. The same `postinst` creates the host keys with `ssh-keygen` if they are missing (Chapter 12, Section 2.2). Even under `/etc`, then, some files are not in the package's file list but are created by scripts.
 
-The steps by which `dpkg -i` installs a package are as follows, and they show when the maintainer scripts run [4].
+The steps by which `dpkg -i` installs a package are as follows, and they show when the maintainer scripts run [5].
 
 1. Extract the control area of the new package.
 2. If an old version of the same package is installed, run the old version's `prerm`.
@@ -283,7 +283,7 @@ The steps by which `dpkg -i` installs a package are as follows, and they show wh
 
 ### 2.2 Inspecting Installed Packages with dpkg
 
-The main options of `dpkg` are as follows [4].
+The main options of `dpkg` are as follows [5].
 
 | Option | Function |
 |:-----|:-----|
@@ -447,7 +447,7 @@ A `.deb` package is updated only when the administrator runs `apt upgrade`, wher
 
 *Table 13. Main files of the dpkg database*
 
-A line of `dpkg -l` starts with up to three letters. The first is the desired state (`u` unknown, `i` install, `h` hold, `r` remove, `p` purge), the second the actual state (`n` not installed, `c` config files only, `H` half-installed, `U` unpacked, `F` half-configured, `W` triggers awaited, `t` triggers pending, `i` installed), and the third the error flag (empty, or `R` reinstall required). An uppercase status or error letter means that the package is likely to cause severe problems [15]. The output looks as follows (example output, Ubuntu 24.04).
+A line of `dpkg -l` starts with up to three letters: the desired state (`i` install, `r` remove, `h` hold, and others), the actual state (`i` installed, `c` config files only, `U` unpacked, and others), and an error flag; an uppercase status or error letter means that the package is likely to cause severe problems [15]. The common `ii` marks a package installed normally, and `rc` a package that was removed but whose configuration files remain. The output looks as follows (example output, Ubuntu 24.04).
 
 ```text
 $ dpkg -l openssh-server tree
@@ -460,7 +460,7 @@ ii  openssh-server 1:9.6p1-3ubuntu13.20 amd64        secure shell (SSH) server, 
 rc  tree           2.1.1-2ubuntu3       amd64        displays an indented directory tree, in color
 ```
 
-The actual state changes along the installation steps (Section 1.6). The meaning of each state follows the definitions of `dpkg` [4].
+The actual state changes along the installation steps (Section 1.6). The meaning of each state follows the definitions of `dpkg` [5].
 
 ```mermaid
 stateDiagram-v2
@@ -482,7 +482,7 @@ stateDiagram-v2
 
 *Figure 3. How the actual state of a package changes (trigger states omitted)*
 
-If installation is cut off midway, the package stays in one of `half-installed`, `unpacked`, and `half-configured`. For example, if `postinst` fails, the package becomes `half-configured`: all files have been unpacked but configuration has not finished. While such a state remains, `apt` may refuse new operations with the `E: dpkg was interrupted` of Table 11, so first finish configuring all unpacked but unconfigured packages with `sudo dpkg --configure -a` [4]. `sudo dpkg --audit` finds and shows such incomplete packages [4].
+If installation is cut off midway, the package stays in one of `half-installed`, `unpacked`, and `half-configured`. For example, if `postinst` fails, the package becomes `half-configured`: all files have been unpacked but configuration has not finished. While such a state remains, `apt` may refuse new operations with the `E: dpkg was interrupted` of Table 11, so first finish configuring all unpacked but unconfigured packages with `sudo dpkg --configure -a` [5]. `sudo dpkg --audit` finds and shows such incomplete packages [5].
 
 `dpkg -S` searches only the `.list` files of installed packages. It therefore cannot find files that maintainer scripts created during installation, such as the `/etc/ssh/sshd_config` and host keys of Section 1.6 [14], nor the files of packages not yet installed. To search packages that are not installed as well, use `apt-file`, which uses the repository's file-list index (`Contents`) [16]. An example follows (example output).
 
@@ -545,7 +545,7 @@ Without separate configuration files, priorities are assigned as follows [17].
 
 *Table 16. Default priorities*
 
-The `InRelease` files of `noble-backports` and `noble-proposed` do contain `NotAutomatic: yes` and `ButAutomaticUpgrades: yes` [2]. Versions in these branches are therefore not installed on their own at first, but once chosen with `-t` they are upgraded automatically to newer versions of the same branch. The priority of 100 for `noble-proposed` is a default that changed in Ubuntu 24.04 for the first time among LTS releases; earlier LTS releases used 500 [8]. The candidate version is checked with `apt-cache policy` (example output).
+The `InRelease` files of `noble-backports` and `noble-proposed` do contain `NotAutomatic: yes` and `ButAutomaticUpgrades: yes` [2]. Versions in these branches are therefore not installed on their own at first, but once chosen with `-t` they are upgraded automatically to newer versions of the same branch. The candidate version is checked with `apt-cache policy` (example output).
 
 ```text
 $ apt-cache policy openssh-server
@@ -571,16 +571,7 @@ Pin: origin repo.example.com
 Pin-Priority: 100
 ```
 
-| Priority P | Meaning |
-|:-----|:-----|
-| P >= 1000 | Install this version even if it means a downgrade |
-| 990 <= P < 1000 | Install even if not from the target release, unless the installed version is newer |
-| 500 <= P < 990 | Excluded if a version of the target release exists or the installed version is newer |
-| 100 <= P < 500 | Excluded if a version from another release exists or the installed version is newer |
-| 0 < P < 100 | Install only if no version is installed |
-| P < 0 | Never install |
-
-*Table 17. Meaning of priority values*
+Ranges of priority values have fixed meanings. A version with a priority of 1000 or more is installed even if this means a downgrade, one greater than 0 and less than 100 is installed only if no version is installed, and one below 0 is never installed [17].
 
 To tie a package to its current version instead of choosing among versions, use a **hold**. A package held with `sudo apt-mark hold package` is not automatically installed, upgraded, or removed unless explicitly requested; the list is shown with `apt-mark showhold`, and the hold is released with `apt-mark unhold` [19]. A hold is recorded as the desired state `h` of `dpkg` (Section 2.8).
 
@@ -699,25 +690,13 @@ sudo make install                          # install under /usr/local
 | Verification of origin | Verified by the repository's signature | The downloaded file must be verified manually |
 | Advantage | Easy to manage | The newest version, the desired build options |
 
-*Table 18. Comparison of package installation and installation from source*
+*Table 17. Comparison of package installation and installation from source*
 
 A program installed from source is not updated automatically when security fixes are released, and with no record of which files it installed, it is hard to remove cleanly. Programs available in the repositories are therefore installed as packages, and installation from source is done only when it is necessary, in separate locations such as `/usr/local` or the home directory.
 
 ### 3.3 Installation Locations, DESTDIR, and Self-Built Packages
 
-The `--prefix` of `./configure` is the base of all installation paths, and a subdirectory under it is fixed for each kind of file. The default layout used by GNU `configure` scripts is as follows, and each item can be changed separately, as in `--bindir=DIR`.
-
-| Variable | Default | Files placed there |
-|:-----|:-----|:-----|
-| `prefix` | `/usr/local` | The base of the paths below |
-| `bindir` | `PREFIX/bin` | Programs run by users |
-| `sbindir` | `PREFIX/sbin` | Programs for administrators |
-| `libdir` | `PREFIX/lib` | Libraries |
-| `includedir` | `PREFIX/include` | C header files |
-| `datarootdir` | `PREFIX/share` | Architecture-independent data (`man` pages in `share/man`) |
-| `sysconfdir` | `PREFIX/etc` | Configuration files |
-
-*Table 19. Installation path variables of configure and their defaults*
+The `--prefix` of `./configure` is the base of all installation paths, and a subdirectory under it is fixed for each kind of file. Under the default `/usr/local`, GNU `configure` scripts place programs in `bin`, libraries in `lib`, configuration files in `etc`, and so on, and each path can be changed separately, as in `--bindir=DIR` or `--sysconfdir=DIR`.
 
 A program built with `--prefix=/usr/local` therefore looks for its configuration files in `/usr/local/etc`, not `/etc`. To make it use the system's `/etc`, give `--sysconfdir=/etc` as well.
 
@@ -821,7 +800,7 @@ The options of `tar` consist of one operation and several auxiliary options.
 | `-C directory` | Change to that directory before working (mainly to set the extraction location) |
 | `--exclude=pattern` | Leave out files matching the pattern |
 
-*Table 20. Main options of tar*
+*Table 18. Main options of tar*
 
 ```text
 $ tar -czf proj.tar.gz proj
@@ -852,7 +831,7 @@ README  src
 | `xz` | `xz file` | `unxz file.xz`, `xz -d` | `.xz` | Usually the smallest, slowest to compress |
 | `zip` | `zip out.zip files...` | `unzip out.zip` | `.zip` | Bundles and compresses several files, keeps the originals |
 
-*Table 21. Comparison of compression commands*
+*Table 19. Comparison of compression commands*
 
 `gzip`, `bzip2`, and `xz` compress a single file and, when compression finishes, **delete the original** and replace it with a file that has an extension such as `.gz` [26]. To keep the original, give `-k` (keep), and to write to standard output, give `-c`. The numbers `-1` to `-9` are compression levels; larger numbers compress smaller but more slowly. Compressed text files can be read without decompressing them with `zcat`, `zless`, and `zgrep` (`xzcat` and `xzgrep` for xz).
 
@@ -885,7 +864,7 @@ The results of compressing a single English text file of about 1 MB (1,079,464 b
 | `zstd -3` (default) | 263,891 | 24.4% | 8 ms | 6 ms |
 | `zstd -19` | 214,262 | 19.8% | 210 ms | 6 ms |
 
-*Table 22. Results of compressing a text file of 1,079,464 bytes*
+*Table 20. Results of compressing a text file of 1,079,464 bytes*
 
 The following can be read from these results.
 
@@ -955,7 +934,7 @@ The compressed archive written to standard output by the local `tar` passes thro
 | Extracting an archive received from others with `sudo` | The owners recorded in the archive are applied as they are | Extract as an ordinary user, or give `--no-same-owner` |
 | Extracting into a directory with existing files | Overwrites them without asking | Keep existing files with `-k` (`--keep-old-files`) [25] |
 
-*Table 23. Common mistakes with tar*
+*Table 21. Common mistakes with tar*
 
 ### 4.6 How Compression Works
 
@@ -976,7 +955,7 @@ Copying proceeds one byte at a time from front to back, so copying length 9 from
 
 > **[Algorithms]** In terms of the greedy algorithms taught in Algorithms, a Huffman code is built by the greedy choice of repeatedly merging the two nodes of lowest frequency, and for given symbol frequencies it yields the prefix code with the shortest average length.
 
-**bzip2 and xz.** bzip2 transforms each block with the Burrows-Wheeler transform so that identical characters gather, and then reduces it with Huffman coding [29]. xz uses the LZMA2 method, and its dictionary, the range searched for repetitions, is 8 MiB at the default level `-6` [30]. It finds repetitions much farther apart than deflate's 32 KiB and so compresses smaller, but the search takes more time (Table 22).
+**bzip2 and xz.** bzip2 transforms each block with the Burrows-Wheeler transform so that identical characters gather, and then reduces it with Huffman coding [29]. xz uses the LZMA2 method, and its dictionary, the range searched for repetitions, is 8 MiB at the default level `-6` [30]. It finds repetitions much farther apart than deflate's 32 KiB and so compresses smaller, but the search takes more time (Table 20).
 
 **Differences by data.** The compression ratio depends more on the data than on the method. Even for the same 1,000,000 bytes, the results differ with the contents as follows.
 
@@ -985,13 +964,13 @@ Copying proceeds one byte at a time from front to back, so copying length 9 from
 | Random bytes | 1,000,337 | 1,004,607 | 1,000,116 |
 | Text repeating `abcdefgh` 125,000 times | 1,504 | 119 | 292 |
 
-*Table 24. Compression results by the nature of the data (bytes)*
+*Table 22. Compression results by the nature of the data (bytes)*
 
 - Random data has neither repetitions nor skewed frequencies, so no method shrinks it, and it grows slightly by the format's headers and block information. deflate stores blocks that do not shrink without compressing them, so the growth is only a few bytes per block [28].
 - Highly repetitive data becomes smaller than 0.2% of its original size, because the same 8 bytes repeat throughout and are represented by a few LZ77 (length, distance) pairs.
 - Files that are already compressed (JPEG, MP4, `.deb`, `.zip`) resemble random data, so they do not shrink when compressed again (Section 4.4).
 
-**Integrity checks.** The end of a gzip file holds the CRC-32 of the original and the original size modulo 2 to the 32nd power [31]. `gzip -t file.gz` checks these values while trial-decompressing the file to confirm whether it is damaged [26].
+**Integrity checks.** `gzip -t file.gz` trial-decompresses the file to check whether it is damaged [26].
 
 ---
 
@@ -1009,13 +988,13 @@ Copying proceeds one byte at a time from front to back, so copying length 9 from
 | `apt upgrade` removes installed packages if the upgrade needs it. | **F.** It never removes existing packages; upgrades that require removal are done by `full-upgrade`. |
 | After `gzip file`, `file` still remains as it was. | **F.** The original is deleted and replaced by `file.gz`; to keep the original, give `-k`. |
 | `tar -cfz a.tar.gz dir` creates an archive compressed with gzip. | **F.** The `z` right after `-f` is interpreted as the file name, so it must be written `-czf a.tar.gz dir`. |
-| Raising the compression level from `-6` to `-9` reduces the size as much as raising it from `-1` to `-6`. | **F.** As in Table 22, at high levels the size shrinks only slightly while the time grows greatly. |
+| Raising the compression level from `-6` to `-9` reduces the size as much as raising it from `-1` to `-6`. | **F.** As in Table 20, at high levels the size shrinks only slightly while the time grows greatly. |
 | `1.2.10-1` precedes `1.2.9-1` in lexical order, so it is treated as the older version. | **F.** Digit parts are compared as numbers, so 10 is greater than 9 and `1.2.10-1` is the newer version. |
 | `Depends: a \| b, c` means "a, or b and c". | **F.** `\|` binds more tightly than the comma, so it means "(a or b) and c". |
 | If a newer version of a package installed from `noble` appears in `noble-backports`, `apt upgrade` upgrades to it. | **F.** The backports version has priority 100 and the installed version in `noble` has 500, so it does not become the candidate. It must be chosen explicitly with `-t noble-backports`. |
 | On Ubuntu 24.04 the recommended way to add a third-party repository's key is `apt-key`. | **F.** The recommended way is to keep the key file separately and make it apply only to that repository with `Signed-By`. |
 | A program collected with `make install DESTDIR=/tmp/stage` is built to run from `/tmp/stage/usr/local`. | **F.** `DESTDIR` is a path added only when copying, and the program is still built as if installed in `/usr/local`. |
-| Random data also shrinks if a method with a high compression ratio such as `xz` is used. | **F.** Data without repetitions shrinks under no method, and as in Table 24 it grows slightly by the header information. |
+| Random data also shrinks if a method with a high compression ratio such as `xz` is used. | **F.** Data without repetitions shrinks under no method, and as in Table 22 it grows slightly by the header information. |
 
 ---
 
@@ -1097,7 +1076,7 @@ Copying proceeds one byte at a time from front to back, so copying length 9 from
 
    </details>
 
-6. **Computing compression:** In Table 22, how many bytes did `xz -6` save from the original, and by what percentage is its compressed size smaller than that of `gzip -6`?
+6. **Computing compression:** In Table 20, how many bytes did `xz -6` save from the original, and by what percentage is its compressed size smaller than that of `gzip -6`?
 
    <details>
    <summary>Answer</summary>
@@ -1106,7 +1085,7 @@ Copying proceeds one byte at a time from front to back, so copying length 9 from
 
    </details>
 
-7. **Choosing a compression method:** Explain on the basis of Table 22 which compression method suits a database backup made every hour and a source code distribution file made once and downloaded by thousands of people.
+7. **Choosing a compression method:** Explain on the basis of Table 20 which compression method suits a database backup made every hour and a source code distribution file made once and downloaded by thousands of people.
 
    <details>
    <summary>Answer</summary>
@@ -1151,8 +1130,8 @@ Copying proceeds one byte at a time from front to back, so copying length 9 from
 1. "deb-control(5), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/deb-control.5.html
 2. Canonical, "Ubuntu archive index files, dists/noble, noble-updates, and noble-backports," [Online]. Available: http://archive.ubuntu.com/ubuntu/dists/
 3. "apt-get(8), Ubuntu noble manual page," *APT*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/apt-get.8.html
-4. "dpkg(1), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/dpkg.1.html
-5. "deb-version(7), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man7/deb-version.7.html
+4. "deb-version(7), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man7/deb-version.7.html
+5. "dpkg(1), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/dpkg.1.html
 6. "deb(5), Ubuntu noble manual page," *dpkg*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man5/deb.5.html
 7. "apt(8), Ubuntu noble manual page," *APT*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man8/apt.8.html
 8. Canonical, "Ubuntu 24.04 LTS (Noble Numbat) release notes," [Online]. Available: https://documentation.ubuntu.com/release-notes/24.04/
@@ -1178,4 +1157,3 @@ Copying proceeds one byte at a time from front to back, so copying length 9 from
 28. P. Deutsch, "DEFLATE Compressed Data Format Specification version 1.3," RFC 1951, May 1996. [Online]. Available: https://www.rfc-editor.org/rfc/rfc1951
 29. "bzip2(1), Ubuntu noble manual page," *bzip2*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/bzip2.1.html
 30. "xz(1), Ubuntu noble manual page," *XZ Utils*. [Online]. Available: https://manpages.ubuntu.com/manpages/noble/man1/xz.1.html
-31. P. Deutsch, "GZIP file format specification version 4.3," RFC 1952, May 1996. [Online]. Available: https://www.rfc-editor.org/rfc/rfc1952

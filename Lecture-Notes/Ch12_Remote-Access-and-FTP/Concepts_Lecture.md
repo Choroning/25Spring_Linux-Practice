@@ -245,7 +245,7 @@ A version string has the form `SSH-protoversion-softwareversion comments` [5]. I
 
 ### 2.5 Key Exchange and the Session Identifier
 
-**Algorithm negotiation.** Right after connecting, both sides send with `SSH2_MSG_KEXINIT` the lists of key exchange, host key, cipher, MAC, and compression methods they support, and for each item the first method in the client's list that the server also supports is chosen [5]. The order of the client's list therefore decides the choice. The first entry in the key exchange list sent by `ssh` on Ubuntu 24.04 is `sntrup761x25519-sha512@openssh.com`, followed by `curve25519-sha256` [6]. This default method combines the elliptic curve method (x25519) with Streamlined NTRU Prime, which is believed to resist future quantum computers, and became the default in OpenSSH 9.0 [7].
+**Algorithm negotiation.** Right after connecting, both sides send with `SSH2_MSG_KEXINIT` the lists of key exchange, host key, cipher, MAC, and compression methods they support, and for each item the first method in the client's list that the server also supports is chosen [5]. The order of the client's list therefore decides the choice. The first entry in the key exchange list sent by `ssh` on Ubuntu 24.04, `sntrup761x25519-sha512@openssh.com` [6], combines the elliptic curve method (x25519) with Streamlined NTRU Prime, which is believed to resist future quantum computers [7].
 
 **The principle of Diffie-Hellman key exchange.** With small numbers it works as follows. Both sides use the public prime p = 23 and generator g = 5, the client chooses the secret value a = 6, and the server chooses the secret value b = 15.
 
@@ -266,7 +266,7 @@ Only p, g, A = 8, and B = 19 cross the network; a, b, and K do not. To obtain K,
 
 **The session identifier.** The H of the first key exchange becomes the connection's session identifier and does not change until the connection ends [5]. The user authentication of Section 3.3 uses this session identifier.
 
-> **Note:** **Derivation and re-exchange of session keys.** The keys actually used are made by hashing K, H, one character, and the session identifier concatenated in that order. The characters A to F each correspond to the initial vector, encryption key, and integrity key for the client-to-server direction and the opposite direction, so the two directions use different keys [5]. Keys can be exchanged again during a connection, and RFC 4253 recommends re-exchanging after each gigabyte sent or each hour, whichever comes sooner [5]. The session identifier does not change after a re-exchange.
+> **Note:** **Derivation and re-exchange of session keys.** The keys actually used are derived by hashing K and H separately for each direction, so the client-to-server direction and the opposite direction use different keys [5]. Keys can be exchanged again during a connection, and the session identifier does not change after a re-exchange [5].
 
 ### 2.6 Trust on First Use and the Format of known_hosts
 
@@ -443,7 +443,7 @@ $ ssh user1@192.168.111.100
 user1@server1:~$
 ```
 
-1. `ssh-agent -s` starts the agent and prints shell commands that set `SSH_AUTH_SOCK` and `SSH_AGENT_PID`, and `eval` runs those commands in the current shell. On Ubuntu 24.04 (OpenSSH 9.6), the socket is created at `$TMPDIR/ssh-XXXXXXXXXX/agent.<parent PID>` [14].
+1. `ssh-agent -s` starts the agent and prints shell commands that set `SSH_AUTH_SOCK` and `SSH_AGENT_PID`, and `eval` runs those commands in the current shell.
 2. The first `ssh-add -l` shows that no key has been added yet.
 3. `ssh-add` adds the key to the agent, asking for the passphrase only this once.
 4. The second `ssh-add -l` shows the size, fingerprint, comment, and type of the added key.
@@ -642,7 +642,6 @@ admin page on the server
 - `-f` sends `ssh` to the background after authentication, and `-N` runs no remote command. They are used together when only forwarding ports [9].
 - With `-R`, the server's `sshd` by default creates the listening socket only on the loopback address (`GatewayPorts no`) [13]. Port 18082 can therefore be reached only from the server itself, and opening it to other computers requires changing the server's `GatewayPorts`.
 - With `-D`, a program using SOCKS puts the destination in its request, and `ssh` passes the request to the server, which connects to that destination [9]. The destination `127.0.0.1:18080` above is an address as seen from the server, so it reached the server's own administration page. `--socks5-hostname` of `curl` makes name resolution happen on the server side too.
-- In terms of the connection protocol, for `-L` and `-D` the client opens `direct-tcpip` channels, while for `-R` the client asks the server to listen with a `tcpip-forward` request and the server then opens `forwarded-tcpip` channels [16].
 
 Setting the server's `AllowTcpForwarding` (default `yes`) to `no` blocks all three methods [13], and the `restrict` option of `authorized_keys` (Section 3.4) also blocks port forwarding for that key.
 
@@ -753,10 +752,6 @@ Besides the settings of Section 5.2, the main security-related settings are as f
 | `LoginGraceTime` | 120 seconds | The time within which authentication must finish after connecting |
 | `AuthenticationMethods` | `any` | Written as `publickey,password`, login requires passing both methods |
 | `DenyUsers`, `AllowGroups`, `DenyGroups` | (none) | Users are checked in the order `DenyUsers`, `AllowUsers`, and groups in the order `DenyGroups`, `AllowGroups` |
-| `KbdInteractiveAuthentication` | `yes` (`no` in Ubuntu's configuration file) | Whether keyboard-interactive authentication is allowed |
-| `X11Forwarding` | `no` (`yes` in Ubuntu's configuration file) | Whether X11 forwarding is allowed (Section 4.7) |
-| `AllowTcpForwarding` | `yes` | Whether port forwarding is allowed (Section 4.7) |
-| `ClientAliveInterval` | 0 | The interval (seconds) for checking unresponsive clients; 0 means no checking |
 
 *Table 12. Other security-related settings of sshd_config*
 
@@ -920,7 +915,7 @@ Despite their similar names, the two are different protocols. FTPS is FTP encryp
 
 *Table 16. Comparison of FTPS and SFTP*
 
-An FTPS client sends `AUTH TLS` over the control connection, which starts in plaintext, to switch it to TLS (reply 234), arranges with `PBSZ 0` and `PROT P` for the data connections to be encrypted as well, and then sends `USER` and `PASS` [22]. The password is therefore also carried over an encrypted connection. Once the control connection is encrypted, however, firewalls and NAT devices cannot read the port in the `PASV` reply [22], so the server's passive port range must be fixed and opened in advance (Section 6.5). SFTP also differs in that users need accounts that can use a shell, but such accounts can be restricted to allow only SFTP and block shell access [21].
+An FTPS client sends `AUTH TLS` over the control connection, which starts in plaintext, to switch it to TLS, arranges for the data connections to be encrypted as well, and then sends `USER` and `PASS` [22]. The password is therefore also carried over an encrypted connection. Once the control connection is encrypted, however, firewalls and NAT devices cannot read the port in the `PASV` reply [22], so the server's passive port range must be fixed and opened in advance (Section 6.5). SFTP also differs in that users need accounts that can use a shell, but such accounts can be restricted to allow only SFTP and block shell access [21].
 
 ### 6.5 Basics of vsftpd Configuration
 
