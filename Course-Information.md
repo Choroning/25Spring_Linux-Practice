@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-11-19
+> **Last Updated:** 2026-11-24
 
 ## Table of Contents
 
@@ -98,7 +98,7 @@
 - The orientation slides give a bonus of 3% for the first-stage exam of the nationally certified Linux Master Level 2 test administered by the Korea Association for ICT Promotion (KAIT, <http://www.ihd.or.kr/>).
 - The weights in the syllabus are quizzes 30%, midterm exam 25%, final exam 35%, and participation 10%, and its detailed assessment plan gives homework 30%, midterm exam 30%, final exam 30%, and participation 10%. Evaluation scores are not disclosed.
 - The detailed assessment plan in the syllabus is as follows.
-  - **Homework:** Programming for system programming with C/C++ on Linux and for implementing various operating system functions is given as weekly lab homework, and each assignment is graded on the completeness of the source code (Correctness 70%, Programming Style 30%). Late submission and cheating are not allowed, and each carries a penalty of -100%.
+  - **Homework:** Programming for system programming with C/C++ on Linux and for implementing various operating system functions is given as weekly lab homework, and each assignment is graded on the completeness of the source code (Correctness 70%, Programming Style 30%). Cheating is not allowed and carries a penalty of -100%.
   - **Types of Homework:** C/C++ programming, shell programming, Python programming, and application practice on a Linux system
   - **Midterm and Final Exams:** Each has 5-10 system programming problems.
   - **Participation:** 2 points are deducted for each absence and 0.5 points for each late arrival, and an absence of more than 11 days (1/3) results in an F.
@@ -110,7 +110,7 @@
 
 ## 4. Course Policies
 
-- Course announcements, lecture materials, lab homework, exam results, and other information are provided through the LMS (<http://lms.korea.ac.kr>, Blackboard), and lab homework is also submitted through the LMS.
+- Course announcements, lecture materials, lab homework, exam results, and other information are provided through the LMS (<http://lms.korea.ac.kr>, Blackboard).
 - Lecture materials (PDF) are uploaded to Blackboard at least one week in advance, and video lecture materials are shared through YouTube.
 - Urgent announcements and Q&A about the course take place in a KakaoTalk open chat room.
 - Missing one third or more of all class days results in an F.
