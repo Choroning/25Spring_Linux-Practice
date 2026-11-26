@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-19
+> **최종 수정일:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 1
 
@@ -346,9 +346,9 @@ Linux 커널은 Torvalds가 관리하는 **메인라인(mainline)** 트리에서
 
 ```text
 6.8.0  -  51  -  generic
-  │       │       └─ 변형(flavour): 일반 PC와 서버용 빌드
-  │       └───────── Ubuntu가 매기는 ABI 번호: 갱신과 함께 커짐
-  └───────────────── 기준이 된 메인라인 커널 6.8
+  │       │       └─ flavour: the build for ordinary PCs and servers
+  │       └───────── ABI number assigned by Ubuntu: grows with updates
+  └───────────────── the base mainline kernel 6.8
 ```
 
 *그림 4. Ubuntu 커널 버전 문자열의 구성*

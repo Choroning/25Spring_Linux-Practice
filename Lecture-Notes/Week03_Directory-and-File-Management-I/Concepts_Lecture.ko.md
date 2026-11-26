@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-19
+> **최종 수정일:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 2
 
@@ -89,7 +89,7 @@
 `file` 명령은 파일의 내용을 검사하여 그 종류를 알려 준다.
 
 ```bash
-# 'file' 명령어를 사용하여 파일 유형 확인
+# Use the 'file' command to determine file type
 $ file .profile
 .profile: ASCII text
 
@@ -107,10 +107,10 @@ $ file /home
 디렉터리 파일의 내용은 "이름과 inode 번호"의 쌍을 나열한 표이다. inode는 파일의 크기, 소유자, 권한, 시간, 데이터 블록의 위치를 담은 자료 구조이며(4주차), 파일의 이름은 inode가 아니라 그 파일을 담은 디렉터리의 표에 들어 있다. 모든 디렉터리의 표에는 자기 자신을 가리키는 `.`과 부모 디렉터리를 가리키는 `..`이 반드시 들어 있고, 루트 디렉터리의 `..`은 루트 자신을 가리킨다.
 
 ```text
-디렉터리 /home/user1/ch2/d1의 내용 (이름 → inode 번호)
+Contents of directory /home/user1/ch2/d1 (name → inode number)
 ┌──────┬──────────┐
-│ .    │ 1310722  │ ← d1 자신
-│ ..   │ 1310721  │ ← 부모 ch2
+│ .    │ 1310722  │ ← d1 itself
+│ ..   │ 1310721  │ ← parent ch2
 │ a    │ 1310723  │
 │ b    │ 1310724  │
 │ c    │ 1310725  │
@@ -183,30 +183,30 @@ Linux의 디렉터리는 루트 디렉터리를 꼭대기로 하는 트리 형�
 - **홈 디렉터리(home directory):** 사용자 계정에 할당된 기본 디렉터리로, 로그인하면 처음 작업 디렉터리가 된다.
 
 ```text
-/                          # 루트 디렉터리 (계층 구조의 최상위)
-├── bin/                   # 필수 사용자 명령어 바이너리 (-> /usr/bin)
-├── boot/                  # 부트 로더 파일 (커널, initramfs)
-├── dev/                   # 장치 파일
-├── etc/                   # 시스템 설정 파일
-├── home/                  # 사용자 홈 디렉터리
+/                          # Root directory (top of the hierarchy)
+├── bin/                   # Essential user command binaries (-> /usr/bin)
+├── boot/                  # Boot loader files (kernel, initramfs)
+├── dev/                   # Device files
+├── etc/                   # System configuration files
+├── home/                  # User home directories
 │   ├── user1/
 │   └── user2/
-├── lib/                   # 필수 공유 라이브러리
-├── media/                 # 이동식 미디어 마운트 지점
-├── mnt/                   # 임시 마운트 지점
-├── opt/                   # 선택적/추가 패키지
-├── proc/                  # 프로세스/커널 정보용 가상 파일 시스템
-├── root/                  # Root 사용자의 홈 디렉터리
-├── run/                   # 실행 중인 서비스의 런타임 데이터
-├── srv/                   # 서비스 데이터 (FTP, 웹)
-├── sys/                   # 커널 및 장치 정보
-├── tmp/                   # 임시 파일 (재부팅 시 삭제됨)
-├── usr/                   # Unix 시스템 자원
-│   ├── bin/               # 사용자 명령어
-│   ├── lib/               # 라이브러리
-│   └── local/             # 로컬 설치 소프트웨어
-└── var/                   # 가변 데이터 (로그, 스풀, 캐시)
-    └── log/               # 시스템 로그 파일
+├── lib/                   # Essential shared libraries
+├── media/                 # Mount point for removable media
+├── mnt/                   # Temporary mount point
+├── opt/                   # Optional/add-on packages
+├── proc/                  # Virtual file system for process/kernel info
+├── root/                  # Root user's home directory
+├── run/                   # Runtime data for running services
+├── srv/                   # Service data (FTP, web)
+├── sys/                   # Kernel and device information
+├── tmp/                   # Temporary files (cleared on reboot)
+├── usr/                   # Unix System Resources
+│   ├── bin/               # User commands
+│   ├── lib/               # Libraries
+│   └── local/             # Locally installed software
+└── var/                   # Variable data (logs, spool, cache)
+    └── log/               # System log files
 ```
 
 *그림 2. Linux의 디렉터리 트리*
@@ -290,10 +290,10 @@ FHS는 디렉터리를 정할 때 파일을 두 가지 기준으로 나눈다. �
 - `.`(현재 디렉터리)과 `..`(상위 디렉터리)를 사용하며, 같은 대상이라도 현재 디렉터리에 따라 상대 경로가 달라진다.
 
 ```text
-# 현재 디렉터리가 /home/user1인 경우
-Documents/report.txt        # /home/user1/Documents/report.txt와 동일
-../user2/file.txt           # /home/user2/file.txt와 동일
-./script.sh                 # /home/user1/script.sh와 동일
+# If current directory is /home/user1
+Documents/report.txt        # Same as /home/user1/Documents/report.txt
+../user2/file.txt           # Same as /home/user2/file.txt
+./script.sh                 # Same as /home/user1/script.sh
 ```
 
 예를 들어 현재 디렉터리가 `/usr/lib`이면 `/usr/bin/ls`는 상대 경로 `../bin/ls`로 가리킬 수 있다.
@@ -433,12 +433,12 @@ $ pwd
 ### 5.2 cd: 디렉터리 변경
 
 ```bash
-cd /tmp                 # 절대 경로
-cd ../usr/lib           # 상대 경로
-cd ~                    # 홈 디렉터리
-cd                      # 홈 디렉터리 (단축키)
-cd -                    # 이전 디렉터리
-cd ..                   # 상위 디렉터리
+cd /tmp                 # Absolute path
+cd ../usr/lib           # Relative path
+cd ~                    # Home directory
+cd                      # Home directory (shortcut)
+cd -                    # Previous directory
+cd ..                   # Parent directory
 ```
 
 위의 `cd ../usr/lib`는 현재 디렉터리가 `/tmp`일 때 상위 디렉터리인 `/`를 거쳐 `/usr/lib`로 이동한다.
@@ -446,17 +446,17 @@ cd ..                   # 상위 디렉터리
 ### 5.3 ls: 디렉터리 내용 목록
 
 ```bash
-ls                      # 현재 디렉터리 목록
-ls -a                   # 숨김 파일 표시 (.으로 시작하는 파일)
-ls -l                   # 상세 형식 (자세한 정보)
-ls -la                  # 상세 형식 + 숨김 파일
-ls -lh                  # 사람이 읽기 쉬운 파일 크기
-ls -R                   # 재귀적 목록
-ls -F                   # 유형 표시자 추가 (*=실행 파일, /=디렉터리, @=링크)
-ls -i                   # inode 번호 표시
-ls -d                   # 내용이 아닌 디렉터리 자체 표시
-ls -t                   # 수정 시간순 정렬
-ls -S                   # 파일 크기순 정렬
+ls                      # List current directory
+ls -a                   # Show hidden files (starting with .)
+ls -l                   # Long format (detailed info)
+ls -la                  # Long format + hidden files
+ls -lh                  # Human-readable file sizes
+ls -R                   # Recursive listing
+ls -F                   # Append type indicator (*=exec, /=dir, @=link)
+ls -i                   # Show inode numbers
+ls -d                   # Show directory itself, not contents
+ls -t                   # Sort by modification time
+ls -S                   # Sort by file size
 ```
 
 이 밖에 `-A`는 `.`과 `..`을 제외한 모든 파일을, `-L`은 심볼릭 링크의 경우 원본 파일의 정보를 출력한다. `ls /tmp`처럼 디렉터리 이름을 인자로 주면 그 디렉터리의 내용을 출력하고, `ls .bashrc`처럼 파일 이름을 주면 파일이 있는지 확인할 수 있다(없으면 `ls: cannot access 'game': No such file or directory` 같은 오류가 출력된다). `ls -ld /`처럼 여러 옵션을 한꺼번에 쓸 수도 있다.
@@ -466,16 +466,16 @@ ls -S                   # 파일 크기순 정렬
 ```text
 drwxr-xr-x  2  user1  user1  4096  Mar 21 12:05  Documents
 │└─┬──┘└┬─┘ │   │       │      │       │            │
-│  │    │   │   │       │      │       │            └── 파일 이름
-│  │    │   │   │       │      │       └── 최종 수정일
-│  │    │   │   │       │      └── 크기 (바이트)
-│  │    │   │   │       └── 그룹 소유자
-│  │    │   │   └── 파일 소유자
-│  │    │   └── 하드 링크 수
-│  │    └── 기타 사용자 권한 (r-x)
-│  └── 그룹 권한 (r-x)
-│       소유자 권한 (rwx)
-└── 파일 유형 (d=디렉터리, -=파일, l=링크)
+│  │    │   │   │       │      │       │            └── filename
+│  │    │   │   │       │      │       └── last modified
+│  │    │   │   │       │      └── size (bytes)
+│  │    │   │   │       └── group owner
+│  │    │   │   └── file owner
+│  │    │   └── hard link count
+│  │    └── other permissions (r-x)
+│  └── group permissions (r-x)
+│       owner permissions (rwx)
+└── file type (d=directory, -=file, l=link)
 ```
 
 *그림 3. ls -l 출력의 필드 구성*
@@ -483,9 +483,9 @@ drwxr-xr-x  2  user1  user1  4096  Mar 21 12:05  Documents
 ### 5.4 mkdir: 디렉터리 생성
 
 ```bash
-mkdir mydir                     # 단일 디렉터리 생성
-mkdir -p parent/child/grandchild  # 중첩 디렉터리 생성
-mkdir dir1 dir2 dir3            # 여러 디렉터리 생성
+mkdir mydir                     # Create single directory
+mkdir -p parent/child/grandchild  # Create nested directories
+mkdir dir1 dir2 dir3            # Create multiple directories
 ```
 
 `-p` 없이 `mkdir temp/mid/han`처럼 중간 디렉터리가 없는 경로를 주면 `No such file or directory` 오류가 난다. `-p`를 쓰면 없는 중간 디렉터리를 자동으로 만든 뒤 지정한 디렉터리를 만든다.
@@ -493,8 +493,8 @@ mkdir dir1 dir2 dir3            # 여러 디렉터리 생성
 ### 5.5 rmdir: 빈 디렉터리 제거
 
 ```bash
-rmdir mydir                     # 빈 디렉터리만 제거
-rmdir -p parent/child/grandchild  # 중첩된 빈 디렉터리 제거
+rmdir mydir                     # Remove empty directory only
+rmdir -p parent/child/grandchild  # Remove nested empty directories
 ```
 
 `rmdir -p`는 지정한 디렉터리를 지운 뒤, 그 부모 디렉터리가 빈 디렉터리가 되면 부모 디렉터리도 차례로 지운다. 비어 있지 않은 디렉터리는 `rmdir`로 지울 수 없으며(`rmdir: failed to remove 'temp': Directory not empty`), 이때는 4주차에서 다루는 `rm -r`을 쓴다.
@@ -502,8 +502,8 @@ rmdir -p parent/child/grandchild  # 중첩된 빈 디렉터리 제거
 ### 5.6 유사 명령어: dir, vdir
 
 ```bash
-dir                 # ls와 유사 (기본 색상 없음)
-vdir                # ls -l과 유사
+dir                 # Similar to ls (no color by default)
+vdir                # Similar to ls -l
 ```
 
 ### 5.7 ls -l 출력의 세부 규칙
@@ -557,18 +557,18 @@ ls: cannot access 'temp': No such file or directory
 ### 6.1 cat: 연결 및 표시
 
 ```bash
-cat file.txt                    # 전체 파일 표시
-cat -n file.txt                 # 줄 번호 표시
-cat file1.txt file2.txt         # 여러 파일 연결
-cat > newfile.txt               # stdin에서 파일 생성 (Ctrl+D로 종료)
-cat >> existingfile.txt         # stdin에서 파일에 추가
+cat file.txt                    # Display entire file
+cat -n file.txt                 # Show line numbers
+cat file1.txt file2.txt         # Concatenate multiple files
+cat > newfile.txt               # Create file from stdin (Ctrl+D to end)
+cat >> existingfile.txt         # Append to file from stdin
 ```
 
 ### 6.2 more와 less: 파일 페이지 넘기기
 
 ```bash
-more file.txt                   # 주로 앞으로 페이지 넘기기
-less file.txt                   # 앞뒤로 페이지 넘기기 (권장)
+more file.txt                   # Page mainly forward
+less file.txt                   # Page forward and backward (recommended)
 ```
 
 `more`는 내용을 화면 단위로 출력하며, `Space`를 누르면 다음 화면을, `Enter`를 누르면 한 줄씩 스크롤하고, `more +20 file.txt`처럼 출력을 시작할 줄 번호를 지정할 수도 있다. 파일을 볼 때는 `b`로 한 화면 뒤로 갈 수 있지만, 파이프로 받은 입력은 뒤로 넘길 수 없다. `less` 안에서는 다음 키로 이동하고 검색한다.
@@ -591,13 +591,13 @@ less file.txt                   # 앞뒤로 페이지 넘기기 (권장)
 ### 6.3 head와 tail: 파일 부분 보기
 
 ```bash
-head file.txt                   # 처음 10줄 (기본값)
-head -n 20 file.txt             # 처음 20줄
-head -n -5 file.txt             # 마지막 5줄을 제외한 모든 줄
+head file.txt                   # First 10 lines (default)
+head -n 20 file.txt             # First 20 lines
+head -n -5 file.txt             # All lines except last 5
 
-tail file.txt                   # 마지막 10줄 (기본값)
-tail -n 20 file.txt             # 마지막 20줄
-tail -f /var/log/syslog         # 실시간으로 로그 추적
+tail file.txt                   # Last 10 lines (default)
+tail -n 20 file.txt             # Last 20 lines
+tail -f /var/log/syslog         # Follow log in real-time
 ```
 
 `head`와 `tail`은 `-n 20` 대신 `-20`처럼 숫자만 옵션으로 줄 수도 있다. `tail -n +20 file.txt`처럼 줄 수 앞에 `+`를 붙이면 20번째 줄부터 끝까지 출력한다. `tail -f`는 출력을 끝내지 않고 파일에 새로 추가되는 내용을 계속 출력하며, `Ctrl + C`로 멈춘다.

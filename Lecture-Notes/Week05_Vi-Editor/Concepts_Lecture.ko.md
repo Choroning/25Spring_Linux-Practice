@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-19
+> **최종 수정일:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 3
 
@@ -163,12 +163,12 @@ stateDiagram-v2
 ### 3.1 Vi 시작
 
 ```bash
-vi filename              # 파일 열기 (존재하지 않으면 생성)
-vi                       # 빈 버퍼 열기
-vi +10 filename          # 파일의 10번째 줄에서 열기
-vi +/pattern filename    # 패턴의 첫 번째 위치에서 열기
-vi -R filename           # 읽기 전용 모드로 열기
-vim filename             # vim 사용 (향상된 vi)
+vi filename              # Open file (create if not exists)
+vi                       # Open empty buffer
+vi +10 filename          # Open file at line 10
+vi +/pattern filename    # Open file at first occurrence of pattern
+vi -R filename           # Open in read-only mode
+vim filename             # Use vim (enhanced vi)
 ```
 
 `vi filename`에서 지정한 파일이 없으면 빈 파일이 열리고, 처음 저장할 때 그 이름으로 만들어진다. 파일 이름 없이 `vi`만 실행하면 빈 파일이 열리며, 파일 이름은 나중에 `:w 파일명`으로 정할 수 있다.
@@ -339,7 +339,7 @@ vim filename             # vim 사용 (향상된 vi)
 5.2절과 5.4절의 명령은 따로 외울 목록이 아니라 하나의 문법으로 만들어진다. 명령 모드의 편집 명령은 대부분 다음 형식이다.
 
 ```text
-[횟수] 연산자 [횟수] 이동
+[count] operator [count] motion
 ```
 
 **연산자**는 무엇을 할지(`d` 삭제, `c` 바꾸기, `y` 복사), **이동**은 어디까지 할지(`w` 다음 단어의 시작, `e` 단어의 끝, `b` 단어의 시작으로 뒤로, `$` 줄 끝, `0` 줄 시작, `G` 파일 끝, `gg` 파일 시작)를 정한다. 연산자를 두 번 쓰면(`dd`, `cc`, `yy`) 줄 전체가 대상이다. 횟수는 앞이나 뒤 어디에 붙여도 곱해지므로 `3dw`, `d3w`는 모두 단어 세 개를 지운다.
@@ -361,7 +361,7 @@ vim filename             # vim 사용 (향상된 vi)
 다음 줄의 `q`에 커서가 있을 때 각 명령의 결과는 다음과 같다(`^`는 명령을 실행한 뒤의 커서 위치).
 
 ```text
-처음:    The quick brown fox jumps
+start:   The quick brown fox jumps
              ^
 dw  →    The brown fox jumps
              ^
@@ -406,9 +406,9 @@ vi에서 잘라내기는 별도의 명령이 아니라 삭제이다. `dd`나 `x`
 ### 6.2 이름 있는 버퍼 (레지스터)
 
 ```text
-"ayy        # 현재 줄을 레지스터 'a'에 복사
-"ap         # 레지스터 'a'에서 붙여넣기
-"bdd        # 현재 줄을 레지스터 'b'에 삭제(잘라내기)
+"ayy        # Yank current line into register 'a'
+"ap         # Paste from register 'a'
+"bdd        # Delete (cut) current line into register 'b'
 ```
 
 이름을 붙이지 않고 쓰는 기본 버퍼를 **언네임드 버퍼(unnamed buffer)** 라고 한다. 명령 앞에 `"`와 이름을 붙여 쓰는 버퍼는 **네임드 버퍼(named buffer)** 라고 하며, `"a`부터 `"z`까지 영문자 26개를 쓸 수 있다. 숫자 버퍼 `"1`부터 `"9`까지에는 최근에 삭제한 줄이 차례로 저장된다. 네임드 버퍼를 쓰면 여러 내용을 따로 보관했다가 원하는 곳에 붙일 수 있다. 예를 들어 `"bP`는 `"b` 버퍼의 내용을 현재 줄 위에 붙인다.
@@ -466,12 +466,12 @@ vi에서 잘라내기는 별도의 명령이 아니라 삭제이다. `dd`나 `x`
 ### 7.2 검색 및 바꾸기 (치환)
 
 ```vim
-:s/old/new/              # 현재 줄에서 첫 번째 항목 바꾸기
-:s/old/new/g             # 현재 줄의 모든 항목 바꾸기
-:n,ms/old/new/g          # n줄부터 m줄까지 모든 항목 바꾸기
-:%s/old/new/g            # 전체 파일의 모든 항목 바꾸기
-:%s/old/new/gc           # 확인을 요청하며 모든 항목 바꾸기
-:1,$s/old/new/g          # :%s/old/new/g와 동일
+:s/old/new/              # Replace first occurrence on current line
+:s/old/new/g             # Replace all occurrences on current line
+:n,ms/old/new/g          # Replace all occurrences from line n to m
+:%s/old/new/g            # Replace all occurrences in entire file
+:%s/old/new/gc           # Replace all with confirmation
+:1,$s/old/new/g          # Same as :%s/old/new/g
 ```
 
 바꾸기 명령의 일반 형식은 `:범위s/문자열1/문자열2/플래그`이다. 범위를 생략하면 현재 줄만 대상이 되고, `g` 플래그가 없으면 각 줄에서 처음 나오는 문자열1만 바뀐다. `c` 플래그를 붙이면 바꿀 때마다 수정할지 묻는다. 예를 들어 `:3,4s/editor/ubuntu/`는 3번째와 4번째 줄에서 각각 처음 나오는 `editor`만 `ubuntu`로 바꾸고, `:%s/like/LIKE/g`는 파일의 모든 `like`를 `LIKE`로 바꾼다.
@@ -555,14 +555,14 @@ vi에서 잘라내기는 별도의 명령이 아니라 삭제이다. `dd`나 `x`
 ### 8.4 기타 유용한 명령어
 
 ```vim
-:!command                # vi를 종료하지 않고 셸 명령어 실행
-:r filename              # 파일 내용을 읽어서 삽입
-:r !command              # 명령어 출력 삽입
-:n                       # 다음 파일로 이동 (여러 파일 편집 시)
-:prev                    # 이전 파일로 이동
-:split filename          # 가로로 창 분할
-:vsplit filename         # 세로로 창 분할
-Ctrl+w w                 # 분할된 창 간 전환
+:!command                # Execute shell command without leaving vi
+:r filename              # Read and insert file contents
+:r !command              # Insert command output
+:n                       # Go to next file (when editing multiple)
+:prev                    # Go to previous file
+:split filename          # Split window horizontally
+:vsplit filename         # Split window vertically
+Ctrl+w w                 # Switch between split windows
 ```
 
 ### 8.5 스왑 파일과 복구, 권한 없는 파일의 저장
@@ -619,18 +619,18 @@ Vim은 편집 중인 내용을 원본과 같은 디렉터리의 **스왑 파일*
 ### 9.2 영구 설정 (~/.vimrc)
 
 ```vim
-" ~/.vimrc - Vim 설정 파일
-set number              " 줄 번호 표시
-set autoindent          " 새 줄 자동 들여쓰기
-set tabstop=4           " 탭 너비 = 4칸
-set shiftwidth=4        " 들여쓰기 너비 = 4칸
-set expandtab           " 탭을 공백으로 변환
-set hlsearch            " 검색 결과 강조
-set ignorecase          " 대소문자 무시 검색
-set smartcase           " 대문자 사용 시 대소문자 구분
-set showmatch           " 대응하는 괄호 강조
-syntax on               " 구문 강조 활성화
-set encoding=utf-8      " UTF-8 인코딩
+" ~/.vimrc - Vim configuration file
+set number              " Show line numbers
+set autoindent          " Auto-indent new lines
+set tabstop=4           " Tab width = 4 spaces
+set shiftwidth=4        " Indent width = 4 spaces
+set expandtab           " Convert tabs to spaces
+set hlsearch            " Highlight search results
+set ignorecase          " Case-insensitive search
+set smartcase           " Case-sensitive if uppercase used
+set showmatch           " Highlight matching brackets
+syntax on               " Enable syntax highlighting
+set encoding=utf-8      " UTF-8 encoding
 ```
 
 `:set`으로 바꾼 설정은 vi를 종료하면 사라진다. 설정 파일에 적어 두면 vi를 시작할 때마다 자동으로 적용되며, 파일 안에서는 앞의 콜론 없이 `set number`처럼 쓴다.
@@ -683,12 +683,12 @@ export EXINIT
 vi는 프로그램 소스 코드를 작성하는 데에도 쓰인다. 예를 들어 **C 프로그램** 또는 **Python 프로그램**을 작성하고 실행하여 구구단(1~9단)을 출력할 수 있다. C 코드는 `gcc`로 컴파일하고, Python 코드는 `python3`으로 실행한다. 컴파일러나 인터프리터가 없으면 root 권한으로 먼저 설치한다.
 
 ```bash
-# apt install gcc          # C 컴파일러 설치 (root)
-$ vim a.c                  # 소스 코드 작성 후 :wq
-$ gcc -o a a.c             # a.c를 컴파일하여 실행 파일 a 생성
-$ ./a                      # 실행
+# apt install gcc          # Install the C compiler (root)
+$ vim a.c                  # Write the source code, then :wq
+$ gcc -o a a.c             # Compile a.c into the executable a
+$ ./a                      # Run
 
-# apt install python3      # Python 설치 (root)
+# apt install python3      # Install Python (root)
 $ vim a.py
 $ python3 a.py
 ```

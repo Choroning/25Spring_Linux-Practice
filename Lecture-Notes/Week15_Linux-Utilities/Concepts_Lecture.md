@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-19
+> **Last Updated:** 2026-11-27
 
 > **Learning Objectives:**
 > 1. Process data by combining text processing utilities with pipes
@@ -751,7 +751,7 @@ The units that `wc` counts are defined as follows.
 - **Words:** Nonempty sequences of non-whitespace characters separated by whitespace characters. The locale determines which characters are whitespace.
 - **Bytes (`-c`) and characters (`-m`):** In UTF-8 one Hangul syllable is 3 bytes, so the two values differ.
 
-```text
+```text wide-ok
 $ printf '한글\n' | wc -c
 7
 $ printf '한글\n' | wc -m

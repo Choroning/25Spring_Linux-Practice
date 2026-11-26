@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-26
+> **최종 수정일:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 5
 
@@ -183,10 +183,10 @@ x
 ```text
 -  rwx  r-x  r--
 │  └┬┘  └┬┘  └┬┘
-│   │    │    └── 기타: 읽기만 가능
-│   │    └── 그룹: 읽기 + 실행
-│   └── 소유자: 읽기 + 쓰기 + 실행
-└── 파일 유형: 일반 파일
+│   │    │    └── Others: read only
+│   │    └── Group: read + execute
+│   └── Owner: read + write + execute
+└── File type: regular file
 ```
 
 *그림 2. 기호로 표기한 권한 문자열의 구성*
@@ -232,10 +232,10 @@ x
 inode의 모드(mode)에는 파일 유형을 나타내는 4비트와 권한을 나타내는 12비트가 들어 있다. 권한 12비트는 특수 권한 3비트와 일반 권한 9비트로 이루어지며, 3비트씩 묶으면 8진수 네 자리가 된다.
 
 ```text
-비트 위치   11   10    9 │  8  7  6 │  5  4  3 │  2  1  0
-뜻        SUID SGID sticky│  r  w  x │  r  w  x │  r  w  x
-범주        특수 권한     │  소유자  │   그룹   │   기타
-8진수 값  4000 2000 1000 │400 200 100│ 40 20 10 │ 4  2  1
+bit position  11   10     9   │ 8   7   6 │  5  4  3 │  2  1  0
+meaning      SUID SGID sticky │ r   w   x │  r  w  x │  r  w  x
+category       special        │  owner    │  group   │  others
+octal value  4000 2000 1000   │400 200 100│ 40 20 10 │ 4  2  1
 ```
 
 *그림 3. 권한 12비트의 배치와 각 비트의 8진수 값*
@@ -277,13 +277,13 @@ $ stat -c '%A %a' s
 기호 모드의 형식은 `chmod [사용자 범주][연산자][권한] 파일명`이다. 사용자 범주는 `u`, `g`, `o`, `a`(표 2), 권한은 `r`, `w`, `x`(표 3)로 쓴다.
 
 ```bash
-chmod u+x file.sh            # 소유자에게 실행 권한 추가
-chmod g+rw file.txt           # 그룹에게 읽기+쓰기 권한 추가
-chmod o-w file.txt            # 기타에서 쓰기 권한 제거
-chmod a+r file.txt            # 전체에게 읽기 권한 추가
-chmod u=rwx,g=rx,o=r file     # 정확한 권한 설정
-chmod u+x,g-w file            # 복수 변경
-chmod -R 755 directory/       # 재귀적 권한 변경
+chmod u+x file.sh            # Add execute for owner
+chmod g+rw file.txt           # Add read+write for group
+chmod o-w file.txt            # Remove write for others
+chmod a+r file.txt            # Add read for all
+chmod u=rwx,g=rx,o=r file     # Set exact permissions
+chmod u+x,g-w file            # Multiple changes
+chmod -R 755 directory/       # Recursive permission change
 ```
 
 **연산자:**
@@ -319,7 +319,7 @@ chmod 755 script.sh           # rwxr-xr-x
 chmod 644 document.txt        # rw-r--r--
 chmod 700 private/            # rwx------
 chmod 600 id_rsa              # rw-------
-chmod -R 755 /var/www/html/   # 재귀적
+chmod -R 755 /var/www/html/   # Recursive
 ```
 
 예를 들어 권한이 `644`(`rw-r--r--`)인 파일에 `chmod 444`를 실행하면 `r--r--r--`가 되고, 다시 `chmod 474`를 실행하면 `r--rwxr--`가 된다. 8진수 모드는 지정한 값으로 세 범주의 권한을 한꺼번에 설정하므로 umask의 영향을 받지 않는다.
@@ -352,17 +352,17 @@ drwxr-xr-x 755 proj/src
 ### 4.1 chown: 소유자 변경
 
 ```bash
-sudo chown newuser file.txt               # 소유자 변경
-sudo chown newuser:newgroup file.txt      # 소유자와 그룹 동시 변경
-sudo chown :newgroup file.txt             # 그룹만 변경
-sudo chown -R newuser:newgroup directory/ # 재귀적
+sudo chown newuser file.txt               # Change owner
+sudo chown newuser:newgroup file.txt      # Change owner and group
+sudo chown :newgroup file.txt             # Change group only
+sudo chown -R newuser:newgroup directory/ # Recursive
 ```
 
 ### 4.2 chgrp: 그룹 변경
 
 ```bash
-sudo chgrp newgroup file.txt              # 그룹 변경
-sudo chgrp -R newgroup directory/         # 재귀적
+sudo chgrp newgroup file.txt              # Change group
+sudo chgrp -R newgroup directory/         # Recursive
 ```
 
 > **참고:** 파일의 소유자를 다른 사용자로 바꾸는 것은 root만 할 수 있으므로 `chown`에는 보통 `sudo`가 필요하다. 반면 파일의 소유자는 자신이 속한 그룹으로는 `sudo` 없이 `chgrp`를 실행할 수 있다.
@@ -373,9 +373,9 @@ sudo chgrp -R newgroup directory/         # 재귀적
 ls -l file.txt
 # -rw-r--r-- 1 user1 group1 1024 Mar 21 10:00 file.txt
 #               ^^^^^  ^^^^^^
-#               소유자  그룹
+#               owner  group
 
-# 소속 그룹 확인
+# Check your groups
 groups
 id
 ```
@@ -398,10 +398,10 @@ id
 **umask**(사용자 파일 생성 마스크)는 새 파일과 디렉터리의 기본 권한을 결정한다.
 
 ```text
-기본 파일 권한:      666 (rw-rw-rw-)
-기본 디렉터리 권한: 777 (rwxrwxrwx)
+Default file permission:      666 (rw-rw-rw-)
+Default directory permission: 777 (rwxrwxrwx)
 
-실제 권한 = 기본값 - umask
+Actual permission = Default - umask
 ```
 
 파일과 디렉터리를 만들 때 요청되는 최대 권한은 일반 파일이 `666`, 디렉터리가 `777`이다. 마스크 값은 파일이나 디렉터리를 생성할 때 **부여하지 않을 권한**을 지정해 놓은 값이다. 예를 들어 마스크 값 `002`는 기타 사용자의 쓰기 권한을 부여하지 않는다는 뜻이다. 실제 권한은 요청된 권한의 비트 중에서 마스크에 1로 켜진 비트를 끈 값, 즉 요청 권한 AND (NOT 마스크)이다.
@@ -414,12 +414,12 @@ id
 *표 8. umask 적용의 진리표*
 
 ```text
-                 일반 파일              디렉터리
-최대 권한        rw-rw-rw- (666)        rwxrwxrwx (777)
-2진수            110 110 110            111 111 111
-마스크 (002)     000 000 010            000 000 010
-마스킹 결과      110 110 100            111 111 101
-부여된 권한      rw-rw-r-- (664)        rwxrwxr-x (775)
+                 Regular file           Directory
+Maximum          rw-rw-rw- (666)        rwxrwxrwx (777)
+Binary           110 110 110            111 111 111
+Mask (002)       000 000 010            000 000 010
+Masked result    110 110 100            111 111 101
+Granted          rw-rw-r-- (664)        rwxrwxr-x (775)
 ```
 
 *그림 4. 마스크 값 002를 적용하여 기본 권한을 계산하는 과정*
@@ -439,15 +439,15 @@ id
 *표 9. 일반적인 umask 값과 생성되는 권한*
 
 ```bash
-# 현재 umask 확인
-umask              # 8진수 형식
-umask -S           # 기호 형식
+# View current umask
+umask              # Octal format
+umask -S           # Symbolic format
 
-# umask 설정
-umask 022          # 대부분의 시스템에서 표준
-umask 077          # 제한적 (개인 파일)
+# Set umask
+umask 022          # Standard for most systems
+umask 077          # Restrictive (private files)
 
-# 영구 설정 (~/.bashrc에 추가)
+# Make permanent (add to ~/.bashrc)
 echo "umask 022" >> ~/.bashrc
 ```
 
@@ -464,11 +464,11 @@ umask는 "빼는 수"가 아니라 "끄는 비트"이다. 파일을 만드는 �
 umask `027`로 일반 파일을 만드는 계산을 비트 단위로 쓰면 다음과 같다.
 
 ```text
-요청 모드     666 = 110 110 110
-umask         027 = 000 010 111
-NOT umask         = 111 101 000
-AND 결과          = 110 100 000 = 640 (rw-r-----)
-8진수 뺄셈    666 - 027 = 637 (rw--wxrwx)   ← 틀린 결과
+requested mode  666 = 110 110 110
+umask           027 = 000 010 111
+NOT umask           = 111 101 000
+AND result          = 110 100 000 = 640 (rw-r-----)
+octal subtraction 666 - 027 = 637 (rw--wxrwx)   ← wrong result
 ```
 
 *그림 5. umask 027에서 일반 파일의 권한을 비트 연산으로 구하는 과정*
@@ -503,15 +503,15 @@ umask는 프로세스마다 하나씩 있는 값으로, 자식 프로세스에�
 실행 파일에 설정하면, 프로그램이 호출자의 권한이 아닌 **소유자의 권한**으로 실행된다.
 
 ```bash
-# SUID 설정
-chmod u+s program           # 기호 방식
-chmod 4755 program          # 8진수 방식 (4 접두사)
+# Set SUID
+chmod u+s program           # Symbolic
+chmod 4755 program          # Octal (4 prefix)
 
-# 예시: passwd 명령어
+# Example: passwd command
 $ ls -l /usr/bin/passwd
 -rwsr-xr-x 1 root root 68208 Mar 14 2022 /usr/bin/passwd
 #   ^
-#   s = SUID가 설정됨 (root 권한으로 실행)
+#   s = SUID is set (runs as root)
 ```
 
 `passwd` 명령에 SetUID가 필요한 이유는 비밀번호가 root만 쓸 수 있는 `/etc/shadow`에 저장되기 때문이다. 일반 사용자가 `passwd`를 실행하면 SetUID 덕분에 실행되는 동안 소유자인 root의 권한이 적용되어 자신의 비밀번호를 바꿀 수 있다. 예를 들어 권한이 `rwxr-xr-x`인 `set.exe`에 `chmod 4755 set.exe`를 실행하면 `ls -l`에 `-rwsr-xr-x`로 표시된다.
@@ -522,9 +522,9 @@ $ ls -l /usr/bin/passwd
 - **디렉터리:** 디렉터리 안에서 새로 만든 파일이 디렉터리의 그룹을 상속한다.
 
 ```bash
-# SGID 설정
-chmod g+s directory/        # 기호 방식
-chmod 2755 directory/       # 8진수 방식 (2 접두사)
+# Set SGID
+chmod g+s directory/        # Symbolic
+chmod 2755 directory/       # Octal (2 prefix)
 ```
 
 예를 들어 `chmod 2755 set.exe`를 실행하면 그룹의 실행 위치에 `s`가 표시되어 `-rwxr-sr-x`가 된다.
@@ -534,15 +534,15 @@ chmod 2755 directory/       # 8진수 방식 (2 접두사)
 디렉터리에 설정하면, 해당 디렉터리 안의 파일은 그 파일의 소유자, 디렉터리의 소유자, root만 삭제하거나 이름을 바꿀 수 있다.
 
 ```bash
-# Sticky bit 설정
-chmod +t directory/         # 기호 방식
-chmod 1755 directory/       # 8진수 방식 (1 접두사)
+# Set sticky bit
+chmod +t directory/         # Symbolic
+chmod 1755 directory/       # Octal (1 prefix)
 
-# 예시: /tmp 디렉터리
+# Example: /tmp directory
 $ ls -ld /tmp
 drwxrwxrwt 15 root root 4096 Mar 21 10:00 /tmp
 #         ^
-#         t = sticky bit (소유자만 자신의 파일을 삭제 가능)
+#         t = sticky bit (only owner can delete their files)
 ```
 
 `/tmp`처럼 권한이 `777`인 디렉터리에는 누구나 파일을 생성할 수 있는데, sticky bit가 없으면 다른 사용자의 파일도 지울 수 있다. sticky bit는 생성은 그대로 허용하면서 삭제를 소유자로 제한한다. 예를 들어 `chmod 1755 temp`를 실행하면 기타 사용자의 실행 위치에 `t`가 표시되어 `drwxr-xr-t`가 된다.
@@ -614,16 +614,16 @@ mv: cannot move '/tmp/x' to '/tmp/y': Operation not permitted
 ### 7.2 일반적인 보안 점검
 
 ```bash
-# 시스템의 모든 SUID 파일 찾기
+# Find all SUID files on the system
 find / -perm -4000 -type f 2>/dev/null
 
-# 모든 SGID 파일 찾기
+# Find all SGID files
 find / -perm -2000 -type f 2>/dev/null
 
-# 누구나 쓸 수 있는 파일 찾기
+# Find world-writable files
 find / -perm -o+w -type f 2>/dev/null
 
-# 소유자가 없는 파일 찾기
+# Find files with no owner
 find / -nouser 2>/dev/null
 ```
 

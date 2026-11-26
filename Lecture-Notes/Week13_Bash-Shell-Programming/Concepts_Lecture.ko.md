@@ -102,12 +102,12 @@ pwd
 ### 1.3 스크립트 실행
 
 ```bash
-chmod +x script.sh          # 실행 권한 부여
-./script.sh                  # ./로 실행
+chmod +x script.sh          # Make executable
+./script.sh                  # Run with ./
 
-bash script.sh               # bash를 명시적으로 지정하여 실행
-source script.sh             # 현재 셸에서 실행 (환경에 영향)
-. script.sh                  # source와 동일
+bash script.sh               # Run with bash explicitly
+source script.sh             # Run in current shell (affects environment)
+. script.sh                  # Same as source
 ```
 
 스크립트를 새 셸에서 실행하는 방법은 두 가지이다.
@@ -122,10 +122,10 @@ source script.sh             # 현재 셸에서 실행 (환경에 영향)
 스크립트 파일의 가장 처음에 오는 `#!`를 **셔뱅(shebang)** 또는 **매직 넘버(magic number)** 라고 한다. `#!` 뒤에는 스크립트를 실행할 프로그램(인터프리터)의 절대 경로를 쓴다. 셸마다 제공하는 스크립트 언어의 문법이 조금씩 다르므로, 이 스크립트를 실행할 셸을 지정해야 스크립트가 올바르게 실행된다. 파일을 직접 실행하면 커널이 첫 줄의 `#!`를 읽고, 그 뒤에 적힌 프로그램을 실행하면서 스크립트 파일의 경로를 인자로 넘긴다.
 
 ```bash
-#!/bin/bash                  # bash 인터프리터 사용
-#!/bin/sh                    # POSIX 셸 사용
-#!/usr/bin/env bash          # 이식성: PATH에서 bash 탐색
-#!/usr/bin/env python3       # Python 스크립트
+#!/bin/bash                  # Use bash interpreter
+#!/bin/sh                    # Use POSIX shell
+#!/usr/bin/env bash          # Portable: find bash in PATH
+#!/usr/bin/env python3       # Python script
 ```
 
 `#!/usr/bin/env bash`는 `env` 명령이 `PATH`에서 `bash`를 찾아 실행하게 하므로, bash가 `/bin/bash`가 아닌 곳에 설치된 시스템에서도 동작한다.
@@ -134,9 +134,9 @@ source script.sh             # 현재 셸에서 실행 (환경에 영향)
 
 ```bash
 #!/bin/more
-# test_sharp: 스스로를 출력하는 스크립트
-# 이 스크립트를 실행하면 자기 자신을 화면에 출력한다.
-# 주석문도 모두 출력된다.
+# test_sharp: a script that prints itself
+# Running this script prints the script itself on the screen.
+# All comment lines are printed as well.
 
 echo "This line is printed."
 ```
@@ -154,7 +154,7 @@ echo "This line is printed."
 
 다음 `test_sharp2`는 행 전체 주석과 행의 일부 주석을 함께 보여 준다. 실행하면 주석은 출력되지 않고 `이 부분은 출력됩니다.`만 출력되며, 스크립트는 종료 상태 65로 끝난다. 종료 상태는 `echo $?`로 확인한다(8.2절).
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_sharp2 : 주석 예제
 # 이 스크립트를 실행하면 주석은 출력되지 않는다.
@@ -168,7 +168,7 @@ exit $WHATEVER # exit 문 실행. $?로 확인할 수 있다.
 
 ```bash
 #!/bin/bash
-# find_script : /bin, /usr/bin에 있는 셸 스크립트 검색
+# find_script : search /bin and /usr/bin for shell scripts
 
 cd /bin
 file * | grep "script"
@@ -183,7 +183,7 @@ $ ./find_script
 aalib-config:   executable shell script
 adrgen:         executable /bin/ksh script
 afmtodit:       executable /usr/bin/perl script
-(중략)
+(omitted)
 xslt-config:    executable shell script
 zipgrep:        executable shell script
 ```
@@ -201,10 +201,10 @@ zipgrep:        executable shell script
 **변수(variable)** 는 프로그램이 처리하는 정보를 저장하는 곳이다. 셸 변수는 `변수명=값` 형식으로 정의하며, `=`의 앞뒤에 공백이 있으면 안 된다. 공백이 있으면 셸은 `name`을 명령 이름으로, `=`와 값을 그 명령의 인자로 해석한다. bash의 변수는 기본적으로 문자열로 저장되며, 산술 연산이 필요할 때만 정수로 해석된다(2.7절).
 
 ```bash
-name="Linux"                 # = 주위에 공백 없음
+name="Linux"                 # No spaces around =
 count=42
 path="/home/user1"
-readonly CONSTANT="fixed"    # 읽기 전용 변수
+readonly CONSTANT="fixed"    # Read-only variable
 ```
 
 변수는 현재 셸에서만 쓸 수 있는 **셸 변수**와, `export`하여 그 셸이 실행하는 모든 자식 프로세스에서도 쓸 수 있는 **환경 변수**로 나뉜다. `readonly`로 선언한 변수는 값을 바꾸거나 `unset`으로 삭제할 수 없다.
@@ -212,10 +212,10 @@ readonly CONSTANT="fixed"    # 읽기 전용 변수
 ### 2.2 변수 사용
 
 ```bash
-echo $name                   # 단순 확장
-echo ${name}                 # 명시적 확장
-echo "Hello, $name"          # 큰따옴표 내부
-echo "Length: ${#name}"      # 문자열 길이
+echo $name                   # Simple expansion
+echo ${name}                 # Explicit expansion
+echo "Hello, $name"          # Inside double quotes
+echo "Length: ${#name}"      # String length
 ```
 
 변수 이름 앞에 `$`를 붙이면 셸이 그 자리를 변수의 값으로 바꾼다. 이를 **변수 확장(variable expansion)** 이라 한다. `${name}`처럼 중괄호로 감싸면 변수 이름이 어디서 끝나는지 명확해지므로, `${name}_v2`처럼 변수 바로 뒤에 다른 문자가 붙을 때 필요하다. 변수를 큰따옴표로 감싸 `"$name"`으로 쓰면 값에 공백이 있어도 하나의 단어로 유지된다.
@@ -320,7 +320,7 @@ $ echo ${#path2}
 
 ```bash
 #!/bin/bash
-# test_position: 명령줄 인자를 테스트
+# test_position: test command-line arguments
 echo '$* : ' $*
 echo '$# : ' $#
 echo '$@ : ' $@
@@ -388,19 +388,19 @@ bash는 산술, 비교, 논리, 비트 연산자를 제공한다. 변수는 문�
 *표 5. bash의 연산자*
 
 ```bash
-# (( )) 사용
+# Using (( ))
 (( sum = 5 + 3 ))
 (( count++ ))
-echo $(( 10 * 5 ))          # 출력: 50
+echo $(( 10 * 5 ))          # Output: 50
 
-# let 사용
+# Using let
 let "result = 5 + 3"
 
-# expr 사용 (외부 명령어)
+# Using expr (external command)
 result=$(expr 5 + 3)
 
-# bc를 사용한 부동소수점 연산
-echo "scale=2; 10 / 3" | bc  # 출력: 3.33
+# Using bc for floating point
+echo "scale=2; 10 / 3" | bc  # Output: 3.33
 ```
 
 `(( 식 ))`은 식을 계산하고, `$(( 식 ))`은 계산 결과를 그 자리에 넣는다. `(( ))` 안에서는 변수 이름 앞에 `$`를 붙이지 않아도 된다. `expr`은 외부 명령이므로 연산자와 피연산자를 공백으로 구분해야 하고 실행이 느리다. bash의 산술 연산은 정수만 다루므로, 소수점이 필요하면 `bc`처럼 별도 프로그램을 쓴다. `scale=2`는 소수점 아래 두 자리까지 계산하라는 뜻이다.
@@ -447,13 +447,13 @@ Bash의 **배열(array)** 은 여러 값을 번호(첨자)로 구분하여 한 �
 
 ```bash
 #!/bin/bash
-fruits=(apple "green grape" cherry)          # 원소 세 개로 배열 생성
-echo "count: ${#fruits[@]}"                  # 원소의 개수
+fruits=(apple "green grape" cherry)          # create an array of three elements
+echo "count: ${#fruits[@]}"                  # number of elements
 echo "first: ${fruits[0]}, last: ${fruits[2]}"
-fruits+=(melon)                              # 끝에 원소 추가
-for f in "${fruits[@]}"; do echo "[$f]"; done    # 원소마다 하나의 단어
-for f in ${fruits[@]}; do echo "<$f>"; done      # 따옴표가 없으면 다시 단어 분리
-echo "indices: ${!fruits[@]}"                # 사용 중인 첨자의 목록
+fruits+=(melon)                              # append an element
+for f in "${fruits[@]}"; do echo "[$f]"; done    # one word per element
+for f in ${fruits[@]}; do echo "<$f>"; done      # without quotes, word splitting again
+echo "indices: ${!fruits[@]}"                # list of subscripts in use
 ```
 
 ```text
@@ -490,19 +490,19 @@ Bash 4 이상(Ubuntu 24.04는 5.2)은 `declare -A`로 문자열을 첨자로 쓰
 `read`는 터미널이나 파일에서 입력을 받는 셸 내장 명령이다. 표준 입력에서 한 행을 읽어 공백 기준으로 나눈 뒤 변수에 차례로 저장한다.
 
 ```bash
-read name                    # 변수에 읽기
+read name                    # Read into variable
 echo "Name: $name"
 
-read -p "Enter name: " name # 프롬프트 메시지
-read -s password             # 무음 입력 (비밀번호)
-read -t 10 answer            # 10초 후 타임아웃
-read -n 1 choice             # 한 글자만 읽기
+read -p "Enter name: " name # Prompt message
+read -s password             # Silent input (passwords)
+read -t 10 answer            # Timeout after 10 seconds
+read -n 1 choice             # Read single character
 
-# 여러 변수에 읽기
+# Read multiple variables
 read first last
 echo "First: $first, Last: $last"
 
-# 변수 없이 읽기 ($REPLY에 저장)
+# Read without variable (stored in $REPLY)
 read -p "Input: "
 echo "You entered: $REPLY"
 ```
@@ -521,8 +521,8 @@ echo "You entered: $REPLY"
 
 ```bash
 echo "Hello World"
-echo -n "No newline"         # 개행 억제
-echo -e "Tab:\there"         # 이스케이프 시퀀스 활성화
+echo -n "No newline"         # Suppress newline
+echo -e "Tab:\there"         # Enable escape sequences
 
 printf "%-10s %5d\n" "Alice" 95
 printf "Name: %s, Score: %d\n" "$name" "$score"
@@ -556,7 +556,7 @@ END
 
 ```bash
 #!/bin/bash
-# here document 테스트. user1에게 메일을 보냄
+# Here document test. Sends mail to user1
 
 mail user1 << END
 This is a test mail for here document
@@ -598,11 +598,11 @@ flowchart TB
 `if`는 주어진 조건의 참, 거짓에 따라 명령을 실행한다. 셸의 `if` 다음에는 식이 아니라 **조건 명령**이 오며, `if`는 그 명령을 실행한 **종료 상태(exit status)** 로 참과 거짓을 판단한다. 종료 상태가 0(성공)이면 `then` 다음의 명령을, 0이 아니면(실패) `else` 다음의 명령을 실행한다. `else` 부분은 생략할 수 있고, `if` 문은 `fi`로 끝난다.
 
 ```text
-if 조건명령
+if condition_command
 then
-    명령
+    commands
 [ else
-    명령 ]
+    commands ]
 fi
 ```
 
@@ -618,12 +618,12 @@ fi
 
 ```bash
 #!/bin/bash
-# test_if : if 문을 테스트하는 스크립트
+# test_if : a script that tests the if statement
 
 echo "Input x : "
-read x                 # x 값을 입력받음
+read x                 # read the value of x
 echo "Input y : "
-read y                 # y 값을 입력받음
+read y                 # read the value of y
 
 if (( x < y ))
 then
@@ -664,7 +664,7 @@ fi
 
 ```bash
 #!/bin/bash
-# test_elif: if-elif 문 테스트
+# test_elif: test the if-elif statement
 
 echo "Input Score : "
 read score
@@ -727,16 +727,16 @@ Your score is not good.
 
 ```bash
 #!/bin/bash
-# test_string: 문자열 테스트 스크립트
+# test_string: string test script
 
 echo "Are you OK (y/n) ? "
-read ans                                 # ans 변수에 값 저장
+read ans                                 # store the value in ans
 
-if [[ $ans = [Yy]* ]]                    # y로 시작하는 문자열인가
+if [[ $ans = [Yy]* ]]                    # does it start with y?
 then
-     echo Happy to hear it.              # y로 시작하면
+     echo Happy to hear it.              # if it starts with y
 else
-     echo That is too bad.               # y로 시작하지 않으면
+     echo That is too bad.               # if it does not start with y
 fi
 ```
 
@@ -774,7 +774,7 @@ fi
 
 `-a`는 `[ ]` 안에서 두 조건의 AND를 뜻하기도 하므로, 파일 존재 검사에는 `-e`를 쓰는 편이 안전하다. 다음 `test_file`은 입력한 파일의 그룹 ID와 종류를 검사한다.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_file: 파일 연산자 테스트
 
@@ -801,7 +801,7 @@ else
 fi
 ```
 
-```text
+```text wide-ok
 $ ./test_file
 파일 이름을 입력하세요 :
 /dev/null
@@ -826,13 +826,13 @@ $ ./test_file
 `case`는 주어진 변수의 값에 따라 실행할 명령을 따로 지정한다. 변수의 값이 `value1`과 일치하면 `value1)` 다음부터 `;;`을 만날 때까지의 명령을 실행하고 `case` 문을 빠져나온다. 값에는 와일드카드 같은 특수 기호와 `|`(OR 연산자)를 쓸 수 있으며, 일치하는 값이 없으면 기본값인 `*)`의 명령을 실행한다. `case` 문은 `esac`으로 끝난다.
 
 ```text
-case 변수 in
+case variable in
 value1)
-    명령 ;;
+    commands ;;
 value2)
-    명령 ;;
+    commands ;;
 *)
-    명령 ;;
+    commands ;;
 esac
 ```
 
@@ -856,7 +856,7 @@ esac
 
 이 예에서 `[0-9]`는 숫자 한 글자와, `cd|CD`는 `cd` 또는 `CD`와 일치한다. 패턴은 위에서부터 차례로 비교하므로 `*)`는 항상 마지막에 둔다. 다음 `test_case`는 `[aA-C]*` 패턴으로 소문자 `a` 또는 대문자 `A`, `B`, `C`로 시작하는 임의의 문자열도 처리한다.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # case 테스트 스크립트
 
@@ -879,7 +879,7 @@ case $cmd in
 esac
 ```
 
-```text
+```text wide-ok
 $ ./test_case
 명령을 선택하세요 :
 5
@@ -907,27 +907,27 @@ a
 `for 변수 in list`는 `list` 안의 각 값을 차례로 변수에 저장하면서 `do`와 `done` 사이의 명령을 실행한다.
 
 ```bash
-# 리스트 기반
+# List-based
 for num in 0 1 2 3 4; do
     echo "Number: $num"
 done
 
-# 범위 기반 (bash)
+# Range-based (bash)
 for i in {1..10}; do
     echo "Count: $i"
 done
 
-# C 스타일
+# C-style
 for (( i=0; i<10; i++ )); do
     echo "Index: $i"
 done
 
-# 명령어 출력 순회
+# Over command output
 for file in $(ls *.sh); do
     echo "Script: $file"
 done
 
-# 명령줄 인자 순회
+# Over command-line arguments
 for arg in "$@"; do
     echo "Argument: $arg"
 done
@@ -941,7 +941,7 @@ done
 
 다음 `test_for3`은 명령줄 인자로 받은 각 사용자에게 `letter` 파일의 내용을 메일로 보낸다.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_for3: 명령줄 인자 처리
 
@@ -955,7 +955,7 @@ echo ----------------------------
 echo 모든 메일을 보냈습니다.
 ```
 
-```text
+```text wide-ok
 $ ./test_for3 user1 user2 user3
 user1에게 메일을 보냈습니다.
 user2에게 메일을 보냈습니다.
@@ -987,7 +987,7 @@ echo "Sum(1~10): $sum"
 `until`은 `while`과 반대로 조건 명령이 실패하는 동안, 즉 조건 명령이 정상 실행될 때까지 명령을 반복한다.
 
 ```bash
-# 사용자 로그인 대기
+# Wait for a user to log in
 until who | grep -q "$person"; do
     sleep 5
 done
@@ -996,7 +996,7 @@ echo "$person has logged in!"
 
 `who`는 로그인한 사용자 목록을 출력하고, `grep -q`는 일치하는 줄이 있으면 아무것도 출력하지 않고 종료 상태 0으로 끝난다. 따라서 `person`이 로그인하지 않은 동안에는 5초씩 쉬며 반복하고, 로그인하면 반복을 끝내고 메시지를 출력한다. 다음 `test_until`은 로그인 이름을 입력받아 같은 일을 하고, 사용자가 로그인하면 `who`의 해당 줄을 출력한 뒤 벨 소리를 낸다.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_until: 지정한 사용자가 로그인하면 알리는 스크립트
 
@@ -1010,7 +1010,7 @@ done
 echo -e "\007"                 # beep. 삑 소리를 냄
 ```
 
-```text
+```text wide-ok
 $ ./test_until
 로그인 이름:
 hanb
@@ -1037,7 +1037,7 @@ done
 
 다음 `test_select`는 본문 끝에서 `REPLY=`로 `REPLY`를 빈 값으로 만든다. bash는 본문을 실행한 뒤 `REPLY`가 비어 있으면 메뉴를 다시 출력하므로, 선택할 때마다 메뉴가 다시 표시된다. 이 줄이 없으면 처음 한 번만 메뉴가 출력되고 이후에는 프롬프트만 출력된다.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_select: 사용자 입력에 따라 pwd, date 명령 실행
 
@@ -1059,7 +1059,7 @@ do
 done
 ```
 
-```text
+```text wide-ok
 $ ./test_select
 1) pwd
 2) date
@@ -1078,12 +1078,12 @@ $
 ### 5.5 반복문 제어
 
 ```bash
-# break -- 반복문 완전히 종료
-# continue -- 다음 반복으로 건너뛰기
+# break -- exit loop entirely
+# continue -- skip to next iteration
 
 for name in alice bob charlie dave; do
     if [[ $name == "charlie" ]]; then
-        continue        # charlie 건너뛰기
+        continue        # Skip charlie
     fi
     echo "Hello, $name"
 done
@@ -1093,7 +1093,7 @@ done
 
 다음 `test_cont`는 `list` 파일의 사용자 중 `user2`만 건너뛰고 나머지에게 메일을 보낸다. `$(< list)`는 `` `cat list` ``와 같다.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_cont: continue 테스트
 
@@ -1128,13 +1128,13 @@ function greet {
     echo "Hello, $1!"
 }
 
-# 대안 문법
+# Alternative syntax
 add() {
     local sum=$(( $1 + $2 ))
     echo $sum
 }
 
-# 함수 호출
+# Call functions
 greet "World"
 result=$(add 5 3)
 echo "Result: $result"
@@ -1165,9 +1165,9 @@ a b c
 ```bash
 function is_even {
     if (( $1 % 2 == 0 )); then
-        return 0    # 성공 (참)
+        return 0    # Success (true)
     else
-        return 1    # 실패 (거짓)
+        return 1    # Failure (false)
     fi
 }
 
@@ -1180,10 +1180,10 @@ fi
 
 ```bash
 #!/bin/bash
-# 함수 리턴값 테스트
+# Function return value test
 
 function sum {
-  typeset sum     # 지역 변수 정의
+  typeset sum     # define a local variable
 
   (( sum = $1 + $2 ))
   return $sum
@@ -1251,11 +1251,11 @@ after inc_local: 11
 
 ```bash
 str="Hello World"
-echo ${#str}              # 길이: 11
-echo ${str:0:5}           # 부분 문자열: Hello
-echo ${str/World/Linux}   # 치환: Hello Linux
-echo ${str^^}             # 대문자: HELLO WORLD
-echo ${str,,}             # 소문자: hello world
+echo ${#str}              # Length: 11
+echo ${str:0:5}           # Substring: Hello
+echo ${str/World/Linux}   # Replace: Hello Linux
+echo ${str^^}             # Uppercase: HELLO WORLD
+echo ${str,,}             # Lowercase: hello world
 ```
 
 `${str:시작:길이}`는 0부터 센 `시작` 위치에서 `길이`만큼의 부분 문자열이고, 길이를 생략한 `${str:7}`은 7번 위치부터 끝까지이다. `${str/찾을것/바꿀것}`은 처음 일치하는 부분 하나를, `${str//찾을것/바꿀것}`은 일치하는 부분 전체를 바꾼다. `${str^^}`와 `${str,,}`는 bash 4 이상에서 쓸 수 있다.
@@ -1291,13 +1291,13 @@ fi
 
 ```bash
 trap 'echo "Line $LINENO: count=$count"' DEBUG
-# DEBUG 트랩은 모든 명령 실행 전에 발동
+# DEBUG trap fires before every command
 
 trap 'echo "Caught SIGINT"; exit 1' INT
-# Ctrl+C 캐치
+# Catch Ctrl+C
 
 trap 'cleanup_function' EXIT
-# 스크립트 종료 시 정리 함수 실행
+# Run cleanup on script exit
 ```
 
 `DEBUG`와 `EXIT`는 운영체제의 시그널이 아니라 bash가 정의한 의사 시그널이다. `DEBUG`는 각 명령이 실행되기 직전마다, `EXIT`는 스크립트가 끝날 때 발생한다. `INT`(SIGINT)는 사용자가 `Ctrl+C`를 눌렀을 때 전달되는 시그널이다. `trap - 시그널`은 지정한 트랩을 해제한다. `DEBUG` 트랩을 디버깅에 쓰는 방법은 8.4절에서 다루며, [Lab_signal_trap.sh](../../Coursework/Lab13_Bash-Shell-Programming/Lab_signal_trap.sh)는 `DEBUG` 트랩과 `INT` 트랩을 모두 실습한다.
@@ -1308,7 +1308,7 @@ trap 'cleanup_function' EXIT
 
 ```bash
 #!/bin/bash
-# 특정 코드로 종료
+# Exit with specific code
 command_that_might_fail
 if [[ $? -ne 0 ]]; then
     echo "Command failed"
@@ -1321,7 +1321,7 @@ exit 0
 
 ```bash
 #!/bin/bash
-# test_exit : exit과 $?를 테스트하는 프로그램
+# test_exit : a program that tests exit and $?
 
 exit 20
 ```
@@ -1338,16 +1338,16 @@ $ echo $?
 
 ```bash
 #!/bin/bash
-# 일반 주석
+# Regular comment
 
 : '
-이것은 콜론 내장 명령과
-here-string을 사용한
-여러 줄 주석이다.
+This is a multi-line comment
+using the colon builtin with
+a here-string.
 '
 
-# 재미있는 기법: #!/bin/more를 사용하면 스크립트가 자기 자신을 출력
-# 재미있는 기법: #!/bin/rm을 사용하면 스크립트가 자기 자신을 삭제
+# Interesting trick: #!/bin/more makes a script print itself
+# Interesting trick: #!/bin/rm makes a script delete itself
 ```
 
 bash에는 여러 줄 주석 문법이 따로 없다. 위의 `: '...'`는 아무 일도 하지 않는 내장 명령 `:`에 작은따옴표로 감싼 여러 줄 문자열을 인자로 주어, 그 문자열이 실행되지 않게 하는 기법이다. 엄밀히는 here-string(`<<<`)이 아니라 작은따옴표 문자열을 인자로 쓰는 것이다. 셔뱅을 `#!/bin/more`로 지정하면 `more`가 스크립트 파일을 출력하고, `#!/bin/rm`으로 지정하면 `rm`이 스크립트 파일을 삭제한다(1.4절).
@@ -1361,7 +1361,7 @@ bash에는 여러 줄 주석 문법이 따로 없다. 위의 `: '...'`는 아무
 
 실행 오류를 찾는 가장 간단한 방법은 `bash -x script`로 실행하는 것이다. 스크립트의 각 명령이 실행될 때마다 변수 확장이 적용된 명령이 `+`를 앞에 붙여 표준 오류로 출력된다. 셔뱅을 `#!/bin/bash -x`로 쓰거나 스크립트 안에서 `set -x`를 실행해도 같은 효과가 있으며, `set +x`로 끈다. 다음은 5.2절과 같은 합계 스크립트 `test_while`(`count`를 `let count+=1`로 증가시킨다)을 `bash -x`로 실행한 결과이다.
 
-```text
+```text wide-ok
 $ bash -x test_while
 + count=1
 + sum=0
@@ -1378,7 +1378,7 @@ $ bash -x test_while
 
 `trap '명령' DEBUG`를 쓰면 스크립트의 명령이 한 줄씩 실행될 때마다 원하는 변수의 값을 출력할 수 있다. 다음 `test_trap`은 각 명령이 실행되기 직전의 줄 번호와 `count` 값을 출력한다.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_trap: trap 테스트 스크립트
 
@@ -1396,7 +1396,7 @@ done
 echo 1부터 10까지의 합 : $sum
 ```
 
-```text
+```text wide-ok
 $ ./test_trap
 6 : count=
 7 : count=1

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-19
+> **Last Updated:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 8
 
@@ -153,7 +153,7 @@ root           4       2  0 12:26 ?        00:00:00 [rcu_par_gp]
 
 Process 1 still seems to be `init`, but `/sbin/init` is actually a symbolic link to the systemd executable. So the program actually running as process 1 is systemd.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ ls -l /sbin/init
 lrwxrwxrwx 1 root root 20 Nov 21 11:10 /sbin/init -> /lib/systemd/systemd
 ```
@@ -542,7 +542,7 @@ N 5
 
 The default target is set with `systemctl set-default <target name>.target`. The default target is the one the symbolic link `/etc/systemd/system/default.target` points to, so `set-default` recreates this link.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ sudo systemctl set-default multi-user.target
 Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.
 user1@myubuntu:~$ ls -l /etc/systemd/system/default.target
@@ -558,7 +558,7 @@ Created symlink /etc/systemd/system/default.target → /lib/systemd/system/graph
 
 The traditional `init` and `telinit` commands can also change the runlevel. Today `/sbin/telinit` is a symbolic link to `/bin/systemctl`, and `init number` is handled as a request to switch to the corresponding `runlevelX.target`.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ init --help
 init [OPTIONS...] COMMAND
 
@@ -673,7 +673,7 @@ user1@myubuntu:~$ sudo systemctl isolate runlevel6.target
 
 The first two commands shut down the system, and the last two restart it. `halt`, `poweroff`, and `reboot` are all symbolic links to the `systemctl` command. `systemctl` checks the name it was run under and performs the corresponding action.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ ls -l /sbin/halt
 lrwxrwxrwx 1 root root 14 Nov 21 11:10 /sbin/halt -> /bin/systemctl
 user1@myubuntu:~$ ls -l /sbin/poweroff

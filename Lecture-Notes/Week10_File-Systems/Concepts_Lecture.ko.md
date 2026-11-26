@@ -233,17 +233,17 @@ ext4의 inode는 파일 시스템을 만들 때 정한 개수만큼만 만들어
 ### 2.2 파티셔닝 도구
 
 ```bash
-# fdisk - MBR 파티션 도구 (최대 2TB 디스크)
+# fdisk - MBR partition tool (up to 2TB disks)
 sudo fdisk /dev/sdb
-# 명령: n (생성), d (삭제), p (출력), w (저장), q (종료)
+# Commands: n (new), d (delete), p (print), w (write), q (quit)
 
-# gdisk - GPT 파티션 도구 (2TB 초과 디스크)
+# gdisk - GPT partition tool (over 2TB disks)
 sudo gdisk /dev/sdb
 
-# parted - MBR과 GPT 모두 지원
+# parted - Works with both MBR and GPT
 sudo parted /dev/sdb
 
-# 모든 파티션 나열
+# List all partitions
 sudo fdisk -l
 lsblk
 ```
@@ -414,19 +414,19 @@ flowchart LR
 파티션을 만든 뒤에는 그 위에 파일 시스템을 만들어야(포맷해야) 파일을 저장할 수 있다.
 
 ```bash
-# ext4 파일 시스템 생성
+# Create ext4 filesystem
 sudo mkfs.ext4 /dev/sdb1
-sudo mkfs -t ext4 /dev/sdb1     # 대안 문법
+sudo mkfs -t ext4 /dev/sdb1     # Alternative syntax
 
-# XFS 파일 시스템 생성
+# Create XFS filesystem
 sudo mkfs.xfs /dev/sdb1
 
-# FAT32 파일 시스템 생성 (USB 드라이브용)
+# Create FAT32 filesystem (for USB drives)
 sudo mkfs.vfat /dev/sdb1
 
-# 파일 시스템 검사
-sudo fsck /dev/sdb1              # 파일 시스템 검사
-sudo e2fsck -f /dev/sdb1         # ext 파일 시스템 강제 검사
+# Check filesystem
+sudo fsck /dev/sdb1              # File system check
+sudo e2fsck -f /dev/sdb1         # Force ext filesystem check
 ```
 
 `mkfs`의 형식은 `mkfs [옵션] [장치명]`이며, `-t 종류`로 파일 시스템의 종류를 지정한다. `-t`를 생략하면 기본값인 ext2로 만든다. `mkfs.ext2`, `mkfs.ext3`, `mkfs.ext4`처럼 종류별 명령도 제공된다.
@@ -447,21 +447,21 @@ ext 계열 전용 도구인 `mke2fs`는 형식이 `mke2fs [옵션] [장치명]`�
 예를 들어 다음 명령은 `/dev/sdb1`에 ext2를, `/dev/sdb2`와 `/dev/sdc1`에 ext3를 만들고, `/dev/sdc2`에는 블록 크기가 4,096B인 ext4를 만든다.
 
 ```bash
-sudo mkfs /dev/sdb1                     # 기본값인 ext2 생성
-sudo mkfs.ext3 /dev/sdb2                # ext3 생성
-sudo mke2fs -t ext3 /dev/sdc1           # mke2fs로 ext3 생성
-sudo mke2fs -t ext4 -b 4096 /dev/sdc2   # 블록 크기 4,096B인 ext4 생성
+sudo mkfs /dev/sdb1                     # Create the default, ext2
+sudo mkfs.ext3 /dev/sdb2                # Create ext3
+sudo mke2fs -t ext3 /dev/sdc1           # Create ext3 with mke2fs
+sudo mke2fs -t ext4 -b 4096 /dev/sdc2   # Create ext4 with 4,096B blocks
 ```
 
 ### 4.2 파일 시스템 정보 확인
 
 ```bash
-# 파일 시스템 유형 확인
-sudo blkid                        # 블록 장치 ID와 유형 표시
-df -Th                            # 마운트된 파일 시스템과 유형 표시
-lsblk -f                          # 트리 형식으로 파일 시스템 정보 표시
+# Show filesystem type
+sudo blkid                        # Show block device IDs and types
+df -Th                            # Show mounted filesystems with types
+lsblk -f                          # Show filesystem info in tree format
 
-# ext 파일 시스템 상세 정보
+# Show ext filesystem details
 sudo dumpe2fs /dev/sdb1 | head -30
 sudo tune2fs -l /dev/sdb1
 ```
@@ -488,18 +488,18 @@ ls /mnt/hdd1                      # hosts  lost+found
 ### 5.2 mount: 파일 시스템 연결
 
 ```bash
-# 수동 마운트
+# Manual mounting
 sudo mount /dev/sdb1 /mnt/data
-sudo mount -t ext4 /dev/sdb1 /mnt/data    # 파일 시스템 유형 지정
-sudo mount -o ro /dev/sdb1 /mnt/data       # 읽기 전용으로 마운트
+sudo mount -t ext4 /dev/sdb1 /mnt/data    # Specify filesystem type
+sudo mount -o ro /dev/sdb1 /mnt/data       # Mount read-only
 
-# ISO 이미지 마운트
+# Mount ISO image
 sudo mount -o loop image.iso /mnt/iso
 
-# USB 드라이브 마운트
+# Mount USB drive
 sudo mount /dev/sdb1 /media/usb
 
-# 마운트된 모든 파일 시스템 표시
+# Show all mounted filesystems
 mount
 df -h
 findmnt
@@ -544,9 +544,9 @@ proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
 ### 5.3 umount: 파일 시스템 분리
 
 ```bash
-sudo umount /mnt/data              # 마운트 포인트로 언마운트
-sudo umount /dev/sdb1              # 장치로 언마운트
-sudo umount -l /mnt/data           # 지연 언마운트 (사용 중인 경우)
+sudo umount /mnt/data              # Unmount by mount point
+sudo umount /dev/sdb1              # Unmount by device
+sudo umount -l /mnt/data           # Lazy unmount (if busy)
 ```
 
 형식은 `umount [옵션] 장치명 또는 마운트_포인트`이다. 사용 중인 파일 시스템은 언마운트할 수 없다. 예를 들어 현재 작업 디렉터리가 마운트 포인트 안에 있으면 다음과 같이 "target is busy"(사용 중) 오류가 나므로, `cd`로 다른 디렉터리로 이동한 뒤 다시 언마운트한다.
@@ -563,8 +563,8 @@ user1@myubuntu:~$ sudo umount /mnt
 `/etc/fstab`은 파일 시스템의 마운트 설정 정보를 담은 파일이며, 시스템은 부팅할 때 이 파일을 읽고 파일 시스템을 마운트한다. 각 줄은 공백으로 구분한 여섯 필드로 이루어진다.
 
 ```text
-# /etc/fstab 형식:
-# 장치              마운트포인트   유형   옵션            dump  pass
+# /etc/fstab format:
+# device          mount-point   type   options         dump  pass
 /dev/sda1         /             ext4   defaults        0     1
 /dev/sda2         /home         ext4   defaults        0     2
 /dev/sdb1         /data         ext4   defaults        0     2
@@ -612,7 +612,7 @@ UUID=A7A5-E2E2  /boot/efi  vfat  umask=0077  0  1
 *표 13. 주요 마운트 옵션*
 
 ```bash
-# 재부팅 없이 fstab 변경사항 적용
+# Apply fstab changes without reboot
 sudo mount -a
 ```
 
@@ -729,17 +729,17 @@ LVM을 쓰면 VG에 PV를 추가하여 공간을 늘리거나 LV의 크기를 �
 
 ```bash
 sudo apt install lvm2
-sudo pvcreate /dev/sdb1                   # PV 생성
+sudo pvcreate /dev/sdb1                   # Create PV
 sudo pvcreate /dev/sdb2
-sudo pvscan                               # PV 상태 확인
-sudo vgcreate grp1 /dev/sdb1 /dev/sdb2    # VG 생성
-sudo vgchange -a y grp1                   # VG 활성화
-sudo vgdisplay -v grp1                    # VG 상태 확인 (PE 개수 등)
-sudo lvcreate -l 248 grp1 -n mylvm1       # PE 248개로 LV 생성
-sudo lvscan                               # LV 상태 확인
-sudo mke2fs -t ext4 /dev/grp1/mylvm1      # 파일 시스템 생성
+sudo pvscan                               # Check PV status
+sudo vgcreate grp1 /dev/sdb1 /dev/sdb2    # Create VG
+sudo vgchange -a y grp1                   # Activate VG
+sudo vgdisplay -v grp1                    # Check VG status (number of PEs, etc.)
+sudo lvcreate -l 248 grp1 -n mylvm1       # Create LV from 248 PEs
+sudo lvscan                               # Check LV status
+sudo mke2fs -t ext4 /dev/grp1/mylvm1      # Create file system
 sudo mkdir /mnt/lvm
-sudo mount /dev/grp1/mylvm1 /mnt/lvm      # 마운트
+sudo mount /dev/grp1/mylvm1 /mnt/lvm      # Mount
 ```
 
 LV의 장치 경로는 `/dev/VG명/LV명` 형식이다. LVM을 지울 때는 생성의 역순으로 `lvremove`, `vgremove`, `pvremove`를 쓴다.
@@ -755,11 +755,11 @@ LV의 장치 경로는 `/dev/VG명/LV명` 형식이다. LVM을 지울 때는 생
 `df`는 파일 시스템별로 전체 용량, 사용량, 남은 공간을 출력한다. 형식은 `df [옵션] [파일 시스템]`이다.
 
 ```bash
-df                      # 마운트된 모든 파일 시스템 표시
-df -h                   # 사람이 읽기 쉬운 크기
-df -T                   # 파일 시스템 유형 표시
-df -i                   # inode 사용량 표시
-df /home                # 특정 마운트 포인트 표시
+df                      # Show all mounted filesystems
+df -h                   # Human-readable sizes
+df -T                   # Show filesystem type
+df -i                   # Show inode usage
+df /home                # Show specific mount point
 ```
 
 이 밖에 `-a`는 가상 파일 시스템을 포함한 모든 파일 시스템을, `-k`와 `-m`은 사용량을 KB와 MB 단위로, `-t 종류`는 지정한 종류의 파일 시스템만(예: `df -t ext4`) 출력한다.
@@ -769,10 +769,10 @@ df /home                # 특정 마운트 포인트 표시
 `du`는 디렉터리나 파일이 차지하는 디스크 공간을 출력한다. 형식은 `du [옵션] [디렉터리]`이며, 디렉터리를 생략하면 현재 디렉터리를 대상으로 한다. `-s`는 지정한 디렉터리의 전체 사용량만, `-a`는 하위 파일까지 모두, `-h`는 알기 쉬운 단위로 출력한다. 특정 사용자의 사용량은 그 사용자의 홈 디렉터리를 지정하여(`du -s ~user1`) 확인한다.
 
 ```bash
-du -sh /home/user1                # 디렉터리 크기 요약
-du -h --max-depth=1 /home         # 1단계 깊이
-du -sh *                          # 현재 디렉터리의 각 항목 크기
-du -ah /var/log | sort -rh | head -10   # 가장 큰 파일 상위 10개
+du -sh /home/user1                # Summary of directory size
+du -h --max-depth=1 /home         # One level deep
+du -sh *                          # Size of each item in current directory
+du -ah /var/log | sort -rh | head -10   # Top 10 largest files
 ```
 
 > **참고:** `df`는 파일 시스템의 블록 사용 정보를 읽고 `du`는 파일을 하나씩 따라가며 크기를 더하므로, 두 결과가 다를 수 있다. 예를 들어 삭제했지만 아직 프로세스가 열고 있는 파일의 공간은 `df`에서는 사용 중으로 남고 `du`에는 나타나지 않는다.
@@ -816,10 +816,10 @@ $ du -h one.txt ten.txt sparse.txt
 - `-j 외부 저널`: 저널을 다른 장치에 둔 ext3, ext4에서 그 저널의 위치를 지정한다(`e2fsck`).
 
 ```bash
-sudo fsck /dev/sdd1          # 일반적인 검사
-sudo fsck -f /dev/sdd1       # 강제 검사
-sudo fsck.ext4 /dev/sdd3     # 파일 시스템 종류를 지정한 검사
-sudo e2fsck -f /dev/sdd1     # e2fsck로 강제 검사
+sudo fsck /dev/sdd1          # Normal check
+sudo fsck -f /dev/sdd1       # Forced check
+sudo fsck.ext4 /dev/sdd3     # Check with the file system type given
+sudo e2fsck -f /dev/sdd1     # Forced check with e2fsck
 ```
 
 > **주의:** 마운트되어 쓰기가 일어나는 파일 시스템을 검사하면 파일 시스템이 손상될 수 있다. 검사하기 전에 언마운트하고, 루트 파일 시스템은 부팅 과정에서 검사하게 한다.
@@ -829,8 +829,8 @@ sudo e2fsck -f /dev/sdd1     # e2fsck로 강제 검사
 **배드 블록(bad block)** 은 물리적 손상으로 읽거나 쓸 수 없는 디스크 블록이다. 형식은 `badblocks [옵션] [장치명]`이며, `-v`는 검색 결과를 자세하게 출력하고 `-o 출력_파일`은 찾은 배드 블록 목록을 파일에 저장한다.
 
 ```bash
-sudo badblocks -v /dev/sdd1              # 배드 블록 검색
-sudo badblocks -v -o bad.out /dev/sdd1   # 검색 결과를 bad.out에 저장
+sudo badblocks -v /dev/sdd1              # Search for bad blocks
+sudo badblocks -v -o bad.out /dev/sdd1   # Save the results to bad.out
 ```
 
 ### 8.3 백업 슈퍼블록을 이용한 복구
@@ -879,20 +879,20 @@ $ sudo e2fsck -b 32768 -y /dev/sdd1
 ### 9.2 스왑 관리
 
 ```bash
-# 스왑 사용량 확인
+# View swap usage
 free -h
 swapon --show
 
-# 스왑 파일 생성
+# Create swap file
 sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 
-# 영구 설정 (/etc/fstab에 추가)
+# Make permanent (add to /etc/fstab)
 # /swapfile none swap sw 0 0
 
-# 스왑 비활성화
+# Disable swap
 sudo swapoff /swapfile
 ```
 

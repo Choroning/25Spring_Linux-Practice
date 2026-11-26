@@ -245,10 +245,10 @@ $ echo $(( $(TZ=UTC date -d 2025-03-21 +%s) / 86400 ))
 ### 3.1 useradd: 사용자 생성
 
 ```bash
-sudo useradd username                        # 사용자 생성 (최소 설정)
-sudo useradd -m username                     # 홈 디렉터리와 함께 생성
-sudo useradd -m -s /bin/bash username        # 셸 지정
-sudo useradd -m -G sudo,developers username  # 그룹에 추가
+sudo useradd username                        # Create user (minimal)
+sudo useradd -m username                     # Create with home directory
+sudo useradd -m -s /bin/bash username        # Specify shell
+sudo useradd -m -G sudo,developers username  # Add to groups
 sudo useradd -m -c "John Doe" -s /bin/bash -G sudo john
 ```
 
@@ -329,7 +329,7 @@ $ ls -a /etc/skel
 ### 3.2 adduser: 대화형 사용자 생성 (Debian/Ubuntu)
 
 ```bash
-sudo adduser username    # 대화형: 비밀번호, 이름 등을 입력 요청
+sudo adduser username    # Interactive: prompts for password, name, etc.
 ```
 
 `adduser`는 Debian 계열에서 `useradd`를 감싸는 상위 수준 명령으로, 홈 디렉터리를 만들고 암호와 사용자 정보를 대화형으로 묻는다. 형식은 `adduser [옵션] 로그인 ID`이며, 옵션은 긴 형식으로 쓴다.
@@ -350,22 +350,22 @@ sudo adduser --home /home/user5 --uid 2001 --gid 2100 --shell /bin/sh user5
 ### 3.3 usermod: 사용자 수정
 
 ```bash
-sudo usermod -aG sudo username            # 보조 그룹에 추가
-sudo usermod -s /bin/zsh username          # 셸 변경
-sudo usermod -d /new/home username         # 홈 디렉터리 변경
-sudo usermod -l newname oldname            # 사용자 이름 변경
-sudo usermod -L username                   # 계정 잠금
-sudo usermod -U username                   # 계정 잠금 해제
-sudo usermod -e 2025-12-31 username        # 만료일 설정
+sudo usermod -aG sudo username            # Add to supplementary group
+sudo usermod -s /bin/zsh username          # Change shell
+sudo usermod -d /new/home username         # Change home directory
+sudo usermod -l newname oldname            # Rename user
+sudo usermod -L username                   # Lock account
+sudo usermod -U username                   # Unlock account
+sudo usermod -e 2025-12-31 username        # Set expiry date
 ```
 
 형식은 `usermod [옵션] [로그인 ID]`이며, 옵션은 `useradd`와 비슷하다. `-u`(UID), `-o`(UID 중복 허용), `-g`(기본 그룹), `-G`(2차 그룹), `-d`(홈 디렉터리), `-s`(셸), `-c`(설명), `-f`(INACTIVE), `-e`(EXPIRE), `-l`(계정 이름)을 바꿀 수 있다.
 
 ```bash
-sudo usermod -u 1003 user3                      # UID를 2000에서 1003으로 변경
-sudo usermod -u 1001 -o user3                   # user2의 UID인 1001을 중복하여 지정
-sudo usermod -d /home/user31 user3              # /etc/passwd의 홈 디렉터리 값만 변경
-sudo usermod -l user44 -d /home/user44 user4    # 로그인 ID와 홈 디렉터리 변경
+sudo usermod -u 1003 user3                      # Change the UID from 2000 to 1003
+sudo usermod -u 1001 -o user3                   # Assign 1001, the UID of user2, as a duplicate
+sudo usermod -d /home/user31 user3              # Change only the home directory value in /etc/passwd
+sudo usermod -l user44 -d /home/user44 user4    # Change the login ID and home directory
 ```
 
 UID를 바꾸면 홈 디렉터리 안에 있는 파일의 소유자는 `usermod`가 함께 바꾸지만, 홈 디렉터리 밖의 파일은 직접 바꿔야 한다.
@@ -375,15 +375,15 @@ UID를 바꾸면 홈 디렉터리 안에 있는 파일의 소유자는 `usermod`
 ### 3.4 userdel: 사용자 삭제
 
 ```bash
-sudo userdel username                      # 사용자 삭제 (홈 디렉터리 유지)
-sudo userdel -r username                   # 사용자와 홈 디렉터리 삭제
+sudo userdel username                      # Delete user (keep home)
+sudo userdel -r username                   # Delete user and home directory
 ```
 
 `-f`는 사용자가 로그인 중이어도 강제로 삭제한다. 홈 디렉터리 밖에 있는 사용자 소유 파일은 `-r`로도 지워지지 않으므로, 삭제하기 전에 `find`로 찾아 확인한 뒤 정리한다. 계정을 지운 뒤에는 파일에 소유자 이름 대신 UID 숫자만 남으므로 `-nouser`로 찾는다.
 
 ```bash
-sudo find / -user username            # 삭제 전: 사용자 소유 파일 찾기
-sudo find / -nouser                   # 삭제 후: 소유자가 없는 파일 찾기
+sudo find / -user username            # Before deletion: find files owned by the user
+sudo find / -nouser                   # After deletion: find files without an owner
 ```
 
 ### 3.5 useradd와 adduser의 기본값, 보조 그룹 변경의 함정
@@ -421,23 +421,23 @@ uid=1001(user1) gid=1001(user1) groups=1001(user1),998(docker)
 ### 4.1 그룹 명령 요약
 
 ```bash
-# 그룹 생성
+# Create group
 sudo groupadd developers
 
-# 그룹 삭제
+# Delete group
 sudo groupdel developers
 
-# 그룹 수정
-sudo groupmod -n newname oldname           # 그룹 이름 변경
+# Modify group
+sudo groupmod -n newname oldname           # Rename group
 
-# 사용자를 그룹에 추가
-sudo usermod -aG groupname username        # -a = 추가 (중요!)
-sudo gpasswd -a username groupname         # 대안
+# Add user to group
+sudo usermod -aG groupname username        # -a = append (important!)
+sudo gpasswd -a username groupname         # Alternative
 
-# 그룹에서 사용자 제거
+# Remove user from group
 sudo gpasswd -d username groupname
 
-# 그룹 멤버십 확인
+# View group membership
 groups username
 id username
 getent group groupname
@@ -453,12 +453,12 @@ getent group groupname
 - `groupdel 그룹명`은 그룹을 삭제한다. 어떤 사용자의 기본 그룹으로 쓰이는 그룹은 삭제할 수 없다.
 
 ```bash
-sudo groupadd -g 2020 gtest          # GID 2020으로 그룹 생성
-sudo groupadd -g 2020 -o gtest2      # 같은 GID를 중복하여 지정
-sudo addgroup --gid 2013 gtest3      # addgroup으로 GID 지정
-sudo groupmod -g 3001 gtest          # GID 변경
-sudo groupmod -n gtest1 gtest        # 그룹 이름 변경
-sudo groupdel gtest1                 # 그룹 삭제
+sudo groupadd -g 2020 gtest          # Create a group with GID 2020
+sudo groupadd -g 2020 -o gtest2      # Assign the same GID as a duplicate
+sudo addgroup --gid 2013 gtest3      # Set the GID with addgroup
+sudo groupmod -g 3001 gtest          # Change the GID
+sudo groupmod -n gtest1 gtest        # Rename the group
+sudo groupdel gtest1                 # Delete the group
 ```
 
 ### 4.3 그룹 암호와 newgrp
@@ -466,10 +466,10 @@ sudo groupdel gtest1                 # 그룹 삭제
 `gpasswd [옵션] [그룹명]`은 `/etc/group`과 `/etc/gshadow`를 관리한다. 옵션 없이 실행하면 그룹 암호를 설정하고, `-a 사용자`는 사용자를 그룹에 추가하고, `-d 사용자`는 그룹에서 삭제하며, `-r`은 그룹 암호를 삭제한다.
 
 ```bash
-sudo gpasswd gtest01                 # 그룹 암호 설정
-sudo gpasswd -a test01 gtest01       # 멤버 추가
-sudo gpasswd -d test01 gtest01       # 멤버 삭제
-sudo gpasswd -r gtest01              # 그룹 암호 삭제
+sudo gpasswd gtest01                 # Set the group password
+sudo gpasswd -a test01 gtest01       # Add a member
+sudo gpasswd -d test01 gtest01       # Remove a member
+sudo gpasswd -r gtest01              # Remove the group password
 ```
 
 `newgrp [그룹명]`은 작업 중인 사용자의 현재 소속 그룹을 기본 그룹이 아닌 다른 그룹으로 바꾸며, 바꾼 뒤에 만드는 파일은 그 그룹을 소유 그룹으로 갖는다. 자신이 2차 그룹으로 속한 그룹(예: `newgrp adm`)으로는 암호 없이 바꿀 수 있고, 속하지 않은 그룹으로 바꿀 때는 그 그룹의 암호를 입력해야 한다. `newgrp`는 새 셸을 시작하므로 `exit`로 원래 그룹의 셸로 돌아온다.
@@ -483,12 +483,12 @@ sudo gpasswd -r gtest01              # 그룹 암호 삭제
 ### 5.1 비밀번호 설정
 
 ```bash
-sudo passwd username               # 사용자 비밀번호 설정
-passwd                             # 자신의 비밀번호 변경
-sudo passwd -l username            # 계정 잠금
-sudo passwd -u username            # 계정 잠금 해제
-sudo passwd -d username            # 비밀번호 삭제 (비밀번호 없이 로그인)
-sudo passwd -e username            # 다음 로그인 시 비밀번호 변경 강제
+sudo passwd username               # Set password for user
+passwd                             # Change own password
+sudo passwd -l username            # Lock account
+sudo passwd -u username            # Unlock account
+sudo passwd -d username            # Delete password (no password login)
+sudo passwd -e username            # Force password change on next login
 ```
 
 `passwd -l`은 `/etc/shadow`의 암호 앞에 `!`를 붙여 암호로 로그인할 수 없게 하고, `-u`는 이를 되돌린다. `-d`로 암호를 지우면 암호 없이 로그인할 수 있게 되므로 주의해야 한다. `-n`, `-x`, `-w`로 MIN, MAX, WARNING 일수도 설정할 수 있다(5.2절).
@@ -496,11 +496,11 @@ sudo passwd -e username            # 다음 로그인 시 비밀번호 변경 �
 ### 5.2 비밀번호 만료 관리
 
 ```bash
-sudo chage -l username             # 비밀번호 만료 정보 확인
-sudo chage -M 90 username          # 비밀번호 변경 간 최대 일수
-sudo chage -m 7 username           # 비밀번호 변경 간 최소 일수
-sudo chage -W 14 username          # 만료 전 경고 일수
-sudo chage -E 2025-12-31 username  # 계정 만료일
+sudo chage -l username             # View password aging info
+sudo chage -M 90 username          # Max days between changes
+sudo chage -m 7 username           # Min days between changes
+sudo chage -W 14 username          # Warning days before expiry
+sudo chage -E 2025-12-31 username  # Account expiration date
 ```
 
 **패스워드 에이징(password aging)** 은 `/etc/shadow`의 MIN, MAX, WARNING, INACTIVE, EXPIRE 필드로 암호와 계정의 유효 기간을 관리하는 것이며, `useradd`, `usermod`, `passwd`, `chage` 명령으로 설정할 수 있다.
@@ -517,7 +517,7 @@ sudo chage -E 2025-12-31 username  # 계정 만료일
 
 다음은 `chage`로 user44의 패스워드 에이징을 한 번에 설정하고 확인한 예이다.
 
-```text
+```text wide-ok
 $ sudo chage -m 2 -M 100 -W 5 -I 10 -E 2022-11-30 user44
 $ sudo grep user44 /etc/shadow
 user44:!:18995:2:100:5:10:19326:
@@ -596,7 +596,7 @@ reboot   system boot  5.13.0-21-generi Sun Nov 21 12:05 - 17:23 (35+05:17)
 
 user1로 로그인한 뒤 `su`로 user2로 전환하여 세 명령을 실행하면 다음과 같다.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ su - user2
 암호:
 su: warning: cannot change directory to /home/user2: 그런 파일이나 디렉터리가 없습니다
@@ -615,10 +615,10 @@ user1    pts/0        2022-01-05 10:14 (192.168.147.1)
 파일과 디렉터리의 소유자는 `chown`, 소유 그룹은 `chgrp`로 바꾸며, 자세한 내용은 7주차에서 다룬다. `-R`을 주면 서브 디렉터리까지 바꾼다.
 
 ```bash
-sudo chown user2 file.txt              # 소유자 변경
-sudo chown user2:gtest file.txt        # 소유자와 그룹 변경
-sudo chown -R user2:gtest dir/         # 서브 디렉터리까지 소유자와 그룹 변경
-sudo chgrp -R gtest dir/               # 서브 디렉터리까지 그룹 변경
+sudo chown user2 file.txt              # Change the owner
+sudo chown user2:gtest file.txt        # Change the owner and group
+sudo chown -R user2:gtest dir/         # Change the owner and group including subdirectories
+sudo chgrp -R gtest dir/               # Change the group including subdirectories
 ```
 
 ---
@@ -632,16 +632,16 @@ sudo chgrp -R gtest dir/               # 서브 디렉터리까지 그룹 변경
 `sudo`는 `/etc/sudoers`에서 허용한 사용자가 다른 사용자(기본은 root)의 권한으로 명령을 실행하게 한다. 각 줄은 `사용자 호스트=(실행_사용자:실행_그룹) 명령`의 형식이며, `%`로 시작하는 이름은 그룹을 뜻한다.
 
 ```bash
-# sudoers 파일을 안전하게 편집
+# Edit sudoers file safely
 sudo visudo
 
-# 사용자에게 전체 sudo 접근 허용
+# Allow user full sudo access
 username ALL=(ALL:ALL) ALL
 
-# 그룹에 sudo 접근 허용
+# Allow group sudo access
 %developers ALL=(ALL:ALL) ALL
 
-# 특정 명령어에 대해 비밀번호 없이 허용
+# Allow specific commands without password
 username ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/systemctl
 ```
 
@@ -694,8 +694,8 @@ $ echo '192.168.0.10 server1' | sudo tee -a /etc/hosts
 ```bash
 # /etc/fstab
 # /dev/sdd2  /home2  ext4  defaults,usrquota,grpquota  0  0
-sudo mount -o remount /home2      # 다시 마운트
-mount | grep home2                # 쿼터 속성 확인
+sudo mount -o remount /home2      # Remount
+mount | grep home2                # Check the quota attributes
 ```
 
 디스크 쿼터를 관리하는 데이터베이스는 사용자 쿼터 데이터베이스 파일 `aquota.user`와 그룹 쿼터 데이터베이스 파일 `aquota.group`으로 이루어지며, 해당 파일 시스템의 최상위 디렉터리(예: `/home2`)에 만들어진다.
@@ -714,12 +714,12 @@ mount | grep home2                # 쿼터 속성 확인
 *표 7. 디스크 쿼터 관련 명령*
 
 ```bash
-sudo quotacheck -ugvm /home2          # 쿼터 데이터베이스 생성
-sudo quotaon -ugv /home2              # 쿼터 활성화
-sudo edquota -u qtest1                # qtest1의 쿼터 설정
-sudo edquota -p qtest1 qtest2         # qtest1의 설정을 qtest2로 복사
-sudo quota qtest1                     # qtest1의 쿼터 확인
-sudo repquota /home2                  # 쿼터 정보 요약
+sudo quotacheck -ugvm /home2          # Create the quota database
+sudo quotaon -ugv /home2              # Enable quotas
+sudo edquota -u qtest1                # Set the quota of qtest1
+sudo edquota -p qtest1 qtest2         # Copy the settings of qtest1 to qtest2
+sudo quota qtest1                     # Check the quota of qtest1
+sudo repquota /home2                  # Summarize quota information
 ```
 
 `edquota -u qtest1`을 실행하면 편집기에 다음 내용이 열린다. 블록 수는 KB 단위이며, soft와 hard 값을 고쳐 저장하면 쿼터가 할당된다. 다음은 qtest1에게 소프트 리미트 20KB, 하드 리미트 22KB를 지정한 결과이며, 값이 0이면 제한하지 않는다는 뜻이다.
@@ -732,7 +732,7 @@ Disk quotas for user qtest1 (uid 2102):
 
 `quota`로 설정을 확인할 수 있고, 할당된 쿼터를 넘어 디스크를 쓰려고 하면 오류가 난다.
 
-```text
+```text wide-ok
 $ sudo quota qtest1
 Disk quotas for user qtest1 (uid 2102):
      Filesystem  blocks   quota   limit   grace   files   quota   limit   grace

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-19
+> **Last Updated:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -517,7 +517,7 @@ sudo chage -E 2025-12-31 username  # Account expiration date
 
 The following example sets the password aging of user44 at once with `chage` and checks it.
 
-```text
+```text wide-ok
 $ sudo chage -m 2 -M 100 -W 5 -I 10 -E 2022-11-30 user44
 $ sudo grep user44 /etc/shadow
 user44:!:18995:2:100:5:10:19326:
@@ -596,7 +596,7 @@ reboot   system boot  5.13.0-21-generi Sun Nov 21 12:05 - 17:23 (35+05:17)
 
 Logging in as user1, switching to user2 with `su`, and running the three commands gives the following.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ su - user2
 Password:
 su: warning: cannot change directory to /home/user2: No such file or directory
@@ -732,7 +732,7 @@ Disk quotas for user qtest1 (uid 2102):
 
 The settings can be checked with `quota`, and an attempt to use more disk than the assigned quota fails with an error.
 
-```text
+```text wide-ok
 $ sudo quota qtest1
 Disk quotas for user qtest1 (uid 2102):
      Filesystem  blocks   quota   limit   grace   files   quota   limit   grace

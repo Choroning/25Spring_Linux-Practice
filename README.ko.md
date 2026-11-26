@@ -63,12 +63,12 @@ Linux 시스템의 기본 사용법과 명령어, 셸 프로그래밍을 이론�
 
 ```plaintext
 25Spring_Linux-Practice
-├── Lecture-Notes               주차별 강의 노트, 보충 단원, 연습 문제, 풀이
-├── Coursework                  Bash 실습 스크립트와 텀 프로젝트
-├── Course-Information.ko.md    수업 운영 정보
+├── Lecture-Notes               Lecture notes by week, supplementary units, exercises, and solutions
+├── Coursework                  Bash lab scripts and term projects
+├── Course-Information.ko.md    Course operations
 ├── Course-Information.md
-├── LICENSE                     문서 라이선스 (CC BY-NC-SA 4.0)
-├── LICENSE-CODE                코드 라이선스 (PolyForm Noncommercial 1.0.0)
+├── LICENSE                     Documentation license (CC BY-NC-SA 4.0)
+├── LICENSE-CODE                Code license (PolyForm Noncommercial 1.0.0)
 ├── README.ko.md
 └── README.md
 ```

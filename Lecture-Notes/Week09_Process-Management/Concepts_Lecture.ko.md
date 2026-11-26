@@ -165,14 +165,14 @@ GNU `ls`는 명령줄 인자에 접근하지 못하는 심각한 문제가 있�
 - **GNU 옵션:** `--` 두 개로 시작한다 (예: `--pid`).
 
 ```bash
-ps                      # 현재 터미널의 현재 사용자 프로세스
-ps -e                   # 모든 프로세스
-ps -f                   # 전체 형식
-ps -ef                  # 모든 프로세스, 전체 형식
-ps aux                  # BSD 스타일 전체 프로세스 상세 정보
-ps -u username          # 특정 사용자의 프로세스
-ps -p PID               # PID로 특정 프로세스 조회
-ps --forest             # 트리 형태로 프로세스 보기
+ps                      # Current user's processes in current terminal
+ps -e                   # All processes
+ps -f                   # Full format
+ps -ef                  # All processes, full format
+ps aux                  # BSD-style all processes with details
+ps -u username          # Processes for specific user
+ps -p PID               # Specific process by PID
+ps --forest             # Tree view of processes
 ```
 
 | 옵션 | 유형 | 기능 |
@@ -246,20 +246,20 @@ root    1   0.0   0.3  168K  12K    ?    Ss    10:00  0:01  /sbin/init
 *표 6. pgrep의 주요 옵션*
 
 ```bash
-$ pgrep -x bash                      # 이름이 정확히 bash인 프로세스의 PID
+$ pgrep -x bash                      # PID of processes named exactly bash
 2096
-$ pgrep -l bash                      # PID와 명령 이름 출력
+$ pgrep -l bash                      # Print PID and command name
 2096 bash
-$ ps -fp $(pgrep -x bash)            # pgrep의 결과를 ps에 넘겨 자세한 정보 검색
+$ ps -fp $(pgrep -x bash)            # Pass the result of pgrep to ps for details
 UID          PID    PPID  C STIME TTY          TIME CMD
 user1       2096    2095  0 13:18 pts/0    00:00:00 -bash
-$ ps -fp $(pgrep -u user1 bash)      # user1의 bash 프로세스만 검색
+$ ps -fp $(pgrep -u user1 bash)      # Only the bash processes of user1
 ```
 
 ### 2.3 top: 실시간 프로세스 모니터
 
 ```bash
-top                     # 대화형 프로세스 모니터
+top                     # Interactive process monitor
 ```
 
 `top`은 현재 실행 중인 프로세스의 정보를 주기적으로 출력한다. 화면 상단에는 가동 시간, 사용자 수, 부하 평균(7.2절), 상태별 프로세스 수(Tasks), CPU와 메모리, 스왑 사용량 같은 요약 정보를, 하단에는 각 프로세스의 정보를 출력한다.
@@ -295,10 +295,10 @@ top                     # 대화형 프로세스 모니터
 ### 2.4 pstree: 프로세스 트리
 
 ```bash
-pstree                  # 프로세스 트리 표시
-pstree -p               # PID 표시
-pstree -u               # 사용자 전환 표시
-pstree user1            # 특정 사용자의 프로세스 표시
+pstree                  # Display process tree
+pstree -p               # Show PIDs
+pstree -u               # Show user transitions
+pstree user1            # Show processes for specific user
 ```
 
 GNOME 데스크톱 환경에서는 그래픽 도구인 시스템 감시(System Monitor)로도 프로세스 목록과 자원 사용량을 확인하고 프로세스를 종료할 수 있다.
@@ -329,12 +329,12 @@ $ ps -eo pid,ppid,user,ni,stat,%cpu,%mem,vsz,rss,comm --sort=-rss | head -4
 ### 3.1 프로세스 실행
 
 ```bash
-# 포그라운드 (기본값)
-command                          # 완료될 때까지 터미널을 점유
+# Foreground (default)
+command                          # Blocks terminal until complete
 
-# 백그라운드
-command &                        # 백그라운드에서 실행
-nohup command &                  # 백그라운드에서 실행, 로그아웃 후에도 유지
+# Background
+command &                        # Run in background
+nohup command &                  # Run in background, persist after logout
 ```
 
 사용자가 입력한 명령이 실행되어 결과가 출력될 때까지 기다리는 방식으로 처리되는 프로세스를 **포그라운드 프로세스**라고 한다. 명령의 마지막에 `&`(앰퍼샌드)를 붙여 백그라운드로 실행하면 명령의 처리가 끝나는 것과 관계없이 곧바로 프롬프트가 출력되어 다른 작업을 계속할 수 있다. 이렇게 처리되는 프로세스를 **백그라운드 프로세스**라고 하며, 한 터미널에서 여러 프로세스를 동시에 실행할 수 있다.
@@ -344,12 +344,12 @@ nohup command &                  # 백그라운드에서 실행, 로그아웃 �
 **작업 제어(job control)** 는 한 터미널에서 동시에 여러 프로세스를 실행하고 관리하는 기능이다. C 셸에서 처음 개발되어 4.1BSD 커널에 포함되었고, 이후 Bourne 셸 계열에도 도입되어 대부분의 Unix 셸과 Linux 셸이 제공한다. 작업 제어 도구가 관리하는 프로세스를 **작업(job)** 이라고 하며, 포그라운드 프로세스는 포그라운드 작업, 백그라운드 프로세스는 백그라운드 작업이 된다. 작업 제어는 포그라운드와 백그라운드 사이의 작업 전환, 작업 일시 중지, 작업 종료를 말한다.
 
 ```bash
-jobs                             # 백그라운드 작업 목록
-jobs -l                          # PID 포함 목록
-fg %1                            # 작업 1을 포그라운드로 전환
-bg %1                            # 작업 1을 백그라운드에서 재개
-Ctrl+Z                           # 포그라운드 작업 일시 중지
-Ctrl+C                           # 포그라운드 작업 종료
+jobs                             # List background jobs
+jobs -l                          # List with PIDs
+fg %1                            # Bring job 1 to foreground
+bg %1                            # Resume job 1 in background
+Ctrl+Z                           # Suspend foreground job
+Ctrl+C                           # Terminate foreground job
 ```
 
 `jobs [%작업 번호]`는 백그라운드 작업을 모두 보여 주고, 작업 번호를 지정하면 그 작업의 정보만 보여 준다. 작업 번호 자리에는 `%번호` 외에 `%+` 또는 `%%`(작업 순서가 `+`인 작업), `%-`(작업 순서가 `-`인 작업)를 쓸 수 있다.
@@ -374,14 +374,14 @@ Ctrl+C                           # 포그라운드 작업 종료
 포그라운드 작업을 백그라운드로 보내려면 `Ctrl+Z`로 일시 중지한 다음 `bg`를 실행한다. 작업 번호를 생략하면 작업 순서가 `+`인 작업이 대상이 된다.
 
 ```bash
-$ sleep 100                      # 포그라운드로 실행
-^Z                               # Ctrl+Z로 일시 중지
+$ sleep 100                      # Run in the foreground
+^Z                               # Suspend with Ctrl+Z
 [1]+  Stopped                 sleep 100
-$ bg %1                          # 백그라운드로 전환
+$ bg %1                          # Switch to the background
 [1]+ sleep 100 &
 $ jobs
 [1]+  Running                 sleep 100 &
-$ fg                             # 다시 포그라운드로 전환
+$ fg                             # Switch back to the foreground
 sleep 100
 ```
 
@@ -393,7 +393,7 @@ sleep 100
 
 ```bash
 nohup long_running_script.sh &
-# 출력은 기본적으로 nohup.out에 기록됨
+# Output is written to nohup.out by default
 nohup command > output.log 2>&1 &
 ```
 
@@ -434,16 +434,16 @@ nohup command > output.log 2>&1 &
 `kill` 명령은 지정한 시그널을 프로세스에게 보내며, 형식은 `kill [-시그널] PID...`이다. 시그널을 생략하면 15번(SIGTERM)을 보낸다. SIGTERM을 받은 프로세스는 관련된 파일들을 정리하고 종료하지만, 종료되지 않는 프로세스도 있다. 이때는 9번(SIGKILL)으로 강제 종료한다.
 
 ```bash
-kill PID                         # SIGTERM (15) 전송 - 정상 종료
-kill -9 PID                      # SIGKILL (9) 전송 - 강제 종료
-kill -HUP PID                    # SIGHUP (1) 전송 - 설정 리로드
-kill -STOP PID                   # 프로세스 일시 중지
-kill -CONT PID                   # 프로세스 재개
-kill -l                          # 모든 시그널 이름 나열
+kill PID                         # Send SIGTERM (15) - graceful
+kill -9 PID                      # Send SIGKILL (9) - force kill
+kill -HUP PID                    # Send SIGHUP (1) - reload config
+kill -STOP PID                   # Suspend process
+kill -CONT PID                   # Resume process
+kill -l                          # List all signal names
 
-# 이름으로 종료
-killall process_name             # 해당 이름의 모든 프로세스 종료
-pkill -f "pattern"               # 패턴과 일치하는 프로세스 종료
+# Kill by name
+killall process_name             # Kill all processes with that name
+pkill -f "pattern"               # Kill processes matching pattern
 ```
 
 예를 들어 터미널 1에서 `man` 명령을 실행해 둔 상태에서 터미널 2에서 `ps -fp $(pgrep -x man)`으로 PID를 찾고 `kill -9 PID`를 실행하면, 터미널 1의 `man`이 종료된다.
@@ -454,13 +454,13 @@ pkill -f "pattern"               # 패턴과 일치하는 프로세스 종료
 ### 4.3 프로세스 우선순위
 
 ```bash
-# 조정된 우선순위로 실행 (-20~19, 낮을수록 높은 우선순위)
-nice -n 10 command               # 낮은 우선순위로 실행
-nice -n -5 command               # 높은 우선순위로 실행 (root 필요)
+# Run with adjusted priority (-20 to 19, lower = higher priority)
+nice -n 10 command               # Run with lower priority
+nice -n -5 command               # Run with higher priority (requires root)
 
-# 실행 중인 프로세스의 우선순위 변경
-renice 10 -p PID                 # 우선순위를 10으로 설정
-sudo renice -5 -p PID            # 높은 우선순위로 설정
+# Change priority of running process
+renice 10 -p PID                 # Set priority to 10
+sudo renice -5 -p PID            # Set higher priority
 ```
 
 nice 값은 `top`의 NI 열에 표시된다. 일반 사용자는 nice 값을 올려 자신의 프로세스의 우선순위를 낮출 수만 있고, 낮추는 것(우선순위를 높이는 것)은 root만 할 수 있다.
@@ -531,12 +531,12 @@ stateDiagram-v2
 ### 5.2 /proc 파일 시스템
 
 ```bash
-ls /proc/                        # 모든 프로세스 디렉터리 나열
-cat /proc/PID/status             # 프로세스 상태 정보
-cat /proc/PID/cmdline            # 프로세스를 시작한 명령줄
-cat /proc/cpuinfo                # CPU 정보
-cat /proc/meminfo                # 메모리 정보
-cat /proc/uptime                 # 시스템 가동 시간
+ls /proc/                        # List all process directories
+cat /proc/PID/status             # Process status information
+cat /proc/PID/cmdline            # Command line that started process
+cat /proc/cpuinfo                # CPU information
+cat /proc/meminfo                # Memory information
+cat /proc/uptime                 # System uptime
 ```
 
 `/proc`은 디스크에 저장된 파일이 아니라 커널이 프로세스와 시스템의 정보를 파일 형태로 보여 주는 가상 파일 시스템이다. 실행 중인 프로세스마다 PID 이름의 디렉터리가 있다.
@@ -552,10 +552,10 @@ cat /proc/uptime                 # 시스템 가동 시간
 `crontab` 명령은 정해진 시간에 반복 실행할 작업을 담은 사용자별 crontab 파일을 관리한다. 형식은 `crontab [-u 사용자 ID] [옵션] [파일명]`이다.
 
 ```bash
-crontab -e                       # 현재 사용자의 crontab 편집
-crontab -l                       # 현재 사용자의 crontab 나열
-crontab -r                       # 현재 사용자의 crontab 삭제
-sudo crontab -u user1 -e         # 다른 사용자의 crontab 편집
+crontab -e                       # Edit current user's crontab
+crontab -l                       # List current user's crontab
+crontab -r                       # Remove current user's crontab
+sudo crontab -u user1 -e         # Edit another user's crontab
 ```
 
 **crontab 형식:**
@@ -563,11 +563,11 @@ sudo crontab -u user1 -e         # 다른 사용자의 crontab 편집
 ```text
 * * * * * command
 │ │ │ │ │
-│ │ │ │ └── 요일 (0-7, 0과 7 = 일요일)
-│ │ │ └──── 월 (1-12)
-│ │ └────── 일 (1-31)
-│ └──────── 시 (0-23)
-└────────── 분 (0-59)
+│ │ │ │ └── Day of week (0-7, 0 and 7 = Sunday)
+│ │ │ └──── Month (1-12)
+│ │ └────── Day of month (1-31)
+│ └──────── Hour (0-23)
+└────────── Minute (0-59)
 ```
 
 *그림 3. crontab 항목의 여섯 필드*
@@ -577,22 +577,22 @@ crontab 파일에는 여러 작업을 저장할 수 있으며 한 줄에 하나�
 **예시:**
 
 ```bash
-# 매분 실행
+# Run every minute
 * * * * * /path/to/script.sh
 
-# 매일 오전 2시 30분에 실행
+# Run at 2:30 AM daily
 30 2 * * * /path/to/backup.sh
 
-# 매주 월요일 오전 8시에 실행
+# Run every Monday at 8:00 AM
 0 8 * * 1 /path/to/weekly.sh
 
-# 매월 1일 자정에 실행
+# Run on the 1st of every month at midnight
 0 0 1 * * /path/to/monthly.sh
 
-# 5분마다 실행
+# Run every 5 minutes
 */5 * * * * /path/to/check.sh
 
-# 월-금 오전 9시에 실행
+# Run Mon-Fri at 9 AM
 0 9 * * 1-5 /path/to/work.sh
 ```
 
@@ -612,17 +612,17 @@ crontab 파일에는 여러 작업을 저장할 수 있으며 한 줄에 하나�
 `at` 명령은 예약한 명령을 정해진 시간에 한 번 실행한다. 형식은 `at [옵션] [시간]`이며, Ubuntu에는 기본으로 설치되어 있지 않으므로 `apt install at`으로 설치한다. 실행 결과를 메일로 받으려면 메일 시스템도 설치되어 있어야 한다.
 
 ```bash
-at 10:00                         # 오늘 오전 10시에 예약
-at now + 30 minutes              # 30분 후에 예약
-at 2:00 AM tomorrow              # 내일 오전 2시에 예약
-atq                              # 대기 중인 at 작업 나열
-atrm job_number                  # at 작업 삭제
+at 10:00                         # Schedule for 10:00 AM today
+at now + 30 minutes              # Schedule 30 minutes from now
+at 2:00 AM tomorrow              # Schedule for 2 AM tomorrow
+atq                              # List pending at jobs
+atrm job_number                  # Remove an at job
 ```
 
 ```bash
 $ at now + 1 hour
 at> /path/to/script.sh
-at>                             # Ctrl+D를 눌러 완료
+at>                             # Press Ctrl+D to finish
 ```
 
 `at`을 실행하면 `warning: commands will be executed using /bin/sh` 메시지와 함께 `at>` 프롬프트가 나타난다. 실행할 명령을 입력하고 `Ctrl+D`를 누르면 `<EOT>`가 표시되고 `job 2 at Sun Dec 19 16:50:00 2021`처럼 작업 번호와 실행 시각이 출력되어 예약이 완료된다. `at 10:00`처럼 시각만 지정했는데 그 시각이 이미 지났으면 다음 날 같은 시각으로 예약된다. 시간은 다음과 같이 다양하게 지정할 수 있다.
@@ -684,24 +684,24 @@ cron 표현식은 필드마다 값의 집합을 정하고, 다섯 필드가 모�
 ### 7.1 자원 모니터링 명령어
 
 ```bash
-# CPU 및 메모리
-top                              # 대화형 프로세스 모니터
-htop                             # 향상된 top (설치: apt install htop)
-vmstat 2 5                       # 2초 간격, 5회 가상 메모리 통계
-mpstat                           # CPU 통계
+# CPU and memory
+top                              # Interactive process monitor
+htop                             # Enhanced top (install: apt install htop)
+vmstat 2 5                       # Virtual memory stats every 2 sec, 5 times
+mpstat                           # CPU statistics
 
-# 메모리
-free -h                          # 메모리 사용량 (사람이 읽기 쉬운 형식)
-free -m                          # 메모리 사용량 (MB)
+# Memory
+free -h                          # Memory usage (human-readable)
+free -m                          # Memory usage (MB)
 
-# 디스크
-df -h                            # 디스크 공간 사용량
-du -sh /path                     # 디렉터리 크기
-iostat                           # I/O 통계
+# Disk
+df -h                            # Disk space usage
+du -sh /path                     # Directory size
+iostat                           # I/O statistics
 
-# 네트워크
-ss -tuln                         # 소켓 통계
-netstat -tuln                    # 네트워크 연결
+# Network
+ss -tuln                         # Socket statistics
+netstat -tuln                    # Network connections
 ```
 
 ### 7.2 uptime과 부하 평균
@@ -710,7 +710,7 @@ netstat -tuln                    # 네트워크 연결
 $ uptime
 10:30:00 up 15 days, 3:22, 2 users, load average: 0.15, 0.10, 0.05
 #                                                   ^^^^  ^^^^  ^^^^
-#                                                   1분   5분   15분
+#                                                   1min  5min  15min
 ```
 
 부하 평균(load average)은 실행 중이거나 CPU를 기다리는 프로세스의 평균 개수이며, Linux에서는 디스크 I/O를 기다리는 `D` 상태의 프로세스도 포함한다. 단일 코어 시스템에서 1.0은 CPU를 100% 활용한다는 뜻이고, 코어가 n개이면 n.0이 100% 활용에 해당한다.

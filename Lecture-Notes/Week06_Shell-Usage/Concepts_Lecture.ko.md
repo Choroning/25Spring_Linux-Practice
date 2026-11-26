@@ -106,8 +106,8 @@ flowchart LR
 **터미널(terminal)** 은 명령을 입력하여 시스템을 다루는 창이며, 터미널 안에서 셸이 실행되어 사용자의 입력을 받는다. Ubuntu의 GNOME 데스크톱에서는 프로그램 표시에서 터미널을 골라 열거나 `Ctrl + Alt + T`로 연다.
 
 ```text
-username@hostname:~$    # 일반 사용자의 프롬프트
-root@hostname:~#        # root 사용자의 프롬프트
+username@hostname:~$    # Prompt of a regular user
+root@hostname:~#        # Prompt of the root user
 ```
 
 **프롬프트(prompt)** 는 셸이 사용자의 명령 입력을 기다리고 있음을 나타내는 표시이다. Ubuntu의 기본 프롬프트는 `사용자 이름@호스트 이름:현재 디렉터리` 뒤에 `$`나 `#`을 붙인 형태이며, 그 형식은 환경 변수 `PS1`로 바꿀 수 있다(9.1절). 프롬프트의 `~`는 **홈 디렉터리(home directory)** 를 뜻한다. 홈 디렉터리는 사용자 계정의 기본 디렉터리로서 터미널을 열면 처음 위치하는 곳이며, 현재 위치는 `pwd` 명령으로 확인한다(3주차). 터미널은 창의 닫기 버튼을 누르거나, `exit`를 입력하거나, 빈 명령줄에서 `Ctrl + D`를 눌러 닫는다.
@@ -123,10 +123,10 @@ Linux 명령은 `명령 [옵션] [인자]` 형식으로 입력한다. 대괄호�
 - **인자:** 명령에 전달하는 값으로, 주로 파일 이름이나 디렉터리 이름이다. 인자가 없는 명령도 있고, 필요한 인자도 명령마다 다르다.
 
 ```bash
-ls              # 명령만 사용: 현재 디렉터리의 내용 출력
-ls -a           # 명령과 옵션: 숨김 파일까지 출력
-ls /tmp         # 명령과 인자: /tmp 디렉터리의 내용 출력
-ls -a /tmp      # 명령, 옵션, 인자: /tmp의 숨김 파일까지 출력
+ls              # Command only: list the current directory
+ls -a           # Command and option: include hidden files
+ls /tmp         # Command and argument: list the /tmp directory
+ls -a /tmp      # Command, option, and argument: list /tmp including hidden files
 ```
 
 셸은 입력된 줄을 공백 문자로 나누어 첫 단어를 실행할 명령으로 삼고 나머지 단어를 그 명령에 넘기며, 넘겨받은 단어 가운데 무엇을 옵션으로 해석할지는 각 명령이 정한다.
@@ -136,15 +136,15 @@ ls -a /tmp      # 명령, 옵션, 인자: /tmp의 숨김 파일까지 출력
 다음은 시스템의 기본 정보를 보여 주는 명령이다.
 
 ```bash
-date                # 현재 날짜와 시간 출력
-# 출력: Fri Mar 21 14:30:00 KST 2025
-cal                 # 이번 달 달력 출력
-cal 2025            # 2025년 전체 달력 출력
-clear               # 화면 지우기
-hostname            # 호스트 이름 출력
-uname -r            # 커널 릴리스 출력
-uname -a            # 커널 이름, 호스트 이름, 릴리스, 아키텍처를 포함한 모든 정보 출력
-uptime              # 시스템 가동 시간과 부하 평균 출력
+date                # Print the current date and time
+# Output: Fri Mar 21 14:30:00 KST 2025
+cal                 # Print the calendar of this month
+cal 2025            # Print the calendar of the whole year 2025
+clear               # Clear the screen
+hostname            # Print the hostname
+uname -r            # Print the kernel release
+uname -a            # Print all information, including the kernel name, hostname, release, and architecture
+uptime              # Print the system uptime and load averages
 ```
 
 한국어 환경에서는 `date`가 `2025. 03. 21. (금) 14:30:00 KST`처럼 출력된다. 부하 평균은 9주차에서 다룬다.
@@ -152,10 +152,10 @@ uptime              # 시스템 가동 시간과 부하 평균 출력
 명령의 사용법은 다음 명령으로 찾는다.
 
 ```bash
-man ls              # ls의 매뉴얼 페이지
-man -k keyword      # 키워드로 매뉴얼 페이지 검색
-ls --help           # 대부분의 명령에 내장된 짧은 도움말
-info ls             # GNU info 문서
+man ls              # Manual page for ls
+man -k keyword      # Search manual pages by keyword
+ls --help           # Short help built into most commands
+info ls             # GNU info documentation
 ```
 
 **매뉴얼 페이지(manual page)** 는 NAME(명령의 간략한 설명), SYNOPSIS(사용법 요약), DESCRIPTION(자세한 설명) 같은 절로 나뉘며, `q`를 누르면 빠져나온다. 명령이 셸 내장 명령인지 실행 파일인지는 `type`으로 확인한다(2.4절).
@@ -192,19 +192,19 @@ info ls             # GNU info 문서
 ### 2.2 셸 확인 및 변경
 
 ```bash
-# 현재 셸 확인
+# Check current shell
 echo $SHELL
 
-# 사용 가능한 셸 목록 확인
+# List available shells
 cat /etc/shells
 
-# 기본 셸 변경
+# Change default shell
 chsh -s /bin/zsh
 
-# 임시 셸 전환
-bash            # bash 세션 시작
-zsh             # zsh 세션 시작
-exit            # 이전 셸로 복귀
+# Temporarily switch shell
+bash            # Start bash session
+zsh             # Start zsh session
+exit            # Return to previous shell
 ```
 
 사용자의 기본 셸(로그인 셸)은 `/etc/passwd` 파일의 각 줄 마지막 필드에 저장된다(예: `root:x:0:0:root:/root:/bin/bash`). `chsh -s`로 기본 셸을 바꿀 때는 바꾸려는 셸의 절대 경로를 지정하며, 그 셸은 `/etc/shells`에 등록되어 있어야 한다. `$SHELL`은 로그인 셸을 나타내므로, 프롬프트에서 다른 셸을 실행한 뒤에도 값이 바뀌지 않는다. 지금 실행 중인 셸의 이름은 `echo $0`으로 확인한다.
@@ -335,27 +335,27 @@ if is a shell keyword
 와일드카드는 셸이 명령을 실행하기 전에 일치하는 파일 이름으로 확장한다. 경로에서 `.`은 현재 디렉터리, `..`은 상위 디렉터리를 뜻한다.
 
 ```bash
-ls *              # 현재 디렉터리의 모든 파일과 하위 디렉터리의 내용 출력
-cp * /tmp         # 현재 디렉터리의 모든 파일을 /tmp 아래로 복사
-ls -F t*          # t, tmp, temp처럼 t로 시작하는 모든 이름과 파일 종류 출력 (t도 해당)
-cp *.txt ../ch3   # 확장자가 txt인 모든 파일을 상위 디렉터리 아래 ch3로 복사
-ls -l h*d         # h로 시작하고 d로 끝나는 이름 (hd, had, hard, h12345d 등)
-cp ~user2/linux.txt .   # user2의 홈 디렉터리 아래 linux.txt를 현재 디렉터리로 복사
+ls *              # List all files in the current directory and the contents of its subdirectories
+cp * /tmp         # Copy all files in the current directory under /tmp
+ls -F t*          # Names starting with t, such as t, tmp, temp, with file types (t itself also matches)
+cp *.txt ../ch3   # Copy all files with the txt extension to ch3 under the parent directory
+ls -l h*d         # Names starting with h and ending with d (hd, had, hard, h12345d, etc.)
+cp ~user2/linux.txt .   # Copy linux.txt under user2's home directory to the current directory
 ```
 
 ### 3.2 명령 실행 제어
 
 ```bash
-# 순차 실행
-command1 ; command2              # 성공 여부와 관계없이 모두 실행
+# Sequential execution
+command1 ; command2              # Run both regardless of success
 
-# 조건부 실행
-command1 && command2             # command1이 성공해야 command2 실행
-command1 || command2             # command1이 실패해야 command2 실행
+# Conditional execution
+command1 && command2             # Run command2 only if command1 succeeds
+command1 || command2             # Run command2 only if command1 fails
 
-# 명령 그룹화
-{ command1; command2; }          # 현재 셸에서 실행
-( command1; command2 )           # 서브셸에서 실행
+# Grouping commands
+{ command1; command2; }          # Run in current shell
+( command1; command2 )           # Run in subshell
 ```
 
 `date;cal;ls`는 날짜를 출력한 뒤 달력과 현재 디렉터리의 파일 목록을 차례로 출력하고, `ls -l / | more`는 루트 디렉터리의 상세 목록을 `more`에 넘겨 한 화면씩 보여 준다.
@@ -380,10 +380,10 @@ command1 || command2             # command1이 실패해야 command2 실행
 
 ```bash
 name="Linux"
-echo 'Hello $name'      # 출력: Hello $name
-echo "Hello $name"      # 출력: Hello Linux
-echo "Today is $(date)" # 출력: Today is Fri Mar 21 ...
-echo "Files: $(ls)"     # 출력: Files: file1 file2 ...
+echo 'Hello $name'      # Output: Hello $name
+echo "Hello $name"      # Output: Hello Linux
+echo "Today is $(date)" # Output: Today is Fri Mar 21 ...
+echo "Files: $(ls)"     # Output: Files: file1 file2 ...
 ```
 
 큰따옴표 안에서도 `$`, `` ` ``, `\`는 특수한 의미를 유지하므로 ``echo "Today is `date`"``는 백틱 부분이 `date` 명령의 실행 결과로 바뀌어 출력되고, `echo "\$SHELL"`은 `$SHELL`이라는 문자열을 출력하여 `echo '$SHELL'`과 결과가 같다. 백틱은 파일 이름에도 쓸 수 있어서 ``ls /usr/bin/`uname -m` ``은 `uname -m`의 실행 결과를 디렉터리 이름으로 사용한다. `ls -l t\*`처럼 `\`로 `*`의 기능을 없애면 이름이 정확히 `t*`인 파일만 찾는다.
@@ -470,10 +470,10 @@ flowchart LR
 - **`>>` (파일에 내용 추가):** `명령 >> 파일명` 형식이다. 파일이 없으면 새로 만들고, 있으면 기존 내용의 끝에 결과를 추가한다.
 
 ```bash
-$ ls -al > out1          # ls -al의 결과를 out1에 저장
-$ cat out1               # 저장된 목록 확인
-$ date > out1            # date의 결과로 out1을 덮어씀 (ls 결과는 사라짐)
-$ date >> out1           # date의 결과를 out1의 끝에 추가
+$ ls -al > out1          # Save the output of ls -al to out1
+$ cat out1               # Check the saved list
+$ date > out1            # Overwrite out1 with the output of date (the ls output is gone)
+$ date >> out1           # Append the output of date to the end of out1
 ```
 
 ### 5.3 오류 리다이렉션
@@ -481,12 +481,12 @@ $ date >> out1           # date의 결과를 out1의 끝에 추가
 명령의 오류 메시지는 표준 오류로 출력되므로, `>`로 표준 출력만 리다이렉션하면 오류 메시지는 여전히 화면에 나타난다. 오류 메시지를 파일에 저장하려면 `2>`를 쓴다.
 
 ```bash
-$ ls /abc > ls.err                # 표준 출력만 리다이렉션: 오류는 화면에 출력되고 ls.err는 비어 있음
+$ ls /abc > ls.err                # Redirect only stdout: the error appears on screen and ls.err is empty
 ls: cannot access '/abc': No such file or directory
-$ ls /abc 2> ls.err               # 표준 오류를 ls.err에 저장
-$ ls . /abc > ls.out 2> ls.err    # 표준 출력은 ls.out, 표준 오류는 ls.err에 저장
-$ ls /abc 2> /dev/null            # 오류 메시지 버리기
-$ ls . /abc > ls.out 2>&1         # 표준 출력과 표준 오류를 한 파일에 저장
+$ ls /abc 2> ls.err               # Save standard error to ls.err
+$ ls . /abc > ls.out 2> ls.err    # Save stdout to ls.out and stderr to ls.err
+$ ls /abc 2> /dev/null            # Discard error messages
+$ ls . /abc > ls.out 2>&1         # Save stdout and stderr to one file
 ```
 
 `/dev/null`은 쓰는 내용을 모두 버리는 특수 파일이다. `2>&1`은 표준 오류(2)를 표준 출력(1)이 가리키는 곳으로 보낸다는 뜻이며, 셸은 리다이렉션을 왼쪽부터 처리하므로 `> ls.out` 뒤에 써야 두 출력이 모두 `ls.out`에 들어간다.
@@ -496,8 +496,8 @@ $ ls . /abc > ls.out 2>&1         # 표준 출력과 표준 오류를 한 파일
 입력 리다이렉션은 키보드 대신 파일에서 표준 입력을 읽는다. 형식은 `명령 < 파일명` 또는 `명령 0< 파일명`이다.
 
 ```bash
-$ cat < out1             # out1의 내용을 표준 입력으로 읽어 출력
-$ cat 0< out1            # 위와 같음
+$ cat < out1             # Read out1 as standard input and print it
+$ cat 0< out1            # Same as above
 ```
 
 ---
@@ -540,26 +540,26 @@ $ cat 0< out1            # 위와 같음
 ### 6.3 변수 다루기
 
 ```bash
-# 변수 표시
+# Display a variable
 echo $HOME
 echo $PATH
 
-# 지역 변수 설정 (현재 셸에서만 유효)
+# Set a local variable (current shell only)
 MY_VAR="Hello World"
 echo $MY_VAR
 
-# 환경 변수로 내보내기 (자식 프로세스에서도 사용 가능)
+# Export as environment variable (available to child processes)
 export MY_VAR="Hello World"
 
-# 변수 해제
+# Unset a variable
 unset MY_VAR
 
-# 모든 환경 변수 보기
+# View all environment variables
 env
 printenv
 export
 
-# PATH 수정
+# Modify PATH
 export PATH=$PATH:/opt/myapp/bin
 ```
 
@@ -609,20 +609,20 @@ blue
 ### 7.1 별칭 생성 및 관리
 
 ```bash
-# 별칭 생성
+# Create alias
 alias ll='ls -la'
 alias grep='grep --color=auto'
 alias rm='rm -i'
 alias ..='cd ..'
 alias ...='cd ../..'
 
-# 모든 별칭 보기
+# View all aliases
 alias
 
-# 별칭 제거
+# Remove an alias
 unalias ll
 
-# 별칭을 영구적으로 만들기 (~/.bashrc에 추가)
+# Make aliases persistent (add to ~/.bashrc)
 echo "alias ll='ls -la'" >> ~/.bashrc
 ```
 
@@ -652,17 +652,17 @@ alias update='sudo apt update && sudo apt upgrade -y'
 ### 8.1 히스토리 명령어
 
 ```bash
-history                 # 명령어 히스토리 보기
-history 20              # 최근 20개 명령어 보기
-!n                      # n번 명령어 실행
-!!                      # 마지막 명령어 실행
-!string                 # string으로 시작하는 마지막 명령어 실행
-!?string                # string을 포함하는 마지막 명령어 실행
-^old^new                # 마지막 명령어에서 old를 new로 교체
+history                 # Show command history
+history 20              # Show last 20 commands
+!n                      # Execute command number n
+!!                      # Execute last command
+!string                 # Execute last command starting with string
+!?string                # Execute last command containing string
+^old^new                # Replace old with new in last command
 
-# 히스토리 검색
-Ctrl+r                  # 역방향 검색 (입력하면서 검색)
-Ctrl+s                  # 정방향 검색
+# History search
+Ctrl+r                  # Reverse search (type to search)
+Ctrl+s                  # Forward search
 ```
 
 예를 들어 `history`의 출력에서 347번이 `ls`였다면 `!347`은 `ls`를 다시 실행하고, `!l`은 `l`로 시작하는 가장 최근 명령을 다시 실행한다. 셸은 히스토리 확장 결과를 먼저 화면에 보여 준 뒤 실행한다.
@@ -670,11 +670,11 @@ Ctrl+s                  # 정방향 검색
 ### 8.2 히스토리 설정
 
 ```bash
-# ~/.bashrc에 추가
-export HISTSIZE=10000           # 메모리에 저장할 명령어 수
-export HISTFILESIZE=20000       # 히스토리 파일에 저장할 명령어 수
-export HISTCONTROL=ignoredups   # 중복 명령어 무시
-export HISTTIMEFORMAT="%F %T "  # 타임스탬프 추가
+# In ~/.bashrc
+export HISTSIZE=10000           # Commands in memory
+export HISTFILESIZE=20000       # Commands in history file
+export HISTCONTROL=ignoredups   # Ignore duplicate commands
+export HISTTIMEFORMAT="%F %T "  # Add timestamps
 ```
 
 히스토리는 셸이 실행되는 동안 메모리에 보관되고, 셸을 종료할 때 홈 디렉터리 아래의 숨김 파일 `.bash_history`에 저장된다. 다음에 로그인하면 이 파일을 읽어 이전 세션의 명령도 다시 불러올 수 있다.
@@ -735,7 +735,7 @@ export HISTTIMEFORMAT="%F %T "  # 타임스탬프 추가
 *표 11. PS1에 쓰는 이스케이프 문자*
 
 ```bash
-# 프롬프트 커스터마이징 예시
+# Custom prompt examples
 export PS1="\u@\h:\w\$ "         # user@host:/path$
 export PS1="[\t] \u:\W\$ "      # [14:30:00] user:dir$
 ```
@@ -779,10 +779,10 @@ export PS1="[\t] \u:\W\$ "      # [14:30:00] user:dir$
 *표 13. 프롬프트의 특수 기능 번호*
 
 ```bash
-PS1='\[\e[34m\]Linux $\[\e[0m\] '             # 파란색 프롬프트
-PS1='\[\e[34;1m\]Linux $\[\e[0m\] '           # 파란색, 굵게
-PS1='\[\e[31;4m\]Linux $\[\e[0m\] '           # 빨간색, 밑줄
-PS1='\[\e[35;43m\]\u@\h $\[\e[0m\] '          # 갈색 배경, 보라색 글자
+PS1='\[\e[34m\]Linux $\[\e[0m\] '             # Blue prompt
+PS1='\[\e[34;1m\]Linux $\[\e[0m\] '           # Blue, bold
+PS1='\[\e[31;4m\]Linux $\[\e[0m\] '           # Red, underlined
+PS1='\[\e[35;43m\]\u@\h $\[\e[0m\] '          # Brown background, purple text
 ```
 
 > **주의:** 색상 코드를 `\[`와 `\]`로 감싸지 않으면 셸이 화면에 보이지 않는 제어 문자까지 프롬프트 길이에 포함하여 계산한다. 그러면 긴 명령을 입력할 때 터미널의 화면 끝에 가기 전에 커서가 줄 앞으로 돌아와 같은 줄을 겹쳐 쓰게 된다.
@@ -832,9 +832,9 @@ flowchart TD
 *그림 4. 로그인 셸에서 환경 설정 파일이 읽히는 순서*
 
 ```bash
-# 로그아웃 없이 설정 다시 불러오기
+# Reload configuration without logging out
 source ~/.bashrc
-# 또는
+# or
 . ~/.bashrc
 ```
 
@@ -853,30 +853,30 @@ source ~/.bashrc
 ### 11.1 포그라운드 및 백그라운드 작업
 
 ```bash
-# 백그라운드에서 명령 실행
+# Run command in background
 command &
 
-# 작업 목록 보기
+# List jobs
 jobs
-jobs -l                         # PID 포함
+jobs -l                         # With PID
 
-# 백그라운드 작업을 포그라운드로 전환
-fg %1                           # 작업 번호 1
+# Bring background job to foreground
+fg %1                           # Job number 1
 
-# 포그라운드 작업을 백그라운드로 전환
-Ctrl+Z                          # 현재 작업 일시 중지
-bg %1                           # 작업 1을 백그라운드에서 재개
+# Send foreground job to background
+Ctrl+Z                          # Suspend current job
+bg %1                           # Resume job 1 in background
 
-# 작업 종료
-kill %1                         # 작업 1에 SIGTERM 전송
-kill -9 %1                      # SIGKILL 전송 (강제 종료)
+# Terminate a job
+kill %1                         # Send SIGTERM to job 1
+kill -9 %1                      # Send SIGKILL (force kill)
 ```
 
 ### 11.2 프로세스 우선순위
 
 ```bash
-nice -n 10 command              # 낮은 우선순위로 실행
-renice -n 5 -p PID              # 실행 중인 프로세스의 우선순위 변경
+nice -n 10 command              # Run with lower priority
+renice -n 5 -p PID              # Change priority of running process
 ```
 
 ---

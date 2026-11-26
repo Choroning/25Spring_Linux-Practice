@@ -63,7 +63,7 @@
 Linux는 텍스트 데이터를 처리하기 위한 풍부한 명령줄 유틸리티를 제공한다. 이러한 도구들은 하나의 작업을 잘 수행한다는 Unix 철학을 따르며, 파이프와 결합하여 강력한 데이터 처리 파이프라인을 구성할 수 있다.
 
 ```bash
-# 예시 파이프라인: /var/log에서 가장 큰 파일 상위 10개 찾기
+# Example pipeline: find top 10 largest files in /var/log
 du -ah /var/log 2>/dev/null | sort -rh | head -10
 ```
 
@@ -117,9 +117,9 @@ ccc
 `cut`은 파일의 각 행에서 선택한 문자나 필드를 잘라내어 출력한다. 형식은 `cut [옵션] [파일명]`이며, 파일을 지정하지 않으면 표준 입력을 처리한다.
 
 ```bash
-cut -c list file          # 문자 위치로 잘라내기
-cut -f list file          # 필드로 잘라내기 (탭 구분)
-cut -d delim -f list file # 사용자 정의 구분자로 필드 잘라내기
+cut -c list file          # Cut by character position
+cut -f list file          # Cut by field (tab-delimited)
+cut -d delim -f list file # Cut by field with custom delimiter
 ```
 
 - **`-c 리스트`:** 각 줄에서 잘라낼 문자 위치를 지정한다.
@@ -131,18 +131,18 @@ cut -d delim -f list file # 사용자 정의 구분자로 필드 잘라내기
 ### 2.2 예제
 
 ```bash
-# 1-3번째 문자 추출
-echo "Hello World" | cut -c1-3        # 출력: Hel
+# Extract characters 1-3
+echo "Hello World" | cut -c1-3        # Output: Hel
 
-# 탭으로 구분된 파일에서 필드 추출
+# Extract fields from tab-delimited file
 # s.dat: 001\tHong\tGil-Dong\t80\tM
-cut -f 2,3 s.dat                      # 출력: Hong  Gil-Dong
+cut -f 2,3 s.dat                      # Output: Hong  Gil-Dong
 
-# 콜론으로 구분된 파일에서 추출 (/etc/passwd와 같은)
-cut -d: -f1,3 /etc/passwd            # 출력: root:0
+# Extract from colon-delimited file (like /etc/passwd)
+cut -d: -f1,3 /etc/passwd            # Output: root:0
 cut -d: -f1,6 /etc/passwd            # username:homedir
 
-# 특정 문자 범위 추출
+# Extract specific character ranges
 cut -c1-5,10-15 filename
 ```
 
@@ -172,7 +172,7 @@ root
 daemon
 bin
 sys
-(생략)
+(omitted)
 ```
 
 `cut`과 다른 유틸리티를 조합하면 파일에서 정보를 뽑아낼 수 있다. 다음은 계정 파일의 7번째 필드(로그인 셸)만 추출하여 `shell.out`에 저장한 뒤, 정렬하고 중복을 제거하여 이 시스템에서 쓰이는 로그인 셸의 종류를 확인한다.
@@ -201,9 +201,9 @@ $ sort shell.out | uniq
 `paste`는 지정한 파일들의 내용을 붙인다. 두 개 이상의 파일에서 같은 번호의 줄끼리 옆으로 붙이거나, `-s`로 각 파일의 내용을 한 줄로 만들어 차례로 붙인다. 형식은 `paste [옵션] [파일1 파일2 ...]`이다.
 
 ```bash
-paste file1 file2         # 파일을 나란히 병합 (탭 구분)
-paste -d delim file1 file2 # 사용자 정의 구분자 사용
-paste -s file             # 단일 파일의 줄을 한 줄로 병합
+paste file1 file2         # Merge files side by side (tab-separated)
+paste -d delim file1 file2 # Use custom delimiter
+paste -s file             # Merge lines of a single file into one line
 ```
 
 - **`-s`:** 각 파일의 모든 줄을 한 줄로 이어 붙인다. 파일이 여럿이면 파일마다 한 줄이 출력된다.
@@ -213,22 +213,22 @@ paste -s file             # 단일 파일의 줄을 한 줄로 병합
 ### 3.2 예제
 
 ```bash
-# ID 파일과 이름 파일 병합
+# Merge ID file with name file
 # file1: 001\n002\n003
 # file2: Hong Gil-Dong\nPark Ji-Soo\nLee Na-Young
 paste file1 file2
-# 출력:
+# Output:
 # 001  Hong Gil-Dong
 # 002  Park Ji-Soo
 # 003  Lee Na-Young
 
-# 직렬 병합 (모든 줄을 한 줄로)
+# Serial paste (merge all lines into one)
 paste -s file1
-# 출력: 001  002  003  004  005  006  007
+# Output: 001  002  003  004  005  006  007
 
-# 사용자 정의 구분자
+# Custom delimiter
 paste -d',' file1 file2
-# 출력: 001,Hong Gil-Dong
+# Output: 001,Hong Gil-Dong
 ```
 
 이 예의 `file1`은 실제로는 `001`부터 `007`까지 7줄이고 `file2`는 그에 대응하는 7명의 이름이며, 주석과 첫 출력은 앞의 세 줄만 보인 것이다. 그래서 `paste -s file1`은 일곱 값을 탭으로 이은 한 줄을 출력한다. 마지막 예의 출력도 첫 줄이다.
@@ -321,12 +321,12 @@ $ sort -o user_list user_list
 `sort`는 텍스트 파일의 내용을 지정한 방법으로 정렬하여 화면에 출력한다. 형식은 `sort [옵션] 파일명`이며, 원본 파일은 바뀌지 않는다.
 
 ```bash
-sort file                 # 알파벳순 정렬
-sort -n file              # 숫자순 정렬
-sort -r file              # 역순 정렬
-sort -k field file        # 특정 필드로 정렬
-sort -t delim file        # 필드 구분자 지정
-sort -u file              # 정렬 후 중복 제거
+sort file                 # Alphabetical sort
+sort -n file              # Numeric sort
+sort -r file              # Reverse sort
+sort -k field file        # Sort by specific field
+sort -t delim file        # Specify field delimiter
+sort -u file              # Sort and remove duplicates
 ```
 
 | 옵션 | 기능 |
@@ -357,27 +357,27 @@ sort -u file              # 정렬 후 중복 제거
 ### 4.2 예제
 
 ```bash
-# 기본 알파벳순 정렬
+# Basic alphabetical sort
 sort names.txt
 
-# 숫자순 정렬
+# Numeric sort
 sort -n numbers.txt
 
-# 4번째 필드(점수)로 숫자순 역순 정렬
+# Sort by 4th field (score), numerically, reversed
 sort -k4 -n -r s.dat
-# 출력 (최고 점수 우선):
+# Output (highest score first):
 # 002 Park Ji-Soo 100 M
 # 001 Hong Gil-Dong 80 M
 # 005 Han Ju-Hyun 75 M
 
-# /etc/passwd를 UID(3번째 필드)로 정렬
+# Sort /etc/passwd by UID (3rd field)
 sort -t: -k3 -n /etc/passwd
 
-# 대소문자 무시 정렬
+# Case-insensitive sort
 sort -f file.txt
 
-# 로캘 인식 정렬 (특수 문자)
-LC_ALL=C sort file.txt    # 일관된 결과를 위해 C 로캘 사용
+# Sort locale-aware (special characters)
+LC_ALL=C sort file.txt    # Use C locale for consistent results
 ```
 
 `s.dat`는 탭으로 구분되어 있으므로 구분자를 지정하지 않고 `-k4`만 쓴다. `-t' '`로 공백을 구분자로 지정하면 탭으로 구분된 줄에는 공백이 없어 필드가 하나뿐이 되므로, 4번째 필드가 모두 비어 점수로 정렬되지 않는다. `/etc/passwd`의 UID처럼 숫자 필드는 `-n` 없이 정렬하면 `100`이 `2`보다 앞에 오므로 `-n`을 함께 쓴다.
@@ -536,7 +536,7 @@ adm:x:4:4:Admin:/var/adm:
 aiuser:x:60003:60001:AI User:/:
 bin:x:2:2::/usr/bin:
 daemon:x:1:1::/:
-(중략)
+(omitted)
 user1:x:60005:10::/home/user1:/usr/bin/bash
 user2:x:60006:10::/home/user2:/usr/bin/bash
 uucp:x:5:5:uucp Admin:/usr/lib/uucp:
@@ -602,11 +602,11 @@ $ printf '10\n9\n100\n' | sort -n
 `uniq`는 파일이나 표준 입력으로 입력된 내용 중 같은 내용의 줄이 **연속으로** 있으면 하나만 남기고 삭제한다. 형식은 `uniq [옵션] [입력파일 [출력파일]]`이며, 파일을 지정하지 않으면 표준 입력을 처리하고, 출력 파일을 지정하면 결과를 그 파일에 저장한다. 입력 파일과 출력 파일의 이름은 달라야 한다.
 
 ```bash
-uniq file                 # 인접 중복 제거
-uniq -c file              # 발생 횟수 표시
-uniq -d file              # 중복된 줄만 표시
-uniq -u file              # 고유한 줄만 표시
-uniq -i file              # 대소문자 무시 비교
+uniq file                 # Remove adjacent duplicates
+uniq -c file              # Count occurrences
+uniq -d file              # Show only duplicated lines
+uniq -u file              # Show only unique lines
+uniq -i file              # Case-insensitive comparison
 ```
 
 `-d`는 연속으로 중복된 줄의 묶음마다 한 줄만 출력하고, `-u`는 연속으로 중복되지 않는 줄만 출력하며, `-c`는 각 행의 처음에 연속으로 나온 횟수를 출력한다.
@@ -614,21 +614,21 @@ uniq -i file              # 대소문자 무시 비교
 ### 5.2 예제
 
 ```bash
-# 중요: uniq는 인접 중복만 제거하므로, 먼저 sort를 해야 함!
+# Important: uniq only removes ADJACENT duplicates, so sort first!
 sort data.txt | uniq
 
-# 발생 횟수 표시
+# Count occurrences
 sort data.txt | uniq -c
-# 출력:
+# Output:
 #   1 aaaaa
 #   4 abcde
 #   3 bbbbb
 #   1 ccc
 
-# 중복된 줄만 찾기
+# Find only duplicated lines
 sort data.txt | uniq -d
 
-# 고유한 (중복되지 않은) 줄 찾기
+# Find unique (non-duplicated) lines
 sort data.txt | uniq -u
 ```
 
@@ -696,11 +696,11 @@ $ sort u.dat | uniq -c
 `wc`(word count)는 파일의 라인 수, 단어 수, 문자 수를 출력한다. 형식은 `wc [옵션] 파일명`이며, 옵션이 없으면 줄 수, 단어 수, 바이트 수를 차례로 출력한다.
 
 ```bash
-wc file                   # 줄, 단어, 문자 수
-wc -l file                # 줄 수만
-wc -w file                # 단어 수만
-wc -c file                # 바이트 수
-wc -m file                # 문자 수
+wc file                   # Lines, words, characters
+wc -l file                # Line count only
+wc -w file                # Word count only
+wc -c file                # Byte count
+wc -m file                # Character count
 ```
 
 `-w`의 단어는 공백, 탭, 줄 바꿈으로 구분된 문자열이다. `-l`은 줄 바꿈 문자의 개수를 세므로, 마지막 줄이 줄 바꿈으로 끝나지 않으면 그 줄은 세지 않는다. ASCII 문자만 있는 파일에서는 `-c`(바이트 수)와 `-m`(문자 수)이 같지만, 한글처럼 UTF-8에서 한 글자가 여러 바이트인 문자가 있으면 `-c`가 더 크다. Solaris 같은 일부 Unix의 `wc`에는 `-m`과 같은 `-C` 옵션도 있으나 GNU `wc`에는 없다.
@@ -710,18 +710,18 @@ wc -m file                # 문자 수
 ```bash
 wc /etc/passwd
 #   43   58  2237 /etc/passwd
-# 줄수  단어수  바이트수
+# lines words bytes
 
-# 사용자 수 세기
+# Count number of users
 wc -l /etc/passwd
 
-# 디렉터리 내 파일 수 세기
+# Count files in directory
 ls | wc -l
 
-# 여러 파일의 줄 수 세기
+# Count lines in multiple files
 wc -l *.txt
 
-# 고유한 줄 수 세기
+# Count unique lines
 sort data.txt | uniq | wc -l
 ```
 
@@ -751,7 +751,7 @@ $ wc -c test_wc
 - **단어:** 공백 문자로 구분된, 공백이 아닌 문자의 연속이다. 어떤 문자가 공백인지는 로케일이 정한다.
 - **바이트(`-c`)와 문자(`-m`):** UTF-8에서 한글 한 글자는 3바이트이므로 두 값이 다르다.
 
-```text
+```text wide-ok
 $ printf '한글\n' | wc -c
 7
 $ printf '한글\n' | wc -m
@@ -771,9 +771,9 @@ $ printf '한글\n' | wc -m
 `split`은 큰 파일을 일정한 크기의 여러 작은 파일로 분할한다. 형식은 `split [옵션] [파일명 [접두사]]`이며, 파일을 지정하지 않으면 표준 입력 내용을 분할하여 저장한다.
 
 ```bash
-split -l lines file prefix    # 줄 수로 분할
-split -b size file prefix     # 파일 크기로 분할
-split -n chunks file prefix   # N개의 동일한 조각으로 분할
+split -l lines file prefix    # Split by number of lines
+split -b size file prefix     # Split by file size
+split -n chunks file prefix   # Split into N equal chunks
 ```
 
 - **`-l n`:** n줄씩 분할한다. 옛 형식으로 `split -30`처럼 `-n`(숫자)만 써도 같다.
@@ -785,14 +785,14 @@ split -n chunks file prefix   # N개의 동일한 조각으로 분할
 ### 7.2 예제
 
 ```bash
-# 100줄씩 분할
+# Split into 100-line chunks
 split -l 100 largefile.txt part_
-# 생성: part_aa, part_ab, part_ac, ...
+# Creates: part_aa, part_ab, part_ac, ...
 
-# 10MB 단위로 분할
+# Split into 10MB chunks
 split -b 10M backup.tar.gz chunk_
 
-# 분할된 파일 재조합
+# Reassemble split files
 cat part_* > reassembled.txt
 cat chunk_* > reassembled.tar.gz
 ```
@@ -862,19 +862,19 @@ dd if=input of=output bs=blocksize count=blocks
 ### 8.2 예제
 
 ```bash
-# 0으로 채워진 1GB 파일 생성
+# Create a 1GB file filled with zeros
 dd if=/dev/zero of=test.img bs=1M count=1024
 
-# 디스크 복제 (주의 - 장치 이름을 매우 신중히 확인!)
+# Clone a disk (DANGEROUS - be very careful with device names!)
 sudo dd if=/dev/sda of=/dev/sdb bs=4M status=progress
 
-# ISO로부터 부팅 가능한 USB 생성
+# Create a bootable USB from ISO
 sudo dd if=ubuntu.iso of=/dev/sdb bs=4M status=progress
 
-# MBR 백업
+# Backup MBR
 sudo dd if=/dev/sda of=mbr_backup.bin bs=512 count=1
 
-# 파일을 대문자로 변환
+# Convert file to uppercase
 dd if=input.txt of=output.txt conv=ucase
 ```
 
@@ -946,8 +946,8 @@ $ diff s.dat test_dd2
 
 ```bash
 echo "hello" | tr 'a-z' 'A-Z'         # HELLO
-echo "hello  world" | tr -s ' '       # 중복 공백 제거
-echo "hello123" | tr -d '0-9'         # 숫자 제거: hello
+echo "hello  world" | tr -s ' '       # Remove duplicate spaces
+echo "hello123" | tr -d '0-9'         # Remove digits: hello
 ```
 
 `tr`은 표준 입력의 문자를 첫 번째 집합에서 두 번째 집합의 대응하는 문자로 바꾸어 출력한다. `-s`는 연속으로 반복되는 문자를 하나로 줄이고(`hello world`), `-d`는 지정한 집합의 문자를 삭제한다. 파일을 인자로 받지 않으므로 `tr ... < file`처럼 입력 재지정을 쓴다.
@@ -955,11 +955,11 @@ echo "hello123" | tr -d '0-9'         # 숫자 제거: hello
 ### 9.2 sed: 스트림 편집기
 
 ```bash
-sed 's/old/new/' file                  # 각 줄에서 첫 번째 치환
-sed 's/old/new/g' file                 # 모두 치환
-sed -n '5,10p' file                    # 5-10줄 출력
-sed '3d' file                          # 3번째 줄 삭제
-sed -i 's/old/new/g' file             # 제자리 편집
+sed 's/old/new/' file                  # Replace first on each line
+sed 's/old/new/g' file                 # Replace all
+sed -n '5,10p' file                    # Print lines 5-10
+sed '3d' file                          # Delete line 3
+sed -i 's/old/new/g' file             # In-place edit
 ```
 
 `sed`는 입력을 한 줄씩 읽어 편집 명령을 적용한 뒤 출력한다. `s/찾을것/바꿀것/`은 치환이고 `g`는 줄 안의 모든 일치를 바꾼다. `-n`은 자동 출력을 끄므로 `5,10p`는 5~10번째 줄만 출력한다. `-i`는 결과를 화면 대신 원본 파일에 직접 쓴다.
@@ -967,10 +967,10 @@ sed -i 's/old/new/g' file             # 제자리 편집
 ### 9.3 awk: 패턴 처리
 
 ```bash
-awk '{print $1, $3}' file             # 1번째와 3번째 필드 출력
-awk -F: '{print $1, $6}' /etc/passwd  # 사용자 정의 구분자
-awk 'NR>=5 && NR<=10' file            # 5-10줄 출력
-awk '{sum += $1} END {print sum}' file # 첫 번째 열 합산
+awk '{print $1, $3}' file             # Print fields 1 and 3
+awk -F: '{print $1, $6}' /etc/passwd  # Custom delimiter
+awk 'NR>=5 && NR<=10' file            # Print lines 5-10
+awk '{sum += $1} END {print sum}' file # Sum first column
 ```
 
 `awk`는 각 줄을 공백 기준의 필드 `$1`, `$2`, ...로 나누어 `패턴 { 동작 }`을 적용한다. `-F:`는 필드 구분자를 지정하고, `NR`은 현재 줄 번호이며, `END` 블록은 모든 줄을 처리한 뒤 한 번 실행된다.
@@ -978,8 +978,8 @@ awk '{sum += $1} END {print sum}' file # 첫 번째 열 합산
 ### 9.4 xargs: 입력으로부터 명령 구성
 
 ```bash
-find . -name "*.tmp" | xargs rm       # 찾은 파일 삭제
-echo "a b c" | xargs -n1 echo         # 명령당 인자 1개
+find . -name "*.tmp" | xargs rm       # Delete found files
+echo "a b c" | xargs -n1 echo         # One arg per command
 ```
 
 `xargs`는 표준 입력으로 받은 단어들을 명령의 인자로 붙여 실행한다. 첫 예는 `find`가 찾은 파일 이름들을 `rm`의 인자로 넘기고, 둘째 예는 `-n1`로 인자를 하나씩 넘겨 `echo`를 세 번 실행하므로 `a`, `b`, `c`가 각각 한 줄에 출력된다. 파일 이름에 공백이 있을 수 있으면 `find . -name "*.tmp" -print0 | xargs -0 rm`처럼 널 문자로 구분한다.

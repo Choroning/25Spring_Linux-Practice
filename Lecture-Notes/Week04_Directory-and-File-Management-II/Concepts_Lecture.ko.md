@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-19
+> **최종 수정일:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 2
 
@@ -70,14 +70,14 @@
 ### 1.1 cp: 파일 및 디렉터리 복사
 
 ```bash
-cp source destination            # 파일 복사
-cp file1.txt file2.txt           # file1.txt를 file2.txt로 복사
-cp file.txt /tmp/                # /tmp 디렉터리로 복사
-cp -r dir1/ dir2/                # 디렉터리를 재귀적으로 복사
-cp -i file.txt /tmp/             # 대화형 (덮어쓰기 전 확인)
-cp -p file.txt backup/           # 타임스탬프 및 권한 보존
-cp -a dir1/ dir2/                # 아카이브 모드 (모든 것 보존)
-cp file1 file2 file3 destdir/    # 여러 파일을 디렉터리로 복사
+cp source destination            # Copy file
+cp file1.txt file2.txt           # Copy file1.txt to file2.txt
+cp file.txt /tmp/                # Copy to /tmp directory
+cp -r dir1/ dir2/                # Copy directory recursively
+cp -i file.txt /tmp/             # Interactive (prompt before overwrite)
+cp -p file.txt backup/           # Preserve timestamps and permissions
+cp -a dir1/ dir2/                # Archive mode (preserve everything)
+cp file1 file2 file3 destdir/    # Copy multiple files to directory
 ```
 
 형식은 `cp [옵션] 원본 대상`이다. 두 인자가 모두 파일이면 원본을 대상 이름의 파일로 복사하고, 대상이 디렉터리이면 그 안에 같은 이름으로 복사한다. `cp text1 temp/text2`처럼 디렉터리 안의 다른 이름을 지정할 수도 있다. 인자를 셋 이상 주면 마지막 인자는 디렉터리여야 하며, 앞의 파일들이 모두 그 디렉터리로 복사된다. 쓰기 권한이 없는 디렉터리(예: `/etc`)로 복사하면 `Permission denied` 오류가 나고, 디렉터리를 `-r` 없이 복사하려 하면 `cp: -r not specified; omitting directory` 메시지와 함께 건너뛴다.
@@ -85,11 +85,11 @@ cp file1 file2 file3 destdir/    # 여러 파일을 디렉터리로 복사
 ### 1.2 mv: 파일 이동 또는 이름 변경
 
 ```bash
-mv oldname.txt newname.txt       # 파일 이름 변경
-mv file.txt /tmp/                # 파일을 /tmp로 이동
-mv dir1/ /home/user/             # 디렉터리 이동
-mv -i file.txt /tmp/             # 대화형 (덮어쓰기 전 확인)
-mv file1 file2 destdir/          # 여러 파일 이동
+mv oldname.txt newname.txt       # Rename file
+mv file.txt /tmp/                # Move file to /tmp
+mv dir1/ /home/user/             # Move directory
+mv -i file.txt /tmp/             # Interactive (prompt before overwrite)
+mv file1 file2 destdir/          # Move multiple files
 ```
 
 `mv text1 temp/data2`처럼 파일을 다른 디렉터리로 옮기면서 이름을 함께 바꿀 수도 있다. 두 인자를 모두 디렉터리로 지정하면, 대상 디렉터리가 이미 있을 때는 원본 디렉터리를 그 안으로 옮기고, 없을 때는 원본 디렉터리의 이름을 대상 이름으로 바꾼다.
@@ -99,18 +99,18 @@ mv file1 file2 destdir/          # 여러 파일 이동
 ### 1.3 rm: 파일 및 디렉터리 제거
 
 ```bash
-rm file.txt                      # 파일 제거
-rm -i file.txt                   # 대화형 (삭제 전 확인)
-rm -f file.txt                   # 강제 제거 (확인 없음)
-rm -r directory/                 # 디렉터리와 내용을 재귀적으로 제거
-rm -rf directory/                # 강제 재귀 제거 (위험)
+rm file.txt                      # Remove file
+rm -i file.txt                   # Interactive (confirm before delete)
+rm -f file.txt                   # Force removal (no confirmation)
+rm -r directory/                 # Remove directory and contents recursively
+rm -rf directory/                # Force recursive removal (DANGEROUS)
 ```
 
 > **주의:** Linux 명령줄의 `rm`은 휴지통을 거치지 않으므로, 삭제한 파일은 되돌릴 수 없다.
 
 ```bash
-# 안전 팁: 기본적으로 rm -i 사용
-alias rm='rm -i'                 # ~/.bashrc에 추가
+# Safety tip: use rm -i by default
+alias rm='rm -i'                 # Add to ~/.bashrc
 ```
 
 ### 1.4 복사, 이동, 삭제의 동작 원리
@@ -186,8 +186,8 @@ Linux 파일 시스템의 모든 파일은 다음 정보를 저장하는 **inode
 - **파일 이름은 포함하지 않는다** (이름은 디렉터리 항목에 저장됨).
 
 ```bash
-ls -i file.txt                   # inode 번호 표시
-stat file.txt                    # 상세 inode 정보 표시
+ls -i file.txt                   # Show inode number
+stat file.txt                    # Show detailed inode information
 ```
 
 ### 2.2 하드 링크
@@ -197,7 +197,7 @@ stat file.txt                    # 상세 inode 정보 표시
 ```bash
 ln original.txt hardlink.txt
 
-# 두 파일이 동일한 inode를 공유
+# Both files share the same inode
 $ ls -li
 1234567 -rw-r--r-- 2 user1 user1 100 Mar 21 10:00 hardlink.txt
 1234567 -rw-r--r-- 2 user1 user1 100 Mar 21 10:00 original.txt
@@ -285,10 +285,10 @@ Access: 2025-03-21 12:00:00.110000000 +0900
 Modify: 2025-03-21 12:00:00.110000000 +0900
 Change: 2025-03-21 12:00:00.110000000 +0900
  Birth: 2025-03-21 12:00:00.110000000 +0900
-$ cat a.txt               # 12:05에 읽음
+$ cat a.txt               # read at 12:05
 hello
-$ echo world >> a.txt     # 12:10에 덧붙임
-$ chmod 600 a.txt         # 12:15에 권한 변경
+$ echo world >> a.txt     # appended at 12:10
+$ chmod 600 a.txt         # permissions changed at 12:15
 $ stat --printf 'A=%x\nM=%y\nC=%z\n' a.txt
 A=2025-03-21 12:05:00.231000000 +0900
 M=2025-03-21 12:10:00.452000000 +0900
@@ -378,10 +378,10 @@ $ readlink -f l1
 ### 3.1 touch: 파일 생성 또는 타임스탬프 갱신
 
 ```bash
-touch newfile.txt                # 빈 파일 생성 (또는 타임스탬프 갱신)
-touch -t 202503211200 file.txt   # 특정 타임스탬프 설정
-touch -r ref.txt file.txt        # 참조 파일에서 타임스탬프 복사
-touch file1 file2 file3          # 여러 파일 생성
+touch newfile.txt                # Create empty file (or update timestamp)
+touch -t 202503211200 file.txt   # Set specific timestamp
+touch -r ref.txt file.txt        # Copy timestamp from reference file
+touch file1 file2 file3          # Create multiple files
 ```
 
 형식은 `touch [-acm] [-r 참조파일 | -t 시간] 파일`이다. 파일이 없으면 빈 파일을 만들고, 있으면 접근 시간과 수정 시간을 현재 시각으로 바꾼다. `-a`는 접근 시간만, `-m`은 수정 시간만 바꾼다. `-t`의 시간은 `[[CC]YY]MMDDhhmm[.ss]` 형식이며, 각 필드는 다음과 같다.
@@ -434,15 +434,15 @@ $ ls -l fa fb fc
 ### 4.1 grep: 파일 내용 검색
 
 ```bash
-grep "pattern" file.txt                  # 파일에서 패턴 검색
-grep -i "pattern" file.txt               # 대소문자 구분 없이 검색
-grep -n "pattern" file.txt               # 줄 번호 표시
-grep -r "pattern" directory/             # 디렉터리에서 재귀적 검색
-grep -v "pattern" file.txt               # 역 매칭 (매칭되지 않는 줄 표시)
-grep -c "pattern" file.txt               # 매칭되는 줄 수 세기
-grep -l "pattern" *.txt                  # 매칭되는 파일 이름만 표시
-grep -w "word" file.txt                  # 완전한 단어만 매칭
-grep -E "regex" file.txt                 # 확장 정규식 (egrep과 동일)
+grep "pattern" file.txt                  # Search for pattern in file
+grep -i "pattern" file.txt               # Case-insensitive search
+grep -n "pattern" file.txt               # Show line numbers
+grep -r "pattern" directory/             # Recursive search in directory
+grep -v "pattern" file.txt               # Invert match (show non-matching)
+grep -c "pattern" file.txt               # Count matching lines
+grep -l "pattern" *.txt                  # Show only filenames with matches
+grep -w "word" file.txt                  # Match whole word only
+grep -E "regex" file.txt                 # Extended regex (same as egrep)
 ```
 
 형식은 `grep [옵션] 패턴 [파일]`이며, 지정한 파일에서 패턴이 들어 있는 줄을 찾아 출력한다. 패턴에는 문자, 문자열, 문장, 정규 표현식을 쓸 수 있고, 옵션은 `grep -ni unix grep.dat`처럼 묶어 쓸 수 있다. `ls -l | grep rw-`, `ps -ef | grep user1`처럼 다른 명령의 출력을 파이프(7.4절)로 받아 검색할 수도 있다.
@@ -462,11 +462,11 @@ grep -E "regex" file.txt                 # 확장 정규식 (egrep과 동일)
 *표 7. 정규 표현식의 기본 메타 문자*
 
 ```bash
-# 예시
-grep "^root" /etc/passwd          # "root"로 시작하는 줄
-grep "bash$" /etc/passwd          # "bash"로 끝나는 줄
-grep "^$" file.txt                # 빈 줄
-grep -E "[0-9]{3}" file.txt       # 연속된 3자리 숫자
+# Examples
+grep "^root" /etc/passwd          # Lines starting with "root"
+grep "bash$" /etc/passwd          # Lines ending with "bash"
+grep "^$" file.txt                # Empty lines
+grep -E "[0-9]{3}" file.txt       # Three consecutive digits
 ```
 
 > **주의:** 셸 와일드카드의 `*`(임의의 문자열, 6절)와 정규 표현식의 `*`(앞 문자의 0회 이상 반복)는 뜻이 다르다. 기본 정규 표현식에서 패턴 맨 앞의 `*`는 반복할 앞 문자가 없으므로 문자 `*` 자체로 취급된다.
@@ -524,19 +524,19 @@ $ grep -c '' grep.dat
 ### 5.1 find: 파일 검색
 
 ```bash
-find /path -name "filename"              # 정확한 이름으로 검색
-find /home -name "*.txt"                 # 패턴으로 검색
-find / -name "*.log" -size +10M          # 10MB보다 큰 로그 파일 검색
-find . -type f -name "*.sh"              # 일반 파일만 검색
-find . -type d -name "backup"            # 디렉터리만 검색
-find /tmp -mtime -7                      # 최근 7일 내 수정된 파일
-find . -user user1                       # user1 소유 파일 검색
-find . -perm 755                         # 특정 권한의 파일 검색
-find . -empty                            # 빈 파일/디렉터리 검색
+find /path -name "filename"              # Find by exact name
+find /home -name "*.txt"                 # Find by pattern
+find / -name "*.log" -size +10M          # Find logs larger than 10MB
+find . -type f -name "*.sh"              # Find regular files only
+find . -type d -name "backup"            # Find directories only
+find /tmp -mtime -7                      # Modified within last 7 days
+find . -user user1                       # Find files owned by user1
+find . -perm 755                         # Find files with specific permissions
+find . -empty                            # Find empty files/directories
 
-# 검색된 파일에 명령어 실행
-find . -name "*.tmp" -exec rm {} \;      # 모든 .tmp 파일 삭제
-find . -name "*.sh" -exec chmod +x {} \; # 모든 .sh 파일에 실행 권한 부여
+# Execute command on found files
+find . -name "*.tmp" -exec rm {} \;      # Delete all .tmp files
+find . -name "*.sh" -exec chmod +x {} \; # Make all .sh files executable
 ```
 
 형식은 `find [경로] [검색 조건] [동작]`이며, 지정한 경로부터 하위 디렉터리를 재귀적으로 내려가며 조건에 맞는 파일을 찾는다. 경로를 생략하면 현재 디렉터리에서 찾는다.
@@ -568,11 +568,11 @@ find . -name "*.sh" -exec chmod +x {} \; # 모든 .sh 파일에 실행 권한 �
 검색 조건은 `-a`(그리고), `-o`(또는), `!`(부정)으로 결합한다. 조건을 나란히 쓰면 `-a`로 결합한 것과 같다.
 
 ```bash
-find /etc -perm 0777 -a -name "*sh"      # 권한이 777이면서 이름이 sh로 끝나는 파일
-find ~ -type d -o -name Unix             # 디렉터리이거나 이름이 Unix인 파일
-find . ! -newer g.txt                    # g.txt보다 나중에 수정되지 않은 파일
-find /home -mtime +3 -ok rm {} \;        # 3일보다 오래된 파일을 확인 후 삭제
-find /etc -name hostname 2> /dev/null    # 권한 오류 메시지를 버리고 결과만 출력
+find /etc -perm 0777 -a -name "*sh"      # Permission 777 and name ending in sh
+find ~ -type d -o -name Unix             # Directories or files named Unix
+find . ! -newer g.txt                    # Files not modified after g.txt
+find /home -mtime +3 -ok rm {} \;        # Delete files older than 3 days after confirmation
+find /etc -name hostname 2> /dev/null    # Discard permission errors and print only results
 ```
 
 `-mtime`은 24시간 단위로 센다. `-mtime -1`은 24시간 이내에, `-mtime 1`은 24시간 이상 48시간 미만 전에, `-mtime +1`은 48시간 이상 전에 수정된 파일을 찾는다. 권한이 없는 디렉터리를 만나면 `Permission denied` 오류가 출력되므로, 위의 마지막 예처럼 오류를 `/dev/null`로 보내면(7.2절) 결과만 볼 수 있다.
@@ -598,10 +598,10 @@ which python3
 ### 5.4 locate: 빠른 파일 검색 (데이터베이스 기반)
 
 ```bash
-sudo apt install mlocate           # 미설치 시 설치
-sudo updatedb                      # 파일 데이터베이스 갱신
-locate filename                    # 빠른 검색
-locate -i filename                 # 대소문자 구분 없이
+sudo apt install mlocate           # Install if not present
+sudo updatedb                      # Update the file database
+locate filename                    # Fast search
+locate -i filename                 # Case-insensitive
 ```
 
 > **참고:** 최근 Ubuntu에서는 `mlocate` 대신 `plocate` 패키지가 `locate` 명령을 제공하므로 `sudo apt install plocate`로 설치한다. 사용법은 같다.
@@ -671,10 +671,10 @@ lrwxrwxrwx 1 root root 30 Mar 11 14:20 /etc/localtime -> /usr/share/zoneinfo/Asi
 *표 12. 셸 와일드카드*
 
 ```bash
-ls *.txt                          # 모든 .txt 파일
-ls file[0-9].txt                  # file0.txt부터 file9.txt까지
-cp *.{jpg,png} images/            # 모든 jpg와 png 파일 복사
-rm test_?.log                     # test_1.log, test_A.log 등 제거
+ls *.txt                          # All .txt files
+ls file[0-9].txt                  # file0.txt through file9.txt
+cp *.{jpg,png} images/            # Copy all jpg and png files
+rm test_?.log                     # Remove test_1.log, test_A.log, etc.
 ```
 
 > **참고:** 중괄호 확장은 파일이 있는지와 관계없이 `file.txt file.log`처럼 문자열을 만들어 내므로, 엄밀히는 글로빙이 아니라 셸의 별도 확장이다. 또 `find`의 `-name`에 와일드카드를 줄 때는 `find /home -name "a*"`처럼 따옴표로 감싸야 한다. 따옴표가 없으면 현재 디렉터리에 `a.txt`가 있을 때 셸이 먼저 `a*`를 `a.txt`로 바꾸어, `find`는 이름이 정확히 `a.txt`인 파일만 찾는다.
@@ -733,12 +733,12 @@ $ echo {1..3} file{1,2}.bak
 ### 7.2 출력 리다이렉션
 
 ```bash
-command > file                    # stdout을 파일로 리다이렉션 (덮어쓰기)
-command >> file                   # stdout을 파일로 리다이렉션 (추가)
-command 2> file                   # stderr를 파일로 리다이렉션
-command 2>&1                      # stderr를 stdout으로 리다이렉션
-command > file 2>&1               # stdout과 stderr를 모두 리다이렉션
-command &> file                   # 위의 축약형 (bash)
+command > file                    # Redirect stdout to file (overwrite)
+command >> file                   # Redirect stdout to file (append)
+command 2> file                   # Redirect stderr to file
+command 2>&1                      # Redirect stderr to stdout
+command > file 2>&1               # Redirect both stdout and stderr
+command &> file                   # Shorthand for above (bash)
 ```
 
 `/dev/null`은 쓴 내용을 모두 버리는 특수 파일이므로, `2> /dev/null`처럼 쓰면 오류 메시지를 화면에 출력하지 않고 버린다.
@@ -748,8 +748,8 @@ command &> file                   # 위의 축약형 (bash)
 ### 7.3 입력 리다이렉션
 
 ```bash
-command < file                    # 파일에서 입력 읽기
-sort < unsorted.txt               # 파일 입력으로 정렬
+command < file                    # Read input from file
+sort < unsorted.txt               # Sort from file input
 ```
 
 `<`는 명령이 키보드 대신 지정한 파일에서 표준 입력을 읽게 한다. `sort < unsorted.txt`는 `sort unsorted.txt`와 결과가 같지만, 앞의 경우에는 셸이 파일을 열어 `sort`의 표준 입력으로 연결하고, 뒤의 경우에는 `sort`가 인자로 받은 파일을 직접 연다.
@@ -757,11 +757,11 @@ sort < unsorted.txt               # 파일 입력으로 정렬
 ### 7.4 파이프
 
 ```bash
-command1 | command2               # command1의 stdout을 command2의 stdin으로 전달
-ls -la | grep "\.txt$"            # .txt 파일만 나열
-cat /etc/passwd | sort            # passwd 항목 정렬
-ps aux | grep nginx               # nginx 프로세스 찾기
-history | tail -20                # 최근 20개 명령어 표시
+command1 | command2               # Pipe stdout of command1 to stdin of command2
+ls -la | grep "\.txt$"            # List only .txt files
+cat /etc/passwd | sort            # Sort passwd entries
+ps aux | grep nginx               # Find nginx processes
+history | tail -20                # Show last 20 commands
 ```
 
 **파이프(pipe)** `|`는 앞 명령의 표준 출력을 뒤 명령의 표준 입력으로 연결하여, 중간 파일 없이 여러 명령을 이어서 처리하게 한다. 표준 오류는 파이프로 넘어가지 않으므로, 오류 메시지까지 뒤 명령으로 넘기려면 `command 2>&1 | less`처럼 쓴다.
@@ -769,8 +769,8 @@ history | tail -20                # 최근 20개 명령어 표시
 ### 7.5 tee: 파일과 화면에 동시 출력
 
 ```bash
-command | tee file.txt            # 파일과 화면 모두에 출력
-command | tee -a file.txt         # 파일에 추가하면서 화면에도 표시
+command | tee file.txt            # Write to both file and screen
+command | tee -a file.txt         # Append to file and show on screen
 ```
 
 `tee`는 표준 입력으로 받은 내용을 지정한 파일에 저장하면서 같은 내용을 표준 출력으로도 내보낸다. 그래서 결과를 화면으로 확인하면서 파일에 기록하거나, 파이프 중간의 결과를 저장할 때 쓴다. `-a`를 주면 파일을 덮어쓰지 않고 뒤에 덧붙인다.
@@ -837,13 +837,13 @@ $ false | true; echo $?
 ### 8.2 안전 팁
 
 ```bash
-# rm -rf 실행 전, 경로 확인
-echo rm -rf /path/to/dir         # 먼저 명령어 미리 보기
-ls /path/to/dir                  # 디렉터리 내용 확인
+# Before running rm -rf, verify the path
+echo rm -rf /path/to/dir         # Preview the command first
+ls /path/to/dir                  # Verify the directory contents
 
-# 안전을 위해 rm 대신 trash-cli 사용
+# Use trash-cli instead of rm for safety
 sudo apt install trash-cli
-trash-put file.txt               # 삭제 대신 휴지통으로 이동
+trash-put file.txt               # Move to trash instead of delete
 ```
 
 ---

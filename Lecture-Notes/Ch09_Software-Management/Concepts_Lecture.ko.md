@@ -99,10 +99,10 @@ flowchart LR
 
 ```text
 mytool _ 1.4.2 - 1ubuntu1 _ amd64 .deb
-  │       │        │          └─ 아키텍처: amd64(x86-64), arm64, all(아키텍처와 무관)
-  │       │        └──────────── 배포판의 패키지 수정 번호 (Debian 1, Ubuntu 수정 1)
-  │       └───────────────────── 원저작자(upstream)의 버전
-  └───────────────────────────── 패키지 이름
+  │       │        │          └─ architecture: amd64 (x86-64), arm64, all (architecture-independent)
+  │       │        └──────────── the distribution's package revision (Debian 1, Ubuntu revision 1)
+  │       └───────────────────── the upstream version
+  └───────────────────────────── package name
 ```
 
 *그림 2. .deb 패키지 파일 이름의 구성*
@@ -663,12 +663,12 @@ deb [signed-by=/usr/share/keyrings/example-archive-keyring.gpg] https://repo.exa
 저장소에 없는 프로그램이나 더 새로운 판이 필요하면 원저작자가 배포하는 소스 코드를 받아 직접 컴파일한다. GNU 도구들이 쓰는 전형적인 순서는 다음과 같다.
 
 ```bash
-sudo apt install build-essential           # gcc, make 등 빌드 도구
-tar -xf program-1.0.tar.gz                 # 소스 아카이브 풀기 (4.2절)
+sudo apt install build-essential           # build tools such as gcc and make
+tar -xf program-1.0.tar.gz                 # extract the source archive (Section 4.2)
 cd program-1.0
-./configure --prefix=/usr/local            # 시스템을 검사하여 Makefile 생성
-make                                       # 컴파일
-sudo make install                          # /usr/local 아래에 설치
+./configure --prefix=/usr/local            # check the system and generate a Makefile
+make                                       # compile
+sudo make install                          # install under /usr/local
 ```
 
 1. `build-essential`은 C 컴파일러 `gcc`, 빌드 도구 `make`, 표준 라이브러리의 헤더 같은 컴파일에 필요한 패키지를 한 번에 설치하는 메타 패키지이다.
@@ -943,8 +943,8 @@ $ ssh lab 'find /tmp/restore | sort'
 **LZ77: 되풀이를 앞의 위치로 바꾸기.** 이미 나온 문자열이 다시 나오면, 그 문자열 대신 "몇 바이트 앞에서 몇 바이트를 복사하라"는 (길이, 거리)의 쌍을 쓴다. deflate는 32 KiB 안의 앞부분만 가리킬 수 있고, 한 번에 복사하는 길이는 3~258바이트이다 [28]. 문자열 `abcabcabcabc`(12바이트)는 다음과 같이 바뀐다.
 
 ```text
-입력:  a  b  c  a  b  c  a  b  c  a  b  c
-출력:  a  b  c  <길이 9, 거리 3>
+Input:   a  b  c  a  b  c  a  b  c  a  b  c
+Output:  a  b  c  <length 9, distance 3>
 ```
 
 *그림 6. LZ77이 되풀이를 (길이, 거리)로 바꾸는 예*

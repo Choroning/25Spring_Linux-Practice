@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-19
+> **Last Updated:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 5
 
@@ -232,9 +232,9 @@ Writing 1 for a granted permission and 0 for a missing one turns a three-charact
 The mode of an inode contains 4 bits for the file type and 12 bits for the permissions. The 12 permission bits consist of 3 special permission bits and 9 ordinary permission bits, and grouping them in threes gives four octal digits.
 
 ```text
-bit position  11   10     9   │  8  7  6 │  5  4  3 │  2  1  0
-meaning      SUID SGID sticky │  r  w  x │  r  w  x │  r  w  x
-category       special        │  owner   │  group   │  others
+bit position  11   10     9   │ 8   7   6 │  5  4  3 │  2  1  0
+meaning      SUID SGID sticky │ r   w   x │  r  w  x │  r  w  x
+category       special        │  owner    │  group   │  others
 octal value  4000 2000 1000   │400 200 100│ 40 20 10 │ 4  2  1
 ```
 

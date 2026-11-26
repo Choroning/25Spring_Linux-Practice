@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-19
+> **Last Updated:** 2026-11-27
 
 > **Learning Objectives:**
 > 1. Write bash scripts with variables, conditionals, and loops
@@ -154,7 +154,7 @@ A shell script file consists of the following four components.
 
 The following `test_sharp2` shows a whole-line comment and a partial-line comment together. When run, the comments are not printed; only `This part is printed.` is printed, and the script ends with exit status 65. The exit status is checked with `echo $?` (Section 8.2).
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_sharp2 : comment example
 # Running this script does not print the comments.
@@ -774,7 +774,7 @@ Other flags test the type, owner, and special permissions of a file.
 
 Inside `[ ]`, `-a` can also mean the AND of two conditions, so `-e` is safer for testing existence. The following `test_file` checks the group ID and type of an entered file.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_file: file operator test
 
@@ -801,7 +801,7 @@ else
 fi
 ```
 
-```text
+```text wide-ok
 $ ./test_file
 Enter a file name :
 /dev/null
@@ -856,7 +856,7 @@ esac
 
 In this example, `[0-9]` matches one digit and `cd|CD` matches `cd` or `CD`. Patterns are compared in order from the top, so `*)` always goes last. The following `test_case` also handles any string starting with lowercase `a` or uppercase `A`, `B`, or `C` with the pattern `[aA-C]*`.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # case test script
 
@@ -879,7 +879,7 @@ case $cmd in
 esac
 ```
 
-```text
+```text wide-ok
 $ ./test_case
 Select a command :
 5
@@ -941,7 +941,7 @@ done
 
 The following `test_for3` mails the contents of the file `letter` to each user given as a command-line argument.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_for3: process command-line arguments
 
@@ -955,7 +955,7 @@ echo ----------------------------
 echo All mail has been sent.
 ```
 
-```text
+```text wide-ok
 $ ./test_for3 user1 user2 user3
 Sent mail to user1.
 Sent mail to user2.
@@ -996,7 +996,7 @@ echo "$person has logged in!"
 
 `who` prints the list of logged-in users, and `grep -q` prints nothing and exits with status 0 if a matching line exists. So while `person` is not logged in, the loop repeats with 5-second pauses, and once the user logs in, the loop ends and the message is printed. The following `test_until` does the same after reading a login name, printing the matching line of `who` and ringing the bell when the user logs in.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_until: a script that reports when a given user logs in
 
@@ -1010,7 +1010,7 @@ done
 echo -e "\007"                 # beep
 ```
 
-```text
+```text wide-ok
 $ ./test_until
 Login name:
 hanb
@@ -1037,7 +1037,7 @@ done
 
 The following `test_select` empties `REPLY` with `REPLY=` at the end of the body. After running the body, bash prints the menu again if `REPLY` is empty, so the menu is displayed again after every choice. Without this line, the menu is printed only the first time, and afterward only the prompt is printed.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_select: run pwd or date depending on user input
 
@@ -1059,7 +1059,7 @@ do
 done
 ```
 
-```text
+```text wide-ok
 $ ./test_select
 1) pwd
 2) date
@@ -1093,7 +1093,7 @@ This example prints `Hello, alice`, `Hello, bob`, and `Hello, dave`. `continue` 
 
 The following `test_cont` mails every user in the file `list` except `user2`. `$(< list)` is the same as `` `cat list` ``.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_cont: continue test
 
@@ -1361,7 +1361,7 @@ Errors that occur while a script runs fall into two kinds.
 
 The simplest way to find runtime errors is to run `bash -x script`. Each time a command of the script runs, the command with variable expansions applied is printed to standard error, prefixed with `+`. Writing the shebang as `#!/bin/bash -x` or running `set -x` inside the script has the same effect, and `set +x` turns it off. The following is the result of running `test_while`, the same sum script as in Section 5.2 (it increments `count` with `let count+=1`), with `bash -x`.
 
-```text
+```text wide-ok
 $ bash -x test_while
 + count=1
 + sum=0
@@ -1378,7 +1378,7 @@ Sum from 1 to 10 : 55
 
 With `trap 'command' DEBUG`, the value of any variable can be printed each time a command of the script runs. The following `test_trap` prints the line number and the value of `count` right before each command runs.
 
-```bash
+```bash wide-ok
 #!/bin/bash
 # test_trap: trap test script
 
@@ -1396,7 +1396,7 @@ done
 echo Sum from 1 to 10 : $sum
 ```
 
-```text
+```text wide-ok
 $ ./test_trap
 6 : count=
 7 : count=1

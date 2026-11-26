@@ -64,27 +64,27 @@
 새 디스크를 추가하여 쓰는 과정(10주차 2.3절)을 명령으로 정리하면 다음과 같다.
 
 ```bash
-# 1. 새 디스크 확인
+# 1. Identify new disk
 lsblk
 sudo fdisk -l
 
-# 2. 디스크 파티션 생성
+# 2. Partition the disk
 sudo fdisk /dev/sdb
-# n -> 새 파티션
-# p -> 주 파티션
-# 1 -> 파티션 번호
-# Enter -> 기본 시작 섹터
-# Enter -> 기본 마지막 섹터
-# w -> 저장 후 종료
+# n -> new partition
+# p -> primary
+# 1 -> partition number
+# Enter -> default first sector
+# Enter -> default last sector
+# w -> write and exit
 
-# 3. 파일 시스템 생성
+# 3. Create filesystem
 sudo mkfs.ext4 /dev/sdb1
 
-# 4. 마운트 포인트 생성 및 마운트
+# 4. Create mount point and mount
 sudo mkdir /data
 sudo mount /dev/sdb1 /data
 
-# 5. 영구 마운트를 위해 fstab에 추가
+# 5. Add to fstab for persistence
 echo '/dev/sdb1 /data ext4 defaults 0 2' | sudo tee -a /etc/fstab
 ```
 
@@ -93,15 +93,15 @@ echo '/dev/sdb1 /data ext4 defaults 0 2' | sudo tee -a /etc/fstab
 ### 1.2 USB/외장 드라이브 관리
 
 ```bash
-# USB 장치 확인
+# Identify USB device
 lsblk
-dmesg | tail -20          # 커널 메시지 확인
+dmesg | tail -20          # Check kernel messages
 
-# USB 마운트
+# Mount USB
 sudo mount /dev/sdb1 /media/usb
 
-# 안전하게 제거
-sync                       # 버퍼 비우기
+# Safely remove
+sync                       # Flush buffers
 sudo umount /media/usb
 ```
 
@@ -192,27 +192,27 @@ flowchart TD
 
 ```bash
 # Physical Volume (PV)
-sudo pvcreate /dev/sdb1 /dev/sdc1       # PV 생성
-sudo pvdisplay                            # PV 정보 표시
-sudo pvs                                  # 요약 정보
+sudo pvcreate /dev/sdb1 /dev/sdc1       # Create PVs
+sudo pvdisplay                            # Display PV info
+sudo pvs                                  # Summary
 
 # Volume Group (VG)
-sudo vgcreate vg_data /dev/sdb1 /dev/sdc1  # VG 생성
-sudo vgdisplay                              # VG 정보 표시
-sudo vgextend vg_data /dev/sdd1             # VG에 디스크 추가
+sudo vgcreate vg_data /dev/sdb1 /dev/sdc1  # Create VG
+sudo vgdisplay                              # Display VG info
+sudo vgextend vg_data /dev/sdd1             # Add disk to VG
 
 # Logical Volume (LV)
-sudo lvcreate -L 10G -n lv_home vg_data    # 10GB LV 생성
-sudo lvcreate -l 100%FREE -n lv_data vg_data  # 모든 여유 공간 사용
-sudo lvdisplay                               # LV 정보 표시
+sudo lvcreate -L 10G -n lv_home vg_data    # Create 10GB LV
+sudo lvcreate -l 100%FREE -n lv_data vg_data  # Use all free space
+sudo lvdisplay                               # Display LV info
 
-# 포맷 및 마운트
+# Format and mount
 sudo mkfs.ext4 /dev/vg_data/lv_home
 sudo mount /dev/vg_data/lv_home /home
 
-# LV 크기 확장
-sudo lvextend -L +5G /dev/vg_data/lv_home   # 5GB 추가
-sudo resize2fs /dev/vg_data/lv_home          # 파일 시스템 크기 조정
+# Resize LV (extend)
+sudo lvextend -L +5G /dev/vg_data/lv_home   # Add 5GB
+sudo resize2fs /dev/vg_data/lv_home          # Resize filesystem
 ```
 
 `lvcreate`의 `-L`은 크기를 용량으로, `-l`은 PE 수나 `100%FREE` 같은 비율로 지정한다. LV를 늘린 뒤에는 그 안의 파일 시스템도 늘려야 하며, ext 계열은 `resize2fs`, xfs는 `xfs_growfs`를 쓴다.
@@ -340,7 +340,7 @@ RAID 0은 LVM과 비슷해 보이지만 저장 방식이 다르다. LVM(선형)�
 ```text
      Data: ABCD
 
-     Disk 1: A B C D    Disk 2: A B C D  (정확한 복사본)
+     Disk 1: A B C D    Disk 2: A B C D  (exact copy)
 ```
 
 *그림 3. 같은 데이터를 두 디스크에 복사하는 RAID 1의 미러링*
@@ -462,7 +462,7 @@ D2 = 0x3C = 0011 1100
 D3 = 0xF0 = 1111 0000
 P  = D1 ⊕ D2 ⊕ D3 = 1001 0110 = 0x96
 
-D2가 든 디스크 고장 → D2 = P ⊕ D1 ⊕ D3
+disk holding D2 fails → D2 = P ⊕ D1 ⊕ D3
    = 1001 0110 ⊕ 0101 1010 ⊕ 1111 0000 = 0011 1100 = 0x3C
 ```
 
@@ -487,16 +487,16 @@ P_{\text{new}} = P_{\text{old}} \oplus D_{\text{old}} \oplus D_{\text{new}}
 ### 5.1 RAID 배열 생성
 
 ```bash
-# mdadm 설치
+# Install mdadm
 sudo apt install mdadm
 
-# RAID 1 (미러) 생성
+# Create RAID 1 (mirror)
 sudo mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdb1 /dev/sdc1
 
-# RAID 5 생성
+# Create RAID 5
 sudo mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/sdb1 /dev/sdc1 /dev/sdd1
 
-# 포맷 및 마운트
+# Format and mount
 sudo mkfs.ext4 /dev/md0
 sudo mkdir /mnt/raid
 sudo mount /dev/md0 /mnt/raid
@@ -511,7 +511,7 @@ RAID 0을 처음부터 만드는 실습 절차는 다음과 같다.
 
 ```bash
 sudo fdisk /dev/sdb                 # n, p, 1, Enter, Enter, t, fd, p, w
-sudo mknod /dev/md0 b 9 0           # 최근 배포판에서는 생략 가능
+sudo mknod /dev/md0 b 9 0           # Can be skipped on recent distributions
 sudo mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sdb1 /dev/sdc1
 sudo mdadm --detail --scan
 sudo mdadm --query --detail /dev/md0
@@ -525,20 +525,20 @@ sudo mount /dev/md0 /mnt/raid0data
 ### 5.2 RAID 관리
 
 ```bash
-# RAID 상태 확인
+# Check RAID status
 cat /proc/mdstat
 sudo mdadm --detail /dev/md0
 
-# 예비 디스크 추가
+# Add spare disk
 sudo mdadm --add /dev/md0 /dev/sde1
 
-# 장애 디스크 제거
+# Remove failed disk
 sudo mdadm --remove /dev/md0 /dev/sdb1
 
-# RAID 배열 중지
+# Stop RAID array
 sudo mdadm --stop /dev/md0
 
-# 설정 저장
+# Save configuration
 sudo mdadm --detail --scan >> /etc/mdadm/mdadm.conf
 ```
 
@@ -551,8 +551,8 @@ RAID 1, 5, 6, 10은 결함 허용 기능이 있으므로 디스크 일부를 제
 성능 저하 상태의 RAID 5에서 사라진 디스크의 데이터를 읽으려면 남은 디스크의 값으로 매번 계산해야 하므로 속도가 약간 느려질 수 있다. 고장 난 디스크를 새 디스크로 교체하고 배열에 추가하면 mdadm이 데이터를 다시 만들어 새 디스크에 기록하는 **재구성(rebuild)** 을 하며, 재구성이 끝나면 값을 계산할 필요가 없으므로 속도 저하도 없어진다. RAID 1은 남은 디스크의 데이터를 새 디스크에 복사하여 다시 두 디스크 모두에 같은 파일이 있게 된다.
 
 ```bash
-sudo mdadm --query --detail /dev/md1      # 상태 확인 (degraded 여부)
-sudo mdadm /dev/md1 --add /dev/sdj1       # 새 디스크를 추가하여 재구성
+sudo mdadm --query --detail /dev/md1      # Check status (degraded or not)
+sudo mdadm /dev/md1 --add /dev/sdj1       # Add a new disk and rebuild
 sudo mdadm /dev/md5 --add /dev/sdk1
 ```
 
@@ -615,25 +615,25 @@ md 드라이버는 쓰기 오류를 낸 장치를 즉시 장애로 표시하고 
 디스크 쿼터는 사용자나 그룹이 쓸 수 있는 디스크 용량과 파일 수를 제한한다. 쿼터의 개념(하드 리미트, 소프트 리미트)과 각 명령의 자세한 사용법은 12주차 8절에서 다룬다.
 
 ```bash
-# 쿼터 도구 설치
+# Install quota tools
 sudo apt install quota
 
-# /etc/fstab에서 쿼터 활성화
+# Enable quotas in /etc/fstab
 # /dev/sda2 /home ext4 defaults,usrquota,grpquota 0 2
 
-# 다시 마운트 및 초기화
+# Remount and initialize
 sudo mount -o remount /home
 sudo quotacheck -cugm /home
 sudo quotaon /home
 
-# 사용자 쿼터 설정
+# Set user quota
 sudo edquota -u user1
-# 블록과 inode에 대한 소프트 제한, 하드 제한 설정
+# Set soft limit, hard limit for blocks and inodes
 
-# 그룹 쿼터 설정
+# Set group quota
 sudo edquota -g developers
 
-# 쿼터 사용량 확인
+# View quota usage
 sudo repquota /home
 quota -u user1
 ```

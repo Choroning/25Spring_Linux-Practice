@@ -132,7 +132,7 @@ user1@myubuntu:~$ sudo dmesg | more
 [    0.000000]   Centaur CentaurHauls
 [    0.000000]   zhaoxin   Shanghai
 [    0.000000] Disabled fast string operations
-(생략)
+(omitted)
 ```
 
 첫 줄은 커널 버전을, 둘째 줄의 `Command line`은 부트로더가 커널에 넘긴 매개변수(커널 이미지, 루트 파일 시스템의 UUID, `ro`, `splash`)를 보여 준다.
@@ -148,12 +148,12 @@ root           1       0  0 12:26 ?        00:00:01 /sbin/init splash
 root           2       0  0 12:26 ?        00:00:00 [kthreadd]
 root           3       2  0 12:26 ?        00:00:00 [rcu_gp]
 root           4       2  0 12:26 ?        00:00:00 [rcu_par_gp]
-(생략)
+(omitted)
 ```
 
 1번 프로세스가 여전히 `init`인 것처럼 보이지만, 사실 `/sbin/init`은 systemd 실행 파일의 심볼릭 링크이다. 따라서 실제로 1번 프로세스로 실행되는 프로그램은 systemd이다.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ ls -l /sbin/init
 lrwxrwxrwx 1 root root 20 11월 21 11:10 /sbin/init -> /lib/systemd/systemd
 ```
@@ -188,9 +188,9 @@ lrwxrwxrwx 1 root root 20 11월 21 11:10 /sbin/init -> /lib/systemd/systemd
 |MBR| Partition 1 | Partition 2 | ...   |
 +---+-----------------------------------+
  |
- +-- 446 bytes: 부트로더 코드
- +-- 64 bytes: 파티션 테이블 (4개 항목)
- +-- 2 bytes: 매직 넘버 (0x55AA)
+ +-- 446 bytes: Bootloader code
+ +-- 64 bytes: Partition table (4 entries)
+ +-- 2 bytes: Magic number (0x55AA)
 ```
 
 *그림 2. MBR 방식 부팅 디스크의 구조와 MBR의 구성*
@@ -202,10 +202,10 @@ MBR은 디스크의 첫 섹터 512바이트(446 + 64 + 2)를 차지한다. 앞�
 **GPT(GUID Partition Table)** 는 UEFI 규격의 일부로 정의된 파티션 테이블이다. 디스크의 앞부분과 끝부분에 같은 정보를 두 벌 기록한다.
 
 ```text
-LBA 0      LBA 1        LBA 2 ~ 33           ...            끝 - 33 ~ 끝 - 1    끝
+LBA 0      LBA 1        LBA 2 ~ 33           ...            end - 33 ~ end - 1  end
 +--------+------------+------------------+---------------+------------------+------------+
-| 보호용 | GPT 헤더   | 파티션 항목      | 파티션들      | 파티션 항목      | GPT 헤더   |
-| MBR    | (주)       | 128개 × 128바이트 |               | (백업)           | (백업)     |
+| Prot.  | GPT header | Partition entries| Partitions    | Partition entries| GPT header |
+| MBR    | (primary)  | 128 × 128 bytes  |               | (backup)         | (backup)   |
 +--------+------------+------------------+---------------+------------------+------------+
 ```
 
@@ -250,13 +250,13 @@ UEFI 방식으로 설치한 Ubuntu 24.04 가상 머신의 예이다. 펌웨어 �
 ### 3.2 GRUB2 설정
 
 ```text
-# 주 설정 파일 (자동 생성)
+# Main configuration file (auto-generated)
 /boot/grub/grub.cfg
 
-# 사용자 정의 설정
+# Custom settings
 /etc/default/grub
 
-# 사용자 정의 메뉴 항목
+# Custom menu entries
 /etc/grub.d/
 ```
 
@@ -274,10 +274,10 @@ user1@myubuntu:~$ ls /etc/grub.d
 
 ```bash
 # /etc/default/grub
-GRUB_DEFAULT=0                    # 기본 부팅 항목
-GRUB_TIMEOUT=5                    # 타임아웃 (초)
-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  # 커널 매개변수
-GRUB_CMDLINE_LINUX=""             # 추가 커널 매개변수
+GRUB_DEFAULT=0                    # Default boot entry
+GRUB_TIMEOUT=5                    # Timeout in seconds
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  # Kernel parameters
+GRUB_CMDLINE_LINUX=""             # Additional kernel parameters
 ```
 
 `GRUB_DEFAULT=0`은 메뉴의 첫 번째 항목(0부터 센다)을 기본으로 부팅한다는 뜻이고, `GRUB_TIMEOUT`은 메뉴를 보여 주고 기본 항목으로 부팅하기까지 기다리는 시간(초)이다. `GRUB_CMDLINE_LINUX_DEFAULT`의 매개변수는 일반 부팅 항목에만, `GRUB_CMDLINE_LINUX`의 매개변수는 복구 모드를 포함한 모든 항목에 커널 매개변수로 전달된다. `quiet`는 부팅 메시지를 줄이고 `splash`는 부트 스플래시 화면을 출력한다. 다음은 1.4절처럼 GRUB 메뉴가 출력되도록 수정한 파일의 예이다.
@@ -295,13 +295,13 @@ GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
 GRUB_CMDLINE_LINUX_DEFAULT="splash"
 #GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
 GRUB_CMDLINE_LINUX=""
-(생략)
+(omitted)
 ```
 
 ```bash
-# 편집 후 grub.cfg 재생성
+# After editing, regenerate grub.cfg
 sudo update-grub
-# 또는
+# or
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
@@ -366,18 +366,18 @@ systemd는 **유닛(unit)** 이라 부르는 구성 요소를 사용하여 전�
 `systemctl`은 systemd 서비스를 제어하는 명령이며, 형식은 `systemctl [옵션] [명령] [유닛명]`이다. 유닛명에서 `.service`는 생략할 수 있다.
 
 ```bash
-# 서비스 제어
-sudo systemctl start service          # 서비스 시작
-sudo systemctl stop service           # 서비스 중지
-sudo systemctl restart service        # 서비스 재시작
-sudo systemctl reload service         # 설정 다시 불러오기
-sudo systemctl status service         # 상태 확인
-sudo systemctl enable service         # 부팅 시 자동 시작 활성화
-sudo systemctl disable service        # 부팅 시 자동 시작 비활성화
-sudo systemctl is-active service      # 실행 중인지 확인
-sudo systemctl is-enabled service     # 활성화 여부 확인
+# Service control
+sudo systemctl start service          # Start service
+sudo systemctl stop service           # Stop service
+sudo systemctl restart service        # Restart service
+sudo systemctl reload service         # Reload configuration
+sudo systemctl status service         # Check status
+sudo systemctl enable service         # Enable at boot
+sudo systemctl disable service        # Disable at boot
+sudo systemctl is-active service      # Check if running
+sudo systemctl is-enabled service     # Check if enabled
 
-# 예시
+# Examples
 sudo systemctl status ssh
 sudo systemctl restart nginx
 sudo systemctl enable docker
@@ -410,9 +410,9 @@ active
 ### 4.4 서비스 보기
 
 ```bash
-systemctl list-units --type=service              # 활성 서비스
-systemctl list-units --type=service --all         # 모든 서비스
-systemctl list-unit-files --type=service          # 모든 유닛 파일
+systemctl list-units --type=service              # Active services
+systemctl list-units --type=service --all         # All services
+systemctl list-unit-files --type=service          # All unit files
 ```
 
 옵션 없이 `systemctl`만 실행하면 현재 메모리에 로드되어 동작 중인 유닛이 출력된다. `-a`를 붙이면 비활성 유닛까지, `-t service`나 `--type=service`를 붙이면 서비스 유닛만 출력한다.
@@ -420,7 +420,7 @@ systemctl list-unit-files --type=service          # 모든 유닛 파일
 ```text
 user1@myubuntu:~$ systemctl
   UNIT                   LOAD   ACTIVE SUB    DESCRIPTION
-(생략)
+(omitted)
   basic.target           loaded active active Basic System
   bluetooth.target       loaded active active Bluetooth
   cryptsetup.target      loaded active active Local Encrypted Volumes
@@ -431,7 +431,7 @@ user1@myubuntu:~$ systemctl
   multi-user.target      loaded active active Multi-User System
   network-online.target  loaded active active Network is Online
   network.target         loaded active active Network
-(생략)
+(omitted)
 LOAD   = Reflects whether the unit definition was properly loaded.
 ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
 SUB    = The low-level unit activation state, values depend on unit type.
@@ -446,12 +446,12 @@ To show all installed unit files use 'systemctl list-unit-files'.
 `journalctl`은 systemd의 로그 서비스인 journald가 수집한 로그를 조회한다.
 
 ```bash
-journalctl                           # 모든 로그
-journalctl -b                        # 마지막 부팅 이후 로그
-journalctl -u ssh                    # 특정 서비스 로그
-journalctl -f                        # 실시간 로그 추적 (tail -f와 유사)
-journalctl --since "2025-03-21"      # 특정 날짜 이후 로그
-journalctl -p err                    # 에러 수준 로그만
+journalctl                           # All logs
+journalctl -b                        # Logs since last boot
+journalctl -u ssh                    # Logs for specific service
+journalctl -f                        # Follow logs (like tail -f)
+journalctl --since "2025-03-21"      # Logs since date
+journalctl -p err                    # Only error-level logs
 ```
 
 `-u`는 유닛 이름으로 로그를 거르고, `-p err`는 우선순위가 err 이상(err, crit, alert, emerg)인 로그만 보여 준다. 일반 사용자는 자신의 로그만 볼 수 있으므로, 시스템 전체의 로그를 보려면 `sudo`를 붙이거나 `adm` 또는 `systemd-journal` 그룹에 속해야 한다.
@@ -519,16 +519,16 @@ inactive
 ### 5.2 타겟 관리
 
 ```bash
-# 현재 타겟 확인
+# View current target
 systemctl get-default
 
-# 기본 타겟 설정
-sudo systemctl set-default graphical.target    # GUI로 부팅
-sudo systemctl set-default multi-user.target   # CLI로 부팅
+# Set default target
+sudo systemctl set-default graphical.target    # Boot to GUI
+sudo systemctl set-default multi-user.target   # Boot to CLI
 
-# 즉시 타겟 전환
-sudo systemctl isolate multi-user.target       # 지금 CLI로 전환
-sudo systemctl isolate graphical.target        # 지금 GUI로 전환
+# Switch target immediately
+sudo systemctl isolate multi-user.target       # Switch to CLI now
+sudo systemctl isolate graphical.target        # Switch to GUI now
 ```
 
 `systemctl get-default`는 부팅할 때 쓰는 기본 타겟을 출력하고, `runlevel`은 직전 런레벨과 현재 런레벨을 출력한다. 다음 출력의 `N 5`는 직전 런레벨이 없고(N) 런레벨 5로 부팅되었다는 뜻이다.
@@ -542,7 +542,7 @@ N 5
 
 기본 타겟은 `systemctl set-default <타겟 이름>.target`으로 지정한다. 기본 타겟은 `/etc/systemd/system/default.target` 심볼릭 링크가 가리키는 타겟이므로, `set-default`는 이 링크를 다시 만든다.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ sudo systemctl set-default multi-user.target
 Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.
 user1@myubuntu:~$ ls -l /etc/systemd/system/default.target
@@ -558,7 +558,7 @@ Created symlink /etc/systemd/system/default.target → /lib/systemd/system/graph
 
 전통적인 `init`과 `telinit` 명령으로도 런레벨을 바꿀 수 있다. 지금의 `/sbin/telinit`은 `/bin/systemctl`의 심볼릭 링크이며, `init 숫자`는 해당하는 `runlevelX.target`으로의 전환 요청으로 처리된다.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ init --help
 init [OPTIONS...] COMMAND
 
@@ -650,16 +650,16 @@ user1@myubuntu:~$ sudo shutdown -k 2
 ### 6.3 종료 명령어
 
 ```bash
-sudo shutdown -h now                 # 즉시 종료
-sudo shutdown -h +10                 # 10분 후 종료
-sudo shutdown -h 22:00               # 오후 10시에 종료
-sudo shutdown -r now                 # 즉시 재부팅
-sudo shutdown -c                     # 예약된 종료 취소
-sudo poweroff                        # 전원 끄기
-sudo halt                            # 시스템 정지
-sudo reboot                          # 재부팅
-sudo init 0                          # 종료 (SysV)
-sudo init 6                          # 재부팅 (SysV)
+sudo shutdown -h now                 # Shutdown immediately
+sudo shutdown -h +10                 # Shutdown in 10 minutes
+sudo shutdown -h 22:00               # Shutdown at 10 PM
+sudo shutdown -r now                 # Reboot immediately
+sudo shutdown -c                     # Cancel scheduled shutdown
+sudo poweroff                        # Power off
+sudo halt                            # Halt system
+sudo reboot                          # Reboot
+sudo init 0                          # Shutdown (SysV)
+sudo init 6                          # Reboot (SysV)
 ```
 
 `halt`는 운영체제를 정지시키지만 전원은 끄지 않을 수 있고, `poweroff`는 정지한 뒤 전원까지 끈다. 런레벨을 0으로 바꾸면 시스템이 종료되고, 6으로 바꾸면 재시작된다. systemd에서는 타겟을 직접 지정하여 같은 일을 할 수 있다.
@@ -673,7 +673,7 @@ user1@myubuntu:~$ sudo systemctl isolate runlevel6.target
 
 앞의 두 명령은 시스템을 종료하고, 뒤의 두 명령은 재시작한다. `halt`, `poweroff`, `reboot`는 모두 `systemctl` 명령의 심볼릭 링크이다. `systemctl`은 자신이 어떤 이름으로 실행되었는지 보고 해당하는 동작을 수행한다.
 
-```text
+```text wide-ok
 user1@myubuntu:~$ ls -l /sbin/halt
 lrwxrwxrwx 1 root root 14 11월 21 11:10 /sbin/halt -> /bin/systemctl
 user1@myubuntu:~$ ls -l /sbin/poweroff
