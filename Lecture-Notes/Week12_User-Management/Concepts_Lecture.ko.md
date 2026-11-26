@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-19
+> **최종 수정일:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 10
 
@@ -106,7 +106,7 @@ www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
 ```
 
 1. **로그인 ID:** 사용자 계정의 이름이다.
-2. **x:** 초기 유닉스 시스템에서 암호를 저장하던 필드이며, 지금은 암호를 `/etc/shadow`에 저장하고 이 자리에는 `x`만 둔다.
+2. **x:** 초기 Unix 시스템에서 암호를 저장하던 필드이며, 지금은 암호를 `/etc/shadow`에 저장하고 이 자리에는 `x`만 둔다.
 3. **UID:** 시스템이 사용자를 구별하는 번호이다.
 4. **GID:** 사용자의 기본 그룹의 ID이다. Linux에서 사용자는 반드시 하나 이상의 그룹에 속한다.
 5. **설명(comment, GECOS):** 사용자의 실명이나 부서명, 연락처 같은 일반 정보를 기록한다. `adduser`로 만든 계정은 `user1,,,`처럼 쉼표로 구분한 여러 항목으로 채워진다.
@@ -272,7 +272,7 @@ sudo useradd -m -c "John Doe" -s /bin/bash -G sudo john
 
 *표 4. useradd의 주요 옵션*
 
-옵션 없이 `useradd`를 실행하면 홈 디렉터리가 만들어지지 않고 기본 셸은 본 셸(`/bin/sh`)로 지정된다(Ubuntu 기준). 계정을 만든 뒤에는 `passwd`로 암호도 만들어야 로그인할 수 있으며, 홈 디렉터리가 없으므로 로그인하면 `/` 디렉터리에서 시작한다.
+옵션 없이 `useradd`를 실행하면 홈 디렉터리가 만들어지지 않고 기본 셸은 Bourne 셸(`/bin/sh`)로 지정된다(Ubuntu 기준). 계정을 만든 뒤에는 `passwd`로 암호도 만들어야 로그인할 수 있으며, 홈 디렉터리가 없으므로 로그인하면 `/` 디렉터리에서 시작한다.
 
 ```text
 $ sudo useradd user2
@@ -875,12 +875,12 @@ $ sudo setquota -t 86400 86400 /home2
 
    </details>
 
-5. **useradd의 기본 동작:** 3.1절의 `useradd -D` 기본값과 `USERGROUPS_ENAB yes`인 Ubuntu에서 `sudo useradd user9`만 실행했다. user9의 홈 디렉터리, 로그인 셸, 기본 그룹, 로그인 가능 여부를 쓰고, 홈 디렉터리와 bash 셸을 갖춘 계정을 만드는 명령을 쓰라.
+5. **useradd의 기본 동작:** 3.1절의 `useradd -D` 기본값과 `USERGROUPS_ENAB yes`인 Ubuntu에서 `sudo useradd user9`만 실행했다. user9의 홈 디렉터리, 로그인 셸, 기본 그룹, 로그인 가능 여부를 쓰고, 홈 디렉터리와 Bash 셸을 갖춘 계정을 만드는 명령을 쓰라.
 
    <details>
    <summary>정답</summary>
 
-   `/etc/passwd`에는 홈 디렉터리가 `/home/user9`로 기록되지만 디렉터리는 만들어지지 않는다. 로그인 셸은 `/bin/sh`이고, 기본 그룹은 새로 만들어진 user9 그룹이다(`GROUP=100`은 적용되지 않는다). 암호가 설정되지 않아 암호 필드가 `!`이므로 `passwd user9`로 암호를 정하기 전에는 암호로 로그인할 수 없다. 홈 디렉터리와 bash 셸을 갖춘 계정은 `sudo useradd -m -s /bin/bash user9`로 만들고 `sudo passwd user9`로 암호를 정한다.
+   `/etc/passwd`에는 홈 디렉터리가 `/home/user9`로 기록되지만 디렉터리는 만들어지지 않는다. 로그인 셸은 `/bin/sh`이고, 기본 그룹은 새로 만들어진 user9 그룹이다(`GROUP=100`은 적용되지 않는다). 암호가 설정되지 않아 암호 필드가 `!`이므로 `passwd user9`로 암호를 정하기 전에는 암호로 로그인할 수 없다. 홈 디렉터리와 Bash 셸을 갖춘 계정은 `sudo useradd -m -s /bin/bash user9`로 만들고 `sudo passwd user9`로 암호를 정한다.
 
    </details>
 

@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **최종 수정일:** 2026-11-10
+> **최종 수정일:** 2026-11-26
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -44,10 +44,10 @@
 
 **문제:** LVM 계층 구조를 가장 낮은 수준부터 가장 높은 수준까지 올바르게 나열한 것은?
 
-- A. Logical Volume -> Volume Group -> Physical Volume
-- B. Volume Group -> Physical Volume -> Logical Volume
-- C. Physical Volume -> Volume Group -> Logical Volume
-- D. Physical Volume -> Logical Volume -> Volume Group
+- A. 논리 볼륨 -> 볼륨 그룹 -> 물리 볼륨
+- B. 볼륨 그룹 -> 물리 볼륨 -> 논리 볼륨
+- C. 물리 볼륨 -> 볼륨 그룹 -> 논리 볼륨
+- D. 물리 볼륨 -> 논리 볼륨 -> 볼륨 그룹
 
 **[풀이](Solutions.ko.md#연습-문제-3-lvm-아키텍처)**
 
@@ -80,11 +80,11 @@
 
 <br>
 
-## 연습 문제 6: Logical Volume 확장
+## 연습 문제 6: 논리 볼륨 확장
 
-**문제:** LVM의 Logical Volume `/dev/vg_data/lv_home`의 공간이 부족하다. 이 볼륨에 10 GB를 추가하고 파일 시스템이 새 공간을 인식하도록 하는 데 필요한 두 가지 명령어를 설명하라.
+**문제:** LVM의 논리 볼륨 `/dev/vg_data/lv_home`의 공간이 부족하다. 이 볼륨에 10 GB를 추가하고 파일 시스템이 새 공간을 인식하도록 하는 데 필요한 두 가지 명령어를 설명하라.
 
-**[풀이](Solutions.ko.md#연습-문제-6-logical-volume-확장)**
+**[풀이](Solutions.ko.md#연습-문제-6-논리-볼륨-확장)**
 
 ---
 

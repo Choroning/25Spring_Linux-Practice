@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-19
+> **최종 수정일:** 2026-11-27
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -348,8 +348,8 @@ Linux는 다른 운영체제의 파일 시스템과 네트워크 파일 시스�
 | **NTFS** | Windows 기본, ntfs-3g를 통해 읽기/쓰기 지원 |
 | **iso9660** | CD-ROM과 DVD의 표준 파일 시스템, 읽기 전용으로 사용 |
 | **NFS** | 네트워크 파일 시스템, 네트워크를 통해 원격 서버의 디스크를 연결 |
-| **ufs** | Unix File System, 유닉스의 표준 파일 시스템 |
-| **sysv** | 유닉스 System V를 지원하기 위한 파일 시스템 |
+| **ufs** | Unix File System, Unix의 표준 파일 시스템 |
+| **sysv** | Unix System V를 지원하기 위한 파일 시스템 |
 | **hpfs** | OS/2의 HPFS를 지원하기 위한 파일 시스템 |
 | **hfs** | Mac 컴퓨터의 HFS 파일 시스템을 지원하기 위한 파일 시스템 |
 

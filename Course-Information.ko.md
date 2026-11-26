@@ -2,7 +2,7 @@
 
 [레포지토리 안내](README.ko.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **최종 수정일:** 2026-11-24
+> **최종 수정일:** 2026-11-27
 
 ## 목차
 
@@ -158,7 +158,7 @@
 - 8주차에 중간고사를 치렀고, 16주차에 기말고사를 치르고 종강했습니다.
 - 강의자료와 단원의 대응은 다음과 같습니다. 단원 목록은 [`Lecture-Notes` 색인](Lecture-Notes/README.ko.md)에 있습니다.
   - `00.강의소개`: [`Week01`](Lecture-Notes/Week01_Course-Introduction/)
-  - `ch01 리눅스 설치와 기본 사용법`: 리눅스 기초는 [`Week01`](Lecture-Notes/Week01_Course-Introduction/)에, 터미널과 명령 사용법은 [`Week06`](Lecture-Notes/Week06_Shell-Usage/)에 정리했습니다. 가상 머신과 Ubuntu 설치는 실습 환경 구성 자료이므로 강의 노트를 만들지 않고 [2절](#2-수업-일정-및-형식)의 실습 환경에 적었습니다.
+  - `ch01 리눅스 설치와 기본 사용법`: Linux 기초는 [`Week01`](Lecture-Notes/Week01_Course-Introduction/)에, 터미널과 명령 사용법은 [`Week06`](Lecture-Notes/Week06_Shell-Usage/)에 정리했습니다. 가상 머신과 Ubuntu 설치는 실습 환경 구성 자료이므로 강의 노트를 만들지 않고 [2절](#2-수업-일정-및-형식)의 실습 환경에 적었습니다.
   - `ch02 디렉터리와 파일 사용법 (1)`, `(2)`: [`Week03`](Lecture-Notes/Week03_Directory-and-File-Management-I/), [`Week04`](Lecture-Notes/Week04_Directory-and-File-Management-II/)
   - `ch03 문서 편집`, `ch03 실습vi`: [`Week05`](Lecture-Notes/Week05_Vi-Editor/)
   - `ch04 셸 사용법`: [`Week06`](Lecture-Notes/Week06_Shell-Usage/)

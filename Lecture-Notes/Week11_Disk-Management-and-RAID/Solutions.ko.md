@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **최종 수정일:** 2026-11-10
+> **최종 수정일:** 2026-11-26
 >
 > 우분투 리눅스, 이종원, Ch 7
 
@@ -17,7 +17,7 @@
 - [연습 문제 3: LVM 아키텍처](#연습-문제-3-lvm-아키텍처)
 - [연습 문제 4: RAID 1 배열 생성](#연습-문제-4-raid-1-배열-생성)
 - [연습 문제 5: RAID vs. 백업](#연습-문제-5-raid-vs-백업)
-- [연습 문제 6: Logical Volume 확장](#연습-문제-6-logical-volume-확장)
+- [연습 문제 6: 논리 볼륨 확장](#연습-문제-6-논리-볼륨-확장)
 - [연습 문제 7: 디스크 쿼터 설정](#연습-문제-7-디스크-쿼터-설정)
 - [연습 문제 8: RAID 레벨 선택](#연습-문제-8-raid-레벨-선택)
 
@@ -67,16 +67,16 @@
 
 **문제:** LVM 계층 구조를 가장 낮은 수준부터 가장 높은 수준까지 올바르게 나열한 것은?
 
-- A. Logical Volume -> Volume Group -> Physical Volume
-- B. Volume Group -> Physical Volume -> Logical Volume
-- C. Physical Volume -> Volume Group -> Logical Volume
-- D. Physical Volume -> Logical Volume -> Volume Group
+- A. 논리 볼륨 -> 볼륨 그룹 -> 물리 볼륨
+- B. 볼륨 그룹 -> 물리 볼륨 -> 논리 볼륨
+- C. 물리 볼륨 -> 볼륨 그룹 -> 논리 볼륨
+- D. 물리 볼륨 -> 논리 볼륨 -> 볼륨 그룹
 
 ### 풀이
 
-**정답:** C. Physical Volume -> Volume Group -> Logical Volume
+**정답:** C. 물리 볼륨 -> 볼륨 그룹 -> 논리 볼륨
 
-**해설:** LVM에서는 `pvcreate`를 사용하여 디스크 파티션으로부터 Physical Volume(PV)을 생성한다. 그런 다음 `vgcreate`를 사용하여 PV를 Volume Group(VG)으로 결합한다. 마지막으로 `lvcreate`를 사용하여 VG에서 Logical Volume(LV)을 분할한다. 이 계층적 추상화를 통해 볼륨 크기 조정 및 다중 디스크 스패닝과 같은 유연한 스토리지 관리가 가능하다.
+**해설:** LVM에서는 `pvcreate`를 사용하여 디스크 파티션으로부터 물리 볼륨(PV)을 생성한다. 그런 다음 `vgcreate`를 사용하여 PV를 볼륨 그룹(VG)으로 결합한다. 마지막으로 `lvcreate`를 사용하여 VG에서 논리 볼륨(LV)을 분할한다. 이 계층적 추상화를 통해 볼륨 크기 조정 및 다중 디스크 스패닝과 같은 유연한 스토리지 관리가 가능하다.
 
 ---
 
@@ -115,18 +115,18 @@
 
 <br>
 
-## 연습 문제 6: Logical Volume 확장
+## 연습 문제 6: 논리 볼륨 확장
 
-**문제:** LVM의 Logical Volume `/dev/vg_data/lv_home`의 공간이 부족하다. 이 볼륨에 10 GB를 추가하고 파일 시스템이 새 공간을 인식하도록 하는 데 필요한 두 가지 명령어를 설명하라.
+**문제:** LVM의 논리 볼륨 `/dev/vg_data/lv_home`의 공간이 부족하다. 이 볼륨에 10 GB를 추가하고 파일 시스템이 새 공간을 인식하도록 하는 데 필요한 두 가지 명령어를 설명하라.
 
 ### 풀이
 
 **정답:**
 
-1. `sudo lvextend -L +10G /dev/vg_data/lv_home`: Logical Volume을 10 GB 확장한다.
+1. `sudo lvextend -L +10G /dev/vg_data/lv_home`: 논리 볼륨을 10 GB 확장한다.
 2. `sudo resize2fs /dev/vg_data/lv_home`: 확장된 볼륨에 맞게 ext4 파일 시스템의 크기를 조정한다.
 
-**해설:** `lvextend`는 Logical Volume의 크기를 증가시키지만, 그 안의 파일 시스템을 자동으로 크기 조정하지는 않는다. 새로 사용 가능해진 공간을 사용하려면 ext2/ext3/ext4 파일 시스템을 확장하기 위해 `resize2fs`가 필요하다. XFS 파일 시스템의 경우 `xfs_growfs`를 대신 사용한다. 또는 `lvextend -r`을 사용하면 두 작업을 한 번에 수행할 수 있다. 두 명령 모두 볼륨을 마운트한 채로 실행할 수 있다.
+**해설:** `lvextend`는 논리 볼륨의 크기를 증가시키지만, 그 안의 파일 시스템을 자동으로 크기 조정하지는 않는다. 새로 사용 가능해진 공간을 사용하려면 ext2/ext3/ext4 파일 시스템을 확장하기 위해 `resize2fs`가 필요하다. XFS 파일 시스템의 경우 `xfs_growfs`를 대신 사용한다. 또는 `lvextend -r`을 사용하면 두 작업을 한 번에 수행할 수 있다. 두 명령 모두 볼륨을 마운트한 채로 실행할 수 있다.
 
 ---
 
